@@ -1,0 +1,24 @@
+{
+  "name": "@schemasentry/cli",
+  "version": "0.1.0",
+  "description": "CLI for Schema Sentry validation and reporting.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "schemasentry": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@schemasentry/core": "workspace:*",
+    "commander": "^12.0.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "lint": "echo \"lint not configured\" && exit 0",
+    "test": "echo \"tests not configured\" && exit 0"
+  }
+}

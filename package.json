@@ -1,0 +1,20 @@
+{
+  "name": "schema-sentry",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Type-safe structured data for Next.js App Router, enforced in CI.",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "format": "pnpm -r format"
+  },
+  "devDependencies": {
+    "tsup": "^8.2.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

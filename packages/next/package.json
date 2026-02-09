@@ -1,0 +1,33 @@
+{
+  "name": "@schemasentry/next",
+  "version": "0.1.0",
+  "description": "Next.js App Router bindings for Schema Sentry.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@schemasentry/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "next": ">=13.4.0",
+    "react": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --clean",
+    "lint": "echo \"lint not configured\" && exit 0",
+    "test": "echo \"tests not configured\" && exit 0"
+  }
+}

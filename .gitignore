@@ -1,0 +1,21 @@
+node_modules
+.DS_Store
+.env
+.env.*
+coverage
+*.log
+*.tsbuildinfo
+
+# build output
+/dist
+**/dist
+
+# tooling
+.pnpm-store
+.turbo
+
+# local notes
+notes
+
+# opencode config
+opencode.jsonc
