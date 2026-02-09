@@ -4,7 +4,8 @@ import {
   BlogPosting,
   Organization,
   SCHEMA_CONTEXT,
-  stableStringify
+  stableStringify,
+  validateSchema
 } from "./index";
 
 describe("stableStringify", () => {
@@ -56,5 +57,67 @@ describe("builders", () => {
       "@type": "Person",
       name: "Jane Doe"
     });
+  });
+});
+
+describe("validateSchema", () => {
+  it("fails when no schema blocks are provided", () => {
+    const result = validateSchema([]);
+    expect(result.ok).toBe(false);
+    expect(result.issues[0]?.ruleId).toBe("schema.empty");
+  });
+
+  it("reports missing required fields", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "WebSite",
+      name: "Acme"
+    } as const;
+
+    const result = validateSchema([node]);
+    expect(result.ok).toBe(false);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.url"))
+      .toBe(true);
+  });
+
+  it("reports invalid context and type", () => {
+    const node = {
+      "@context": "https://example.com",
+      "@type": "Unknown",
+      name: "Acme"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.context")).toBe(
+      true
+    );
+    expect(result.issues.some((issue) => issue.ruleId === "schema.type")).toBe(
+      true
+    );
+  });
+
+  it("validates author presence for Article", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "Article",
+      headline: "Hello",
+      datePublished: "2026-02-09",
+      url: "https://acme.com/blog/hello"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.author"))
+      .toBe(true);
+  });
+
+  it("reduces score as errors increase", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "WebSite",
+      name: ""
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.score).toBeLessThan(100);
   });
 });

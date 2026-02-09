@@ -80,10 +80,14 @@ A manifest maps routes to expected schema blocks and powers coverage checks.
 ## CLI
 
 ```bash
-pnpm schemasentry validate --manifest ./schema-sentry.manifest.json
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json
 ```
 
 The CLI emits JSON by default and exits non-zero on errors. HTML output is planned.
+
+See `schema-sentry.manifest.example.json` and `schema-sentry.data.example.json` for sample inputs.
 
 ## Scope (V1)
 

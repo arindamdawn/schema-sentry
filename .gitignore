@@ -18,6 +18,10 @@ coverage
 dist-types
 **/dist-types
 
+# accidental TS emit in src
+packages/*/src/*.d.ts
+packages/*/src/*.d.ts.map
+
 # local notes
 notes
 

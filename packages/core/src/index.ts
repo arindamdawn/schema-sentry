@@ -221,26 +221,154 @@ export type ValidationResult = {
 };
 
 export const validateSchema = (nodes: SchemaNode[]): ValidationResult => {
+  const issues: ValidationIssue[] = [];
+
   if (!nodes.length) {
-    return {
-      ok: false,
-      score: 0,
-      issues: [
-        {
-          path: "root",
-          message: "No schema blocks provided",
-          severity: "error",
-          ruleId: "schema.empty"
-        }
-      ]
-    };
+    issues.push({
+      path: "root",
+      message: "No schema blocks provided",
+      severity: "error",
+      ruleId: "schema.empty"
+    });
   }
 
+  nodes.forEach((node, index) => {
+    const pathPrefix = `nodes[${index}]`;
+
+    if (node["@context"] !== SCHEMA_CONTEXT) {
+      issues.push({
+        path: `${pathPrefix}.@context`,
+        message: "Invalid or missing @context",
+        severity: "error",
+        ruleId: "schema.context"
+      });
+    }
+
+    const type = node["@type"];
+    if (!isSchemaType(type)) {
+      issues.push({
+        path: `${pathPrefix}.@type`,
+        message: "Unknown or missing @type",
+        severity: "error",
+        ruleId: "schema.type"
+      });
+      return;
+    }
+
+    const requiredFields = REQUIRED_FIELDS[type] ?? [];
+    for (const field of requiredFields) {
+      if (field === "author") {
+        if (!hasAuthor(node)) {
+          issues.push({
+            path: `${pathPrefix}.author`,
+            message: "Missing required field 'author'",
+            severity: "error",
+            ruleId: "schema.required.author"
+          });
+        }
+        continue;
+      }
+
+      if (field === "mainEntity") {
+        const value = (node as JsonLdObject)[field];
+        const ok = Array.isArray(value) && value.length > 0;
+        if (!ok) {
+          issues.push({
+            path: `${pathPrefix}.mainEntity`,
+            message: "FAQPage must include at least one Question",
+            severity: "error",
+            ruleId: "schema.required.mainEntity"
+          });
+        }
+        continue;
+      }
+
+      if (field === "step") {
+        const value = (node as JsonLdObject)[field];
+        const ok = Array.isArray(value) && value.length > 0;
+        if (!ok) {
+          issues.push({
+            path: `${pathPrefix}.step`,
+            message: "HowTo must include at least one step",
+            severity: "error",
+            ruleId: "schema.required.step"
+          });
+        }
+        continue;
+      }
+
+      const value = (node as JsonLdObject)[field];
+      if (isEmpty(value)) {
+        issues.push({
+          path: `${pathPrefix}.${field}`,
+          message: `Missing required field '${field}'`,
+          severity: "error",
+          ruleId: `schema.required.${field}`
+        });
+      }
+    }
+  });
+
+  const errorCount = issues.filter((issue) => issue.severity === "error")
+    .length;
+  const warnCount = issues.filter((issue) => issue.severity === "warn").length;
+  const score = Math.max(0, 100 - errorCount * 10 - warnCount * 2);
+
   return {
-    ok: true,
-    score: 100,
-    issues: []
+    ok: errorCount === 0,
+    score,
+    issues
   };
+};
+
+const REQUIRED_FIELDS: Record<SchemaTypeName, string[]> = {
+  Organization: ["name"],
+  Person: ["name"],
+  Place: ["name"],
+  WebSite: ["name", "url"],
+  WebPage: ["name", "url"],
+  Article: ["headline", "author", "datePublished", "url"],
+  BlogPosting: ["headline", "author", "datePublished", "url"],
+  Product: ["name", "description", "url"],
+  FAQPage: ["mainEntity"],
+  HowTo: ["name", "step"]
+};
+
+const isSchemaType = (value: unknown): value is SchemaTypeName =>
+  typeof value === "string" && value in REQUIRED_FIELDS;
+
+const isEmpty = (value: JsonLdValue | undefined): boolean => {
+  if (value === null || value === undefined) {
+    return true;
+  }
+
+  if (typeof value === "string") {
+    return value.trim().length === 0;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  return false;
+};
+
+const hasAuthor = (node: SchemaNode): boolean => {
+  const author = (node as JsonLdObject).author;
+  if (!author) {
+    return false;
+  }
+
+  if (typeof author === "string") {
+    return author.trim().length > 0;
+  }
+
+  if (typeof author === "object") {
+    const name = (author as JsonLdObject).name;
+    return typeof name === "string" && name.trim().length > 0;
+  }
+
+  return false;
 };
 
 const sortKeys = (value: JsonLdValue): JsonLdValue => {
