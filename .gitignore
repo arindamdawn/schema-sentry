@@ -14,6 +14,10 @@ coverage
 .pnpm-store
 .turbo
 
+# typescript build output
+dist-types
+**/dist-types
+
 # local notes
 notes
 

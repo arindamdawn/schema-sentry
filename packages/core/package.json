@@ -21,6 +21,6 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "lint": "echo \"lint not configured\" && exit 0",
-    "test": "echo \"tests not configured\" && exit 0"
+    "test": "vitest run"
   }
 }
