@@ -2,58 +2,72 @@
 
 Last updated: 2026-02-10
 
-## Current Status: v0.1.0 Released! 🎉
+## 🎉 Current Status
 
-**MVP is live on npm!** All 17 tests passing. 
+**v0.1.0 is live!** Published to npm and ready to use.
 
-📦 **Install now:** `pnpm add @schemasentry/next @schemasentry/core`
+📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core`
 
-See detailed release planning in `/notes/RELEASE_ROADMAP.md`.
+---
 
-## Phase 1 ✅ COMPLETE
+Schema Sentry helps your content get discovered by both **traditional search engines** and **AI-powered assistants** (ChatGPT, Claude, Perplexity, etc.) through proper structured data.
 
-**Released in v0.1.0**
+---
 
-- Core builders (Organization, Person, Article, BlogPosting, Product, FAQPage, HowTo, BreadcrumbList, etc.)
-- Deterministic JSON-LD output with stable key ordering
-- `<Schema />` React component for Next.js App Router
-- Validation engine with required field checks
-- CLI `validate` command with JSON output
-- Manifest-driven route coverage
-- Example Next.js app with working schema integration
+## ✅ Phase 1 (v0.1.0) — COMPLETE
 
-## Phase 2 - ACTIVE DEVELOPMENT
+- ✅ Core builders for 11+ schema types
+- ✅ Deterministic JSON-LD output
+- ✅ `<Schema />` component for Next.js App Router
+- ✅ Validation engine with required field checks
+- ✅ CLI `validate` command
+- ✅ Manifest-driven route coverage
+- ✅ GitHub Actions CI/CD
 
-**Target: v0.2.0**
+## 🚀 Phase 2 (v0.2.0) — Next Release
 
-- [ ] `schemasentry init` - Interactive setup wizard
-- [ ] Extended schema types (Event, Review, LocalBusiness, VideoObject, ImageObject)
-- [ ] Coverage validation - detect missing schemas per route
-- [ ] Recommended field validation (beyond just required fields)
-- [ ] CLI improvements: summary stats, timing, better error messages
-- [ ] 20+ GitHub stars (community validation)
+**Focus:** Developer experience and schema completeness
 
-## Phase 3
+- [ ] `schemasentry init` — Interactive setup wizard
+- [ ] Additional schema types (Event, Review, LocalBusiness, ImageObject, VideoObject)
+- [ ] Recommended field validation (beyond required)
+- [ ] CLI improvements (summary stats, timing, better errors)
+- [ ] Coverage validation — detect missing schemas per route
+- [ ] 20+ GitHub stars 🌟
 
-**Target: v0.3.0**
+## 🧪 Phase 3 (v0.3.0)
+
+**Focus:** Observability and launch preparation
 
 - [ ] HTML report output with visual diffs
 - [ ] GitHub Actions annotations for PR reviews
-- [ ] Performance verification (200 routes validated in < 5s)
-- [ ] Video tutorials and expanded documentation
-- [ ] Product Hunt launch
+- [ ] Performance verification (200 routes < 5s)
+- [ ] Video tutorials and expanded docs
+- [ ] **Product Hunt launch** 🚀
 
-## Phase 4
+## 🏁 Phase 4 (v1.0.0)
 
-**Target: v1.0.0**
+**Focus:** Stability and trust
 
-- Stable API contract
-- Comprehensive test coverage
-- Performance benchmarks
-- Maintainer guide and contributor onboarding
+- [ ] Stable API contract
+- [ ] Comprehensive test coverage (>80%)
+- [ ] Performance benchmarks
+- [ ] Maintainer guide
+- [ ] Contributor onboarding docs
 
-## Post-v1.0 Ideas
+## 💡 Post-v1.0 Ideas
 
-- Framework adapters (Astro, Remix, SvelteKit)
-- Schema Studio (visual editor)
-- AI-powered schema suggestions
+- Framework adapters (Astro, Remix, SvelteKit) — **contributor-led**
+- Visual schema editor
+- AI-assisted schema suggestions
+- Enterprise features (audit logs, team dashboards)
+
+---
+
+## 🗺️ Planning Notes
+
+Detailed release planning: [`/notes/RELEASE_ROADMAP.md`](notes/RELEASE_ROADMAP.md)
+
+---
+
+**Goal:** Make every Next.js site AI-ready and SEO-optimized through proper structured data.

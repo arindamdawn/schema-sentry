@@ -4,80 +4,111 @@
 [![npm version](https://badge.fury.io/js/@schemasentry%2Fcore.svg)](https://www.npmjs.com/package/@schemasentry/core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Type-safe structured data for Next.js App Router, enforced in CI.**
+> **Type-safe structured data for Next.js App Router—built for SEO and AI-powered discovery.**
 
-Schema Sentry provides a small SDK + CLI for generating and validating JSON-LD with deterministic output. Built for maintainability, predictable diffs, and CI-grade enforcement.
+Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines and AI systems.
 
 ## ✨ Features
 
-- 🔒 **Type-safe builders** for 11 common schema types
-- 🎯 **Deterministic JSON-LD** for clean diffs and stable CI
-- ⚛️ **App Router component** `<Schema />` for seamless Next.js integration
-- 📊 **Manifest-driven coverage** ensures every route has schema
+- 🔒 **Type-safe builders** for 11+ common schema types
+- 🎯 **Deterministic JSON-LD** for clean, reviewable diffs
+- ⚛️ **App Router `<Schema />` component** for seamless Next.js integration
+- 🧭 **Manifest-driven coverage** ensures every route has schema
 - 🔍 **CLI validation** with clear, actionable errors
-- 🚀 **Zero network calls** - works offline in OSS mode
+- 📴 **Zero network calls** in OSS mode
+- 🤖 **AI-ready output** optimized for LLM consumption and citations
+
+## 🧠 Why Structured Data Matters for Both Traditional and AI Search
+
+### The Problem
+
+Modern content discovery happens through two channels:
+
+1. **Traditional Search** (Google, Bing) - Rich snippets, knowledge panels, improved rankings
+2. **AI-Powered Discovery** (ChatGPT, Claude, Perplexity, AI agents) - Contextual answers, citations, voice assistants
+
+Teams often add JSON-LD late, inconsistently, or incorrectly. This leads to:
+
+- ❌ Missing rich snippets in Google search results
+- ❌ AI systems failing to understand and cite your content
+- ❌ Hard-to-debug CI failures after content changes
+- ❌ Inconsistent JSON-LD creating noisy diffs in version control
+
+### The Solution
+
+Schema Sentry enforces structured data in CI, ensuring your content is:
+
+- ✅ **Machine-readable** for both search engines and AI systems
+- ✅ **Deterministically generated** for clean, reviewable diffs
+- ✅ **Validated automatically** before deployment
+- ✅ **Complete across all routes** via manifest-driven checks
+
+> **AI is eating the web.** ChatGPT, Claude, Perplexity, and AI agents now drive significant traffic. Structured data is how AI understands and recommends your content.
+
+### Schema Sentry = Better SEO + AI Discovery
+
+| Feature | Traditional SEO | AI/LLM Discovery |
+|---------|----------------|------------------|
+| Rich snippets | ✅ | ✅ Better citations |
+| Knowledge panels | ✅ | ✅ Contextual answers |
+| Voice search | ✅ | ✅ Voice assistant results |
+| AI agent recommendations | ❌ | ✅ Direct inclusion |
+
+By using Schema Sentry, you're not just optimizing for Google—you're making your content discoverable by the next generation of AI-powered search.
 
 ## 📦 Packages
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| [`@schemasentry/core`](https://www.npmjs.com/package/@schemasentry/core) | [![npm](https://img.shields.io/npm/v/@schemasentry/core.svg)](https://www.npmjs.com/package/@schemasentry/core) | Typed builders + validation primitives |
+| [`@schemasentry/core`](https://www.npmjs.com/package/@schemasentry/core) | [![npm](https://img.shields.io/npm/v/@schemasentry/core.svg)](https://www.npmjs.com/package/@schemasentry/core) | Typed builders and validation primitives |
 | [`@schemasentry/next`](https://www.npmjs.com/package/@schemasentry/next) | [![npm](https://img.shields.io/npm/v/@schemasentry/next.svg)](https://www.npmjs.com/package/@schemasentry/next) | App Router `<Schema />` component |
 | [`@schemasentry/cli`](https://www.npmjs.com/package/@schemasentry/cli) | [![npm](https://img.shields.io/npm/v/@schemasentry/cli.svg)](https://www.npmjs.com/package/@schemasentry/cli) | CI validation and report output |
 
-## 🚀 Quick Start
-
-### Installation
+## 🚀 Install
 
 ```bash
-# Using pnpm (recommended)
+# pnpm
 pnpm add @schemasentry/next @schemasentry/core
 pnpm add -D @schemasentry/cli
 
-# Using npm
+# npm
 npm install @schemasentry/next @schemasentry/core
 npm install -D @schemasentry/cli
 
-# Using yarn
+# yarn
 yarn add @schemasentry/next @schemasentry/core
 yarn add -D @schemasentry/cli
 ```
 
-### Basic Usage
+## 🧩 App Router Usage
 
 ```tsx
-// app/blog/[slug]/page.tsx
 import { Schema, Article, Organization } from "@schemasentry/next";
 
-export default function BlogPost() {
-  const org = Organization({
-    name: "Acme Corp",
-    url: "https://acme.com",
-    logo: "https://acme.com/logo.png"
-  });
+const org = Organization({
+  name: "Acme Corp",
+  url: "https://acme.com",
+  logo: "https://acme.com/logo.png"
+});
 
-  const article = Article({
-    headline: "Launch Update",
-    authorName: "Jane Doe",
-    datePublished: "2026-02-09",
-    url: "https://acme.com/blog/launch"
-  });
+const article = Article({
+  headline: "Launch Update",
+  authorName: "Jane Doe",
+  datePublished: "2026-02-09",
+  url: "https://acme.com/blog/launch"
+});
 
+export default function Page() {
   return (
     <>
       <Schema data={[org, article]} />
-      <article>
-        <h1>{article.headline}</h1>
-        {/* Your content */}
-      </article>
+      <main>...</main>
     </>
   );
 }
 ```
 
-### CLI Validation
-
-Create a manifest file `schema-sentry.manifest.json`:
+## 🗺️ Manifest and Coverage
 
 ```json
 {
@@ -88,7 +119,7 @@ Create a manifest file `schema-sentry.manifest.json`:
 }
 ```
 
-Validate in CI:
+## 🧪 CLI
 
 ```bash
 pnpm schemasentry validate \
@@ -96,66 +127,50 @@ pnpm schemasentry validate \
   --data ./schema-sentry.data.json
 ```
 
-## 📚 Supported Schema Types
+The CLI emits JSON by default and exits non-zero on errors.
 
-### V1 (Available Now)
-- **Organization** - Company or organization info
-- **Person** - Individual person schema
-- **Place** - Physical locations
-- **WebSite** - Site-wide metadata
-- **WebPage** - Individual page schema
-- **Article** - Blog posts, news articles
-- **BlogPosting** - Blog-specific content
-- **Product** - E-commerce products
-- **FAQPage** - Frequently asked questions
-- **HowTo** - Step-by-step instructions
-- **BreadcrumbList** - Navigation breadcrumbs
+## ✅ Supported Schema Types (V1)
 
-## 🎯 Why Schema Sentry?
+- Organization
+- Person
+- Place
+- WebSite
+- WebPage
+- Article
+- BlogPosting
+- Product
+- FAQPage
+- HowTo
+- BreadcrumbList
 
-Teams often add JSON-LD late, inconsistently, and without validation. That leads to:
+## 🧪 Example App
 
-- ❌ Missing or incomplete schema on key routes
-- ❌ Hard-to-debug CI failures after content changes  
-- ❌ Inconsistent JSON-LD output creating noisy diffs
+A minimal Next.js App Router example lives in `examples/next-app` and includes a manifest and data file. It targets Next.js 16.1.6 and React 19.1.1.
 
-Schema Sentry solves this by:
-- ✅ Enforcing schema presence via manifest-driven CI checks
-- ✅ Providing deterministic output for stable diffs
-- ✅ Validating schema completeness before deployment
-- ✅ Keeping a minimal, framework-aware SDK
+## ✅ Compatibility
+
+- Next.js App Router (Next.js 13.4+)
+- React 18+
+- Node.js 18+
 
 ## 🛣️ Roadmap
 
-- ✅ **v0.1.0** - Core builders, validation, CLI (Released!)
-- 🚧 **v0.2.0** - Init wizard, extended types, coverage checks
-- 📅 **v0.3.0** - HTML reports, GitHub annotations, Product Hunt
-- 📅 **v1.0.0** - Stable API, performance benchmarks
-
-See [ROADMAP.md](ROADMAP.md) for detailed planning.
+See `ROADMAP.md` for planned milestones and future work.
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-**Quick start for contributors:**
-
-```bash
-pnpm install
-pnpm build
-pnpm test
-```
+See `CONTRIBUTING.md` for workflow, scope guardrails, and expectations.
 
 ## 📄 License
 
-MIT © [Arindam Dawn](https://github.com/arindamdawn)
+MIT © Arindam Dawn
 
 ## 💬 Support
 
-- 🐛 [Report bugs](https://github.com/arindamdawn/schema-sentry/issues/new?template=bug_report.md)
-- ✨ [Request features](https://github.com/arindamdawn/schema-sentry/issues/new?template=feature_request.md)
-- 💼 [Discussions](https://github.com/arindamdawn/schema-sentry/discussions)
+- Report bugs: https://github.com/arindamdawn/schema-sentry/issues/new?template=bug_report.md
+- Request features: https://github.com/arindamdawn/schema-sentry/issues/new?template=feature_request.md
+- Discussions: https://github.com/arindamdawn/schema-sentry/discussions
 
 ---
 
-**Made with ❤️ for the Next.js community**
+Made with ❤️ for the Next.js community
