@@ -70,7 +70,7 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 
 ## 💡 Post-v1.0 Ideas
 
-- Framework adapters (Astro, Remix, SvelteKit) — **contributor-led**
+- Framework adapters (Astro, Remix, SvelteKit, Angular) — **contributor-led**
 - Visual schema editor
 - AI-assisted schema suggestions
 - Enterprise features (audit logs, team dashboards)
