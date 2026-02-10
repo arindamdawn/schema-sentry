@@ -9,6 +9,8 @@ coverage
 # build output
 /dist
 **/dist
+**/.next
+**/out
 
 # tooling
 .pnpm-store

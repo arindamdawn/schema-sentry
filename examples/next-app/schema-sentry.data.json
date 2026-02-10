@@ -1,0 +1,24 @@
+{
+  "routes": {
+    "/": [
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Acme Corp",
+        "url": "https://acme.com",
+        "logo": "https://acme.com/logo.png"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Launch Update",
+        "author": {
+          "@type": "Person",
+          "name": "Jane Doe"
+        },
+        "datePublished": "2026-02-09",
+        "url": "https://acme.com/blog/launch"
+      }
+    ]
+  }
+}

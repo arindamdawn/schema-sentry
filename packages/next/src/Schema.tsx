@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import type { SchemaNode } from "@schemasentry/core";
 import { stableStringify } from "@schemasentry/core";
 

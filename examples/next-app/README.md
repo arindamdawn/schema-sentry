@@ -1,9 +1,23 @@
 # Example App (Next.js App Router)
 
-This folder is reserved for a sample App Router integration.
+This is a minimal App Router example that uses Schema Sentry.
 
-Planned setup:
+## Setup
 
-- Minimal Next.js App Router app
-- Example schema builders
-- CLI validation in CI
+From the repo root:
+
+```bash
+pnpm install
+pnpm --filter schema-sentry-example-next-app dev
+```
+
+## Validate Schema
+
+```bash
+pnpm --filter schema-sentry-example-next-app schema:validate
+```
+
+Files used for validation:
+
+- `schema-sentry.manifest.json`
+- `schema-sentry.data.json`
