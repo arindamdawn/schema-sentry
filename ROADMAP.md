@@ -41,7 +41,17 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 
 ## 🚀 Phase 3 (v0.3.0) — Next Release
 
-**Focus:** Observability and launch preparation
+**Focus:** CI reporting and audit visibility
+
+- [ ] HTML report output (summary + per-route issues)
+- [ ] GitHub Actions annotations for PR reviews
+- [ ] Additional schema types (VideoObject, ImageObject)
+- [ ] Performance verification (200 routes < 5s)
+- [ ] CI documentation + examples
+
+## 🧪 Phase 4 (v0.4.0)
+
+**Focus:** AI-assisted authoring (experimental)
 
 - [ ] `schemasentry suggest` — AI-powered schema recommendations
   - Analyze page content and suggest best schema types
@@ -51,14 +61,10 @@ Schema Sentry helps your content get discovered by both **traditional search eng
   - Auto-detect page type from content/URL patterns
   - Generate sensible defaults based on page analysis
   - Interactive prompts for customization
-- [ ] Additional schema types (VideoObject, ImageObject)
-- [ ] HTML report output with visual diffs
-- [ ] GitHub Actions annotations for PR reviews
-- [ ] Performance verification (200 routes < 5s)
 - [ ] Video tutorials and expanded docs
 - [ ] **Product Hunt launch** 🚀
 
-## 🏁 Phase 4 (v1.0.0)
+## 🏁 Phase 5 (v1.0.0)
 
 **Focus:** Stability and trust
 
