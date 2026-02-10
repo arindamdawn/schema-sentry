@@ -1,6 +1,6 @@
 # @schemasentry/core
 
-## 0.3.0
+## 0.2.0
 
 ### Minor Changes
 
@@ -19,12 +19,6 @@
   - CLI summary stats and timing
   - Better error messages with suggestions
   - JSON output for CI/CD integration
-
-## 0.2.0
-
-### Minor Changes
-
-- 792616b: Add v0.2.0 developer experience updates: new schema types, recommended field warnings, init/audit commands, coverage improvements, and richer CLI summaries/config support.
 
 ## 0.1.0
 
