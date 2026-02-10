@@ -38,6 +38,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
     "lint": "echo \"lint not configured\" && exit 0",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepack": "pnpm build"
   }
 }

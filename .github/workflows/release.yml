@@ -26,6 +26,8 @@ jobs:
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+      - name: Build Packages
+        run: pnpm -r build
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
         with:

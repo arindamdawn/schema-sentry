@@ -8,7 +8,7 @@
     "build": "pnpm -r build",
     "changeset": "changeset",
     "lint": "pnpm -r lint",
-    "release": "changeset publish",
+    "release": "pnpm -r build && changeset publish",
     "test": "pnpm -r test",
     "format": "pnpm -r format",
     "typecheck": "tsc -b --pretty false",
