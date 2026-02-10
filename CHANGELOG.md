@@ -8,6 +8,20 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-02-10
+
+### Added
+- `schemasentry init` - Interactive setup wizard
+- `schemasentry audit` - Read-only schema health analysis with health scores
+- Coverage validation - Report missing schema per route
+- Recommended field validation - Advisory checks (configurable)
+- New schema types: Event, Review, LocalBusiness
+
+### Improved
+- CLI summary stats and timing
+- Better error messages with suggestions
+- JSON output for CI/CD integration
+
 ## [0.1.0] - 2026-02-10
 
 ### Added
@@ -31,5 +45,6 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.2.0
 [0.1.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.1.0

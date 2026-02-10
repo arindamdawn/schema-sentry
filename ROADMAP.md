@@ -4,9 +4,9 @@ Last updated: 2026-02-10
 
 ## 🎉 Current Status
 
-**v0.1.0 is live!** Published to npm and ready to use.
+**v0.2.0 is live!** Published to npm and ready to use.
 
-📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core`
+📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
 
 ---
 
@@ -24,22 +24,22 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 - ✅ Manifest-driven route coverage
 - ✅ GitHub Actions CI/CD
 
-## 🚀 Phase 2 (v0.2.0) — Next Release
+## ✅ Phase 2 (v0.2.0) — COMPLETE
 
 **Focus:** Developer experience and schema completeness
 
-- [x] `schemasentry init` — Interactive setup wizard
-- [x] `schemasentry audit` — Analyze existing pages and report schema health (read-only)
+- ✅ `schemasentry init` — Interactive setup wizard
+- ✅ `schemasentry audit` — Analyze existing pages and report schema health (read-only)
   - Scan routes from manifest and/or filesystem
   - Report missing/partial schema per page
   - Health score for entire site
   - JSON output + human summary
-- [x] Coverage validation (missing schema per route)
-- [x] Recommended field validation (advisory, configurable)
-- [x] Additional schema types (Event, Review, LocalBusiness)
-- [x] CLI improvements (summary stats, timing, better errors)
+- ✅ Coverage validation (missing schema per route)
+- ✅ Recommended field validation (advisory, configurable)
+- ✅ Additional schema types (Event, Review, LocalBusiness)
+- ✅ CLI improvements (summary stats, timing, better errors)
 
-## 🧪 Phase 3 (v0.3.0)
+## 🚀 Phase 3 (v0.3.0) — Next Release
 
 **Focus:** Observability and launch preparation
 
@@ -74,12 +74,6 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 - Visual schema editor
 - AI-assisted schema suggestions
 - Enterprise features (audit logs, team dashboards)
-
----
-
-## 🗺️ Planning Notes
-
-Detailed release planning: [`/notes/RELEASE_ROADMAP.md`](notes/RELEASE_ROADMAP.md)
 
 ---
 
