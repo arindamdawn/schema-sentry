@@ -87,6 +87,8 @@ jobs:
         run: pnpm --filter=!schema-sentry-example-next-app -r build
       - name: Run Tests
         run: pnpm test
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - name: Publish to npm
         run: pnpm release
       - name: Create GitHub Release
