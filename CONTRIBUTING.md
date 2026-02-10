@@ -29,6 +29,20 @@ pnpm build
 - Add or update tests where appropriate
 - Update docs and changelog for user-facing changes
 
+## Releases
+
+This repo uses Changesets for versioning and releases.
+
+Typical flow:
+
+```bash
+pnpm changeset
+pnpm version-packages
+pnpm release
+```
+
+Automation runs in GitHub Actions and requires a `NPM_TOKEN` secret with publish access.
+
 ## Code of Conduct
 
 By participating, you agree to the Code of Conduct in `CODE_OF_CONDUCT.md`.
