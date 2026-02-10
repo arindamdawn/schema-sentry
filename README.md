@@ -129,6 +129,10 @@ pnpm schemasentry init
 pnpm schemasentry audit \
   --data ./schema-sentry.data.json
 
+pnpm schemasentry audit \
+  --data ./schema-sentry.data.json \
+  --scan
+
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
   --data ./schema-sentry.data.json
@@ -136,6 +140,18 @@ pnpm schemasentry validate \
 
 The CLI emits JSON output and exits with code 1 on errors, making it perfect for CI/CD pipelines.
 Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
+
+### Optional Config
+
+Create `schema-sentry.config.json` to control defaults:
+
+```json
+{
+  "recommended": false
+}
+```
+
+CLI flags override config. Use `--config ./path/to/config.json` to point at a custom file.
 
 ### Understanding Manifest vs Data
 

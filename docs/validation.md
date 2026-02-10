@@ -23,6 +23,14 @@ Pass a manifest to include coverage checks:
 pnpm schemasentry audit --data ./schema-sentry.data.json --manifest ./schema-sentry.manifest.json
 ```
 
+Scan the filesystem to detect routes without schema:
+
+```bash
+pnpm schemasentry audit --data ./schema-sentry.data.json --scan
+```
+
+Use `--root` to set the project root for scanning.
+
 ## Recommended Field Checks
 
 Recommended field validation is enabled by default and emits warnings instead of errors.
@@ -31,6 +39,16 @@ Disable it with:
 ```bash
 pnpm schemasentry validate --no-recommended
 ```
+
+You can also configure defaults in `schema-sentry.config.json`:
+
+```json
+{
+  "recommended": false
+}
+```
+
+CLI flags override config. Use `--config` to point at a custom file.
 
 ## Schema Data Input
 

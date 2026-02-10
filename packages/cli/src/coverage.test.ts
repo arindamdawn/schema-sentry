@@ -24,7 +24,10 @@ describe("buildCoverageResult", () => {
       }
     };
 
-    const result = buildCoverageResult(manifest, data);
+    const result = buildCoverageResult(
+      { expectedTypesByRoute: manifest.routes },
+      data
+    );
     expect(result.summary.missingRoutes).toBe(1);
     expect(result.summary.missingTypes).toBe(2);
     expect(result.issuesByRoute["/"]?.some((issue) => issue.ruleId === "coverage.missing_type"))
@@ -63,12 +66,29 @@ describe("buildCoverageResult", () => {
       }
     };
 
-    const result = buildCoverageResult(manifest, data);
+    const result = buildCoverageResult(
+      { expectedTypesByRoute: manifest.routes },
+      data
+    );
     expect(result.summary.unlistedRoutes).toBe(1);
     expect(
       result.issuesByRoute["/extra"]?.some(
         (issue) => issue.ruleId === "coverage.unlisted_route"
       )
     ).toBe(true);
+  });
+
+  it("flags missing routes when requiredRoutes are provided", () => {
+    const data: SchemaDataFile = {
+      routes: {}
+    };
+
+    const result = buildCoverageResult(
+      { expectedTypesByRoute: {}, requiredRoutes: ["/", "/blog"] },
+      data
+    );
+    expect(result.summary.missingRoutes).toBe(2);
+    expect(result.issuesByRoute["/"]?.some((issue) => issue.ruleId === "coverage.missing_route"))
+      .toBe(true);
   });
 });

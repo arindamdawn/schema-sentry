@@ -7,6 +7,8 @@ import { buildReport, type SchemaDataFile } from "./report";
 import { fileExists, getDefaultAnswers, writeInitFiles } from "./init";
 import { buildAuditReport } from "./audit";
 import { formatSummaryLine } from "./summary";
+import { ConfigError, loadConfig, resolveRecommended } from "./config";
+import { scanRoutes } from "./routes";
 import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
@@ -30,9 +32,12 @@ program
     "Path to schema data JSON",
     "schema-sentry.data.json"
   )
+  .option("-c, --config <path>", "Path to config JSON")
+  .option("--recommended", "Enable recommended field checks")
   .option("--no-recommended", "Disable recommended field checks")
-  .action(async (options: { manifest: string; data: string; recommended: boolean }) => {
+  .action(async (options: { manifest: string; data: string; config?: string }) => {
     const start = Date.now();
+    const recommended = await resolveRecommendedOption(options.config);
     const manifestPath = path.resolve(process.cwd(), options.manifest);
     const dataPath = path.resolve(process.cwd(), options.data);
     let raw: string;
@@ -152,9 +157,7 @@ program
       return;
     }
 
-    const report = buildReport(manifest, data, {
-      recommended: options.recommended
-    });
+    const report = buildReport(manifest, data, { recommended });
     console.log(formatReportOutput(report));
     printValidateSummary(report, Date.now() - start);
     process.exit(report.ok ? 0 : 1);
@@ -209,9 +212,20 @@ program
     "schema-sentry.data.json"
   )
   .option("-m, --manifest <path>", "Path to manifest JSON (optional)")
+  .option("--scan", "Scan the filesystem for routes")
+  .option("--root <path>", "Project root for scanning", ".")
+  .option("-c, --config <path>", "Path to config JSON")
+  .option("--recommended", "Enable recommended field checks")
   .option("--no-recommended", "Disable recommended field checks")
-  .action(async (options: { data: string; manifest?: string; recommended: boolean }) => {
+  .action(async (options: {
+    data: string;
+    manifest?: string;
+    config?: string;
+    scan?: boolean;
+    root?: string;
+  }) => {
     const start = Date.now();
+    const recommended = await resolveRecommendedOption(options.config);
     const dataPath = path.resolve(process.cwd(), options.data);
     let dataRaw: string;
 
@@ -334,10 +348,14 @@ program
       }
     }
 
-    const report = buildAuditReport(data, {
-      recommended: options.recommended,
-      manifest
-    });
+    const requiredRoutes = options.scan
+      ? await scanRoutes({ rootDir: path.resolve(process.cwd(), options.root ?? ".") })
+      : undefined;
+    if (options.scan && requiredRoutes.length === 0) {
+      console.error("No routes found during scan.");
+    }
+
+    const report = buildAuditReport(data, { recommended, manifest, requiredRoutes });
     console.log(formatReportOutput(report));
     printAuditSummary(report, Boolean(manifest), Date.now() - start);
     process.exit(report.ok ? 0 : 1);
@@ -385,6 +403,45 @@ const isSchemaData = (value: unknown): value is SchemaDataFile => {
 
 const formatReportOutput = (report: ReturnType<typeof buildReport>): string =>
   stableStringify(report);
+
+const resolveRecommendedOption = async (
+  configPath?: string
+): Promise<boolean> => {
+  const override = getRecommendedOverride(process.argv);
+
+  try {
+    const config = await loadConfig({ configPath });
+    return resolveRecommended(override, config);
+  } catch (error) {
+    if (error instanceof ConfigError) {
+      console.error(
+        stableStringify({
+          ok: false,
+          errors: [
+            {
+              code: error.code,
+              message: error.message,
+              suggestion: error.suggestion
+            }
+          ]
+        })
+      );
+      process.exit(1);
+      return true;
+    }
+    throw error;
+  }
+};
+
+const getRecommendedOverride = (argv: string[]): boolean | undefined => {
+  if (argv.includes("--recommended")) {
+    return true;
+  }
+  if (argv.includes("--no-recommended")) {
+    return false;
+  }
+  return undefined;
+};
 
 const printValidateSummary = (
   report: ReturnType<typeof buildReport>,

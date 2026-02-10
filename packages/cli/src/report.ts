@@ -45,7 +45,10 @@ export const buildReport = (
 ): Report => {
   const manifestRoutes = manifest.routes ?? {};
   const dataRoutes = data.routes ?? {};
-  const coverage = buildCoverageResult(manifest, data);
+  const coverage = buildCoverageResult(
+    { expectedTypesByRoute: manifestRoutes },
+    data
+  );
 
   const routes = coverage.allRoutes.map((route) => {
     const expectedTypes = manifestRoutes[route] ?? [];

@@ -12,6 +12,7 @@ import { buildCoverageResult } from "./coverage";
 
 export type AuditOptions = ValidationOptions & {
   manifest?: Manifest;
+  requiredRoutes?: string[];
 };
 
 export const buildAuditReport = (
@@ -20,9 +21,15 @@ export const buildAuditReport = (
 ): Report => {
   const dataRoutes = data.routes ?? {};
   const manifestRoutes = options.manifest?.routes ?? {};
-  const coverageEnabled = Boolean(options.manifest);
+  const coverageEnabled = Boolean(options.manifest || options.requiredRoutes?.length);
   const coverage = coverageEnabled
-    ? buildCoverageResult(options.manifest as Manifest, data)
+    ? buildCoverageResult(
+        {
+          expectedTypesByRoute: manifestRoutes,
+          requiredRoutes: options.requiredRoutes
+        },
+        data
+      )
     : null;
   const allRoutes = coverageEnabled
     ? coverage?.allRoutes ?? []
