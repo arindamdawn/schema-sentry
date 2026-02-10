@@ -1,16 +1,55 @@
 # Roadmap
 
-## Phase 1 (Weeks 1–2)
+Last updated: 2026-02-10
 
-- Core builders and `<Schema />` component
-- Deterministic JSON-LD output
+## Current Status: v0.1.0 Released ✅
 
-## Phase 2 (Weeks 3–4)
+MVP is complete and published to npm. See detailed release planning in `/notes/RELEASE_ROADMAP.md`.
 
-- Validation engine and manifest
-- CLI JSON output
+## Phase 1 ✅ COMPLETE
 
-## Phase 3 (Weeks 5–6)
+**Released in v0.1.0**
 
-- HTML report output
-- Example app and expanded docs
+- Core builders (Organization, Person, Article, BlogPosting, Product, FAQPage, HowTo, BreadcrumbList, etc.)
+- Deterministic JSON-LD output with stable key ordering
+- `<Schema />` React component for Next.js App Router
+- Validation engine with required field checks
+- CLI `validate` command with JSON output
+- Manifest-driven route coverage
+- Example Next.js app with working schema integration
+
+## Phase 2 - ACTIVE DEVELOPMENT
+
+**Target: v0.2.0**
+
+- [ ] `schemasentry init` - Interactive setup wizard
+- [ ] Extended schema types (Event, Review, LocalBusiness, VideoObject, ImageObject)
+- [ ] Coverage validation - detect missing schemas per route
+- [ ] Recommended field validation (beyond just required fields)
+- [ ] CLI improvements: summary stats, timing, better error messages
+- [ ] 20+ GitHub stars (community validation)
+
+## Phase 3
+
+**Target: v0.3.0**
+
+- [ ] HTML report output with visual diffs
+- [ ] GitHub Actions annotations for PR reviews
+- [ ] Performance verification (200 routes validated in < 5s)
+- [ ] Video tutorials and expanded documentation
+- [ ] Product Hunt launch
+
+## Phase 4
+
+**Target: v1.0.0**
+
+- Stable API contract
+- Comprehensive test coverage
+- Performance benchmarks
+- Maintainer guide and contributor onboarding
+
+## Post-v1.0 Ideas
+
+- Framework adapters (Astro, Remix, SvelteKit)
+- Schema Studio (visual editor)
+- AI-powered schema suggestions
