@@ -5,6 +5,7 @@ import path from "path";
 import { stableStringify, type Manifest } from "@schemasentry/core";
 import { buildReport, type SchemaDataFile } from "./report";
 import { fileExists, getDefaultAnswers, writeInitFiles } from "./init";
+import { buildAuditReport } from "./audit";
 import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
@@ -194,6 +195,144 @@ program
     }
   );
 
+program
+  .command("audit")
+  .description("Analyze schema health and report issues")
+  .option(
+    "-d, --data <path>",
+    "Path to schema data JSON",
+    "schema-sentry.data.json"
+  )
+  .option("-m, --manifest <path>", "Path to manifest JSON (optional)")
+  .option("--no-recommended", "Disable recommended field checks")
+  .action(
+    async (options: { data: string; manifest?: string; recommended: boolean }) => {
+      const dataPath = path.resolve(process.cwd(), options.data);
+      let dataRaw: string;
+
+      try {
+        dataRaw = await readFile(dataPath, "utf8");
+      } catch (error) {
+        console.error(
+          stableStringify({
+            ok: false,
+            errors: [
+              {
+                code: "data.not_found",
+                message: `Schema data not found at ${dataPath}`
+              }
+            ]
+          })
+        );
+        process.exit(1);
+        return;
+      }
+
+      let data: SchemaDataFile;
+      try {
+        data = JSON.parse(dataRaw) as SchemaDataFile;
+      } catch (error) {
+        console.error(
+          stableStringify({
+            ok: false,
+            errors: [
+              {
+                code: "data.invalid_json",
+                message: "Schema data is not valid JSON"
+              }
+            ]
+          })
+        );
+        process.exit(1);
+        return;
+      }
+
+      if (!isSchemaData(data)) {
+        console.error(
+          stableStringify({
+            ok: false,
+            errors: [
+              {
+                code: "data.invalid_shape",
+                message:
+                  "Schema data must contain a 'routes' object with array values"
+              }
+            ]
+          })
+        );
+        process.exit(1);
+        return;
+      }
+
+      let manifest: Manifest | undefined;
+      if (options.manifest) {
+        const manifestPath = path.resolve(process.cwd(), options.manifest);
+        let manifestRaw: string;
+
+        try {
+          manifestRaw = await readFile(manifestPath, "utf8");
+        } catch (error) {
+          console.error(
+            stableStringify({
+              ok: false,
+              errors: [
+                {
+                  code: "manifest.not_found",
+                  message: `Manifest not found at ${manifestPath}`
+                }
+              ]
+            })
+          );
+          process.exit(1);
+          return;
+        }
+
+        try {
+          manifest = JSON.parse(manifestRaw) as Manifest;
+        } catch (error) {
+          console.error(
+            stableStringify({
+              ok: false,
+              errors: [
+                {
+                  code: "manifest.invalid_json",
+                  message: "Manifest is not valid JSON"
+                }
+              ]
+            })
+          );
+          process.exit(1);
+          return;
+        }
+
+        if (!isManifest(manifest)) {
+          console.error(
+            stableStringify({
+              ok: false,
+              errors: [
+                {
+                  code: "manifest.invalid_shape",
+                  message:
+                    "Manifest must contain a 'routes' object with string array values"
+                }
+              ]
+            })
+          );
+          process.exit(1);
+          return;
+        }
+      }
+
+      const report = buildAuditReport(data, {
+        recommended: options.recommended,
+        manifest
+      });
+      console.log(formatReportOutput(report));
+      printAuditSummary(report, Boolean(manifest));
+      process.exit(report.ok ? 0 : 1);
+    }
+  );
+
 program.parse();
 
 const isManifest = (value: unknown): value is Manifest => {
@@ -236,6 +375,19 @@ const isSchemaData = (value: unknown): value is SchemaDataFile => {
 
 const formatReportOutput = (report: ReturnType<typeof buildReport>): string =>
   stableStringify(report);
+
+const printAuditSummary = (
+  report: ReturnType<typeof buildAuditReport>,
+  coverageEnabled: boolean
+) => {
+  const summary = report.summary;
+  console.error(
+    `Routes: ${summary.routes} | Errors: ${summary.errors} | Warnings: ${summary.warnings} | Score: ${summary.score}`
+  );
+  if (!coverageEnabled) {
+    console.error("Coverage checks skipped (no manifest provided).");
+  }
+};
 
 const promptAnswers = async () => {
   const defaults = getDefaultAnswers();

@@ -8,6 +8,20 @@ Schema Sentry validates JSON-LD for:
 
 The initial CLI emits a JSON report. HTML output is planned.
 
+## Audit
+
+Audit analyzes the schema data file and reports health without requiring a manifest.
+
+```bash
+pnpm schemasentry audit --data ./schema-sentry.data.json
+```
+
+Pass a manifest to include coverage checks:
+
+```bash
+pnpm schemasentry audit --data ./schema-sentry.data.json --manifest ./schema-sentry.manifest.json
+```
+
 ## Recommended Field Checks
 
 Recommended field validation is enabled by default and emits warnings instead of errors.
