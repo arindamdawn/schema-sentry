@@ -15,6 +15,9 @@ Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD
 - ⚛️ **App Router `<Schema />` component** for seamless Next.js integration
 - 🧭 **Manifest-driven coverage** ensures every route has schema
 - 🔍 **CLI validation** with clear, actionable errors
+- 📊 **Schema audit** — Analyze site health and detect missing schema (v0.2.0)
+- 🚀 **Scaffold schema** — Auto-generate schema for pages without it (v0.2.0)
+- 🤖 **AI suggestions** — Smart schema recommendations (v0.3.0)
 - 📴 **Zero network calls** in OSS mode
 - 🤖 **AI-ready output** optimized for LLM consumption and citations
 
