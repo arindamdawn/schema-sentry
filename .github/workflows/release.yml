@@ -1,8 +1,12 @@
 name: Release
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version (e.g. 0.2.0)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -26,13 +30,23 @@ jobs:
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+      - name: Verify No Pending Changesets
+        run: |
+          pending=$(find .changeset -type f -name '*.md' | wc -l | tr -d ' ')
+          if [ "$pending" != "0" ]; then
+            echo "Pending changesets found. Run 'pnpm changeset version' and commit first."
+            exit 1
+          fi
+      - name: Verify Package Versions Match Input
+        env:
+          RELEASE_VERSION: ${{ inputs.release_version }}
+        run: |
+          node -e "const fs=require('fs'); const expected=process.env.RELEASE_VERSION; const files=['packages/core/package.json','packages/cli/package.json','packages/next/package.json']; const versions=files.map(f=>({f, v: JSON.parse(fs.readFileSync(f,'utf8')).version})); const mismatches=versions.filter(x=>x.v!==expected); if(mismatches.length){ console.error('Version mismatch:', mismatches); process.exit(1);} console.log('Release version OK:', expected);"
       - name: Build Packages
         run: pnpm --filter=!schema-sentry-example-next-app -r build
-      - name: Create Release Pull Request or Publish to npm
-        uses: changesets/action@v1
-        with:
-          version: pnpm version-packages
-          publish: pnpm release
+      - name: Run Tests
+        run: pnpm test
+      - name: Publish to npm
+        run: pnpm release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
