@@ -1,5 +1,30 @@
 # @schemasentry/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- 8fa2007: Release v0.2.0: Developer experience and schema completeness
+
+  ### Added
+
+  - `schemasentry init` - Interactive setup wizard
+  - `schemasentry audit` - Read-only schema health analysis with health scores
+  - Coverage validation - Report missing schema per route
+  - Recommended field validation - Advisory checks (configurable)
+  - New schema types: Event, Review, LocalBusiness
+
+  ### Improved
+
+  - CLI summary stats and timing
+  - Better error messages with suggestions
+  - JSON output for CI/CD integration
+
+### Patch Changes
+
+- Updated dependencies [8fa2007]
+  - @schemasentry/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
