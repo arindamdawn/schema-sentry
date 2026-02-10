@@ -7,14 +7,56 @@ on:
         description: "Release version (e.g. 0.2.0)"
         required: true
         type: string
+  push:
+    branches: [main]
+    paths:
+      - 'packages/*/package.json'
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  release:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      has_changeset: ${{ steps.check_changeset.outputs.has_changeset }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - id: get_version
+        run: echo "version=$(grep '"version"' packages/core/package.json | cut -d'"' -f4)" >> $GITHUB_OUTPUT
+      - id: check_changeset
+        run: |
+          pending=$(find .changeset -type f -name '*.md' | wc -l | tr -d ' ')
+          if [ "$pending" != "0" ]; then
+            echo "has_changeset=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changeset=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Show version info
+        run: |
+          echo "Detected version: v${{ steps.get_version.outputs.version }}"
+          echo "Has pending changeset: ${{ steps.check_changeset.outputs.has_changeset }}"
+          if [ "${{ steps.check_changeset.outputs.has_changeset }}" = "true" ]; then
+            echo "Please run 'pnpm changeset version' and commit first."
+          fi
+
+  release:
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment: release
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -30,18 +72,11 @@ jobs:
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Verify No Pending Changesets
-        run: |
-          pending=$(find .changeset -type f -name '*.md' | wc -l | tr -d ' ')
-          if [ "$pending" != "0" ]; then
-            echo "Pending changesets found. Run 'pnpm changeset version' and commit first."
-            exit 1
-          fi
-      - name: Verify Package Versions Match Input
+      - name: Verify Package Versions
         env:
-          RELEASE_VERSION: ${{ inputs.release_version }}
+          EXPECTED_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
-          node -e "const fs=require('fs'); const expected=process.env.RELEASE_VERSION; const files=['packages/core/package.json','packages/cli/package.json','packages/next/package.json']; const versions=files.map(f=>({f, v: JSON.parse(fs.readFileSync(f,'utf8')).version})); const mismatches=versions.filter(x=>x.v!==expected); if(mismatches.length){ console.error('Version mismatch:', mismatches); process.exit(1);} console.log('Release version OK:', expected);"
+          node -e "const fs=require('fs'); const expected=process.env.EXPECTED_VERSION; const files=['packages/core/package.json','packages/cli/package.json','packages/next/package.json']; const versions=files.map(f=>({f, v: JSON.parse(fs.readFileSync(f,'utf8')).version})); const mismatches=versions.filter(x=>x.v!==expected); if(mismatches.length){ console.error('Version mismatch:', mismatches); process.exit(1);} console.log('All packages at v' + expected);"
       - name: Build Packages
         run: pnpm --filter=!schema-sentry-example-next-app -r build
       - name: Run Tests
@@ -50,3 +85,12 @@ jobs:
         run: pnpm release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create GitHub Release
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v${VERSION} \
+            --title "v${VERSION}" \
+            --notes-file <(echo "Release v${VERSION}") \
+            --draft=false
