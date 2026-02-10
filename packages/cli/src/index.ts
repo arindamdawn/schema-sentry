@@ -6,6 +6,7 @@ import { stableStringify, type Manifest } from "@schemasentry/core";
 import { buildReport, type SchemaDataFile } from "./report";
 import { fileExists, getDefaultAnswers, writeInitFiles } from "./init";
 import { buildAuditReport } from "./audit";
+import { formatSummaryLine } from "./summary";
 import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
@@ -30,8 +31,8 @@ program
     "schema-sentry.data.json"
   )
   .option("--no-recommended", "Disable recommended field checks")
-  .action(
-    async (options: { manifest: string; data: string; recommended: boolean }) => {
+  .action(async (options: { manifest: string; data: string; recommended: boolean }) => {
+    const start = Date.now();
     const manifestPath = path.resolve(process.cwd(), options.manifest);
     const dataPath = path.resolve(process.cwd(), options.data);
     let raw: string;
@@ -45,7 +46,8 @@ program
           errors: [
             {
               code: "manifest.not_found",
-              message: `Manifest not found at ${manifestPath}`
+              message: `Manifest not found at ${manifestPath}`,
+              suggestion: "Run `schemasentry init` to generate starter files."
             }
           ]
         })
@@ -64,7 +66,8 @@ program
           errors: [
             {
               code: "manifest.invalid_json",
-              message: "Manifest is not valid JSON"
+              message: "Manifest is not valid JSON",
+              suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
             }
           ]
         })
@@ -81,7 +84,8 @@ program
             {
               code: "manifest.invalid_shape",
               message:
-                "Manifest must contain a 'routes' object with string array values"
+                "Manifest must contain a 'routes' object with string array values",
+              suggestion: "Ensure each route maps to an array of schema type names."
             }
           ]
         })
@@ -100,7 +104,8 @@ program
           errors: [
             {
               code: "data.not_found",
-              message: `Schema data not found at ${dataPath}`
+              message: `Schema data not found at ${dataPath}`,
+              suggestion: "Run `schemasentry init` to generate starter files."
             }
           ]
         })
@@ -119,7 +124,8 @@ program
           errors: [
             {
               code: "data.invalid_json",
-              message: "Schema data is not valid JSON"
+              message: "Schema data is not valid JSON",
+              suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
             }
           ]
         })
@@ -136,7 +142,8 @@ program
             {
               code: "data.invalid_shape",
               message:
-                "Schema data must contain a 'routes' object with array values"
+                "Schema data must contain a 'routes' object with array values",
+              suggestion: "Ensure each route maps to an array of JSON-LD blocks."
             }
           ]
         })
@@ -149,9 +156,9 @@ program
       recommended: options.recommended
     });
     console.log(formatReportOutput(report));
+    printValidateSummary(report, Date.now() - start);
     process.exit(report.ok ? 0 : 1);
-  }
-  );
+  });
 
 program
   .command("init")
@@ -168,32 +175,30 @@ program
   )
   .option("-y, --yes", "Use defaults and skip prompts")
   .option("-f, --force", "Overwrite existing files")
-  .action(
-    async (options: { manifest: string; data: string; yes?: boolean; force?: boolean }) => {
-      const manifestPath = path.resolve(process.cwd(), options.manifest);
-      const dataPath = path.resolve(process.cwd(), options.data);
-      const force = options.force ?? false;
-      const useDefaults = options.yes ?? false;
-      const answers = useDefaults ? getDefaultAnswers() : await promptAnswers();
+  .action(async (options: { manifest: string; data: string; yes?: boolean; force?: boolean }) => {
+    const manifestPath = path.resolve(process.cwd(), options.manifest);
+    const dataPath = path.resolve(process.cwd(), options.data);
+    const force = options.force ?? false;
+    const useDefaults = options.yes ?? false;
+    const answers = useDefaults ? getDefaultAnswers() : await promptAnswers();
 
-      const [overwriteManifest, overwriteData] = await resolveOverwrites({
-        manifestPath,
-        dataPath,
-        force,
-        interactive: !useDefaults
-      });
+    const [overwriteManifest, overwriteData] = await resolveOverwrites({
+      manifestPath,
+      dataPath,
+      force,
+      interactive: !useDefaults
+    });
 
-      const result = await writeInitFiles({
-        manifestPath,
-        dataPath,
-        overwriteManifest,
-        overwriteData,
-        answers
-      });
+    const result = await writeInitFiles({
+      manifestPath,
+      dataPath,
+      overwriteManifest,
+      overwriteData,
+      answers
+    });
 
-      printInitSummary({ manifestPath, dataPath, result });
-    }
-  );
+    printInitSummary({ manifestPath, dataPath, result });
+  });
 
 program
   .command("audit")
@@ -205,133 +210,138 @@ program
   )
   .option("-m, --manifest <path>", "Path to manifest JSON (optional)")
   .option("--no-recommended", "Disable recommended field checks")
-  .action(
-    async (options: { data: string; manifest?: string; recommended: boolean }) => {
-      const dataPath = path.resolve(process.cwd(), options.data);
-      let dataRaw: string;
+  .action(async (options: { data: string; manifest?: string; recommended: boolean }) => {
+    const start = Date.now();
+    const dataPath = path.resolve(process.cwd(), options.data);
+    let dataRaw: string;
 
-      try {
-        dataRaw = await readFile(dataPath, "utf8");
-      } catch (error) {
-        console.error(
-          stableStringify({
-            ok: false,
-            errors: [
-              {
-                code: "data.not_found",
-                message: `Schema data not found at ${dataPath}`
-              }
-            ]
-          })
-        );
-        process.exit(1);
-        return;
-      }
-
-      let data: SchemaDataFile;
-      try {
-        data = JSON.parse(dataRaw) as SchemaDataFile;
-      } catch (error) {
-        console.error(
-          stableStringify({
-            ok: false,
-            errors: [
-              {
-                code: "data.invalid_json",
-                message: "Schema data is not valid JSON"
-              }
-            ]
-          })
-        );
-        process.exit(1);
-        return;
-      }
-
-      if (!isSchemaData(data)) {
-        console.error(
-          stableStringify({
-            ok: false,
-            errors: [
-              {
-                code: "data.invalid_shape",
-                message:
-                  "Schema data must contain a 'routes' object with array values"
-              }
-            ]
-          })
-        );
-        process.exit(1);
-        return;
-      }
-
-      let manifest: Manifest | undefined;
-      if (options.manifest) {
-        const manifestPath = path.resolve(process.cwd(), options.manifest);
-        let manifestRaw: string;
-
-        try {
-          manifestRaw = await readFile(manifestPath, "utf8");
-        } catch (error) {
-          console.error(
-            stableStringify({
-              ok: false,
-              errors: [
-                {
-                  code: "manifest.not_found",
-                  message: `Manifest not found at ${manifestPath}`
-                }
-              ]
-            })
-          );
-          process.exit(1);
-          return;
-        }
-
-        try {
-          manifest = JSON.parse(manifestRaw) as Manifest;
-        } catch (error) {
-          console.error(
-            stableStringify({
-              ok: false,
-              errors: [
-                {
-                  code: "manifest.invalid_json",
-                  message: "Manifest is not valid JSON"
-                }
-              ]
-            })
-          );
-          process.exit(1);
-          return;
-        }
-
-        if (!isManifest(manifest)) {
-          console.error(
-            stableStringify({
-              ok: false,
-              errors: [
-                {
-                  code: "manifest.invalid_shape",
-                  message:
-                    "Manifest must contain a 'routes' object with string array values"
-                }
-              ]
-            })
-          );
-          process.exit(1);
-          return;
-        }
-      }
-
-      const report = buildAuditReport(data, {
-        recommended: options.recommended,
-        manifest
-      });
-      console.log(formatReportOutput(report));
-      printAuditSummary(report, Boolean(manifest));
-      process.exit(report.ok ? 0 : 1);
+    try {
+      dataRaw = await readFile(dataPath, "utf8");
+    } catch (error) {
+      console.error(
+        stableStringify({
+          ok: false,
+          errors: [
+            {
+              code: "data.not_found",
+              message: `Schema data not found at ${dataPath}`,
+              suggestion: "Run `schemasentry init` to generate starter files."
+            }
+          ]
+        })
+      );
+      process.exit(1);
+      return;
     }
-  );
+
+    let data: SchemaDataFile;
+    try {
+      data = JSON.parse(dataRaw) as SchemaDataFile;
+    } catch (error) {
+      console.error(
+        stableStringify({
+          ok: false,
+          errors: [
+            {
+              code: "data.invalid_json",
+              message: "Schema data is not valid JSON",
+              suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
+            }
+          ]
+        })
+      );
+      process.exit(1);
+      return;
+    }
+
+    if (!isSchemaData(data)) {
+      console.error(
+        stableStringify({
+          ok: false,
+          errors: [
+            {
+              code: "data.invalid_shape",
+              message:
+                "Schema data must contain a 'routes' object with array values",
+              suggestion: "Ensure each route maps to an array of JSON-LD blocks."
+            }
+          ]
+        })
+      );
+      process.exit(1);
+      return;
+    }
+
+    let manifest: Manifest | undefined;
+    if (options.manifest) {
+      const manifestPath = path.resolve(process.cwd(), options.manifest);
+      let manifestRaw: string;
+
+      try {
+        manifestRaw = await readFile(manifestPath, "utf8");
+      } catch (error) {
+        console.error(
+          stableStringify({
+            ok: false,
+            errors: [
+              {
+                code: "manifest.not_found",
+                message: `Manifest not found at ${manifestPath}`,
+                suggestion: "Run `schemasentry init` to generate starter files."
+              }
+            ]
+          })
+        );
+        process.exit(1);
+        return;
+      }
+
+      try {
+        manifest = JSON.parse(manifestRaw) as Manifest;
+      } catch (error) {
+        console.error(
+          stableStringify({
+            ok: false,
+            errors: [
+              {
+                code: "manifest.invalid_json",
+                message: "Manifest is not valid JSON",
+                suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
+              }
+            ]
+          })
+        );
+        process.exit(1);
+        return;
+      }
+
+      if (!isManifest(manifest)) {
+        console.error(
+          stableStringify({
+            ok: false,
+            errors: [
+              {
+                code: "manifest.invalid_shape",
+                message:
+                  "Manifest must contain a 'routes' object with string array values",
+                suggestion: "Ensure each route maps to an array of schema type names."
+              }
+            ]
+          })
+        );
+        process.exit(1);
+        return;
+      }
+    }
+
+    const report = buildAuditReport(data, {
+      recommended: options.recommended,
+      manifest
+    });
+    console.log(formatReportOutput(report));
+    printAuditSummary(report, Boolean(manifest), Date.now() - start);
+    process.exit(report.ok ? 0 : 1);
+  });
 
 program.parse();
 
@@ -376,13 +386,30 @@ const isSchemaData = (value: unknown): value is SchemaDataFile => {
 const formatReportOutput = (report: ReturnType<typeof buildReport>): string =>
   stableStringify(report);
 
+const printValidateSummary = (
+  report: ReturnType<typeof buildReport>,
+  durationMs: number
+) => {
+  console.error(
+    formatSummaryLine("validate", {
+      ...report.summary,
+      durationMs,
+      coverage: report.summary.coverage
+    })
+  );
+};
+
 const printAuditSummary = (
   report: ReturnType<typeof buildAuditReport>,
-  coverageEnabled: boolean
+  coverageEnabled: boolean,
+  durationMs: number
 ) => {
-  const summary = report.summary;
   console.error(
-    `Routes: ${summary.routes} | Errors: ${summary.errors} | Warnings: ${summary.warnings} | Score: ${summary.score}`
+    formatSummaryLine("audit", {
+      ...report.summary,
+      durationMs,
+      coverage: report.summary.coverage
+    })
   );
   if (!coverageEnabled) {
     console.error("Coverage checks skipped (no manifest provided).");

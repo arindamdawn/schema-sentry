@@ -6,7 +6,8 @@ Schema Sentry validates JSON-LD for:
 - Recommended fields (advisory warnings)
 - Manifest coverage
 
-The initial CLI emits a JSON report. HTML output is planned.
+The CLI emits a JSON report to stdout and a human-readable summary to stderr.
+HTML output is planned.
 
 ## Audit
 
