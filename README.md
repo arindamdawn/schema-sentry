@@ -123,6 +123,43 @@ export default function Page() {
 
 ## 🧪 CLI
 
+**Quick start**
+
+1. Generate starter files:
+
+```bash
+pnpm schemasentry init
+```
+
+2. Optionally scan your app and add `WebPage` entries for discovered routes:
+
+```bash
+pnpm schemasentry init --scan
+```
+
+3. Validate coverage and rules:
+
+```bash
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json
+```
+
+4. Audit schema health:
+
+```bash
+pnpm schemasentry audit --data ./schema-sentry.data.json
+pnpm schemasentry audit --data ./schema-sentry.data.json --manifest ./schema-sentry.manifest.json
+```
+
+5. Scan for missing routes:
+
+```bash
+pnpm schemasentry audit --data ./schema-sentry.data.json --scan
+```
+
+**All commands**
+
 ```bash
 pnpm schemasentry init
 
@@ -130,6 +167,10 @@ pnpm schemasentry init --scan
 
 pnpm schemasentry audit \
   --data ./schema-sentry.data.json
+
+pnpm schemasentry audit \
+  --data ./schema-sentry.data.json \
+  --manifest ./schema-sentry.manifest.json
 
 pnpm schemasentry audit \
   --data ./schema-sentry.data.json \
@@ -164,7 +205,7 @@ CLI flags override config. Use `--config ./path/to/config.json` to point at a cu
 
 **Why two files?** The manifest ensures every route has the right schema type. The data file validates that your actual schema matches expectations.
 
-Use `schemasentry init` to generate starter files, and `schemasentry audit --scan` to detect missing routes.
+Use `schemasentry init` to generate starter files. Add `--scan` to include all discovered routes as `WebPage` entries, and use `schemasentry audit --scan` to detect missing routes later.
 
 ## ✅ Supported Schema Types (V1)
 

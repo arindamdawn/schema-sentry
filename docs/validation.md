@@ -31,6 +31,10 @@ pnpm schemasentry audit --data ./schema-sentry.data.json --scan
 
 Use `--root` to set the project root for scanning.
 
+## Config
+
+`schema-sentry.config.json` applies to both `validate` and `audit`. CLI flags override config.
+
 ## Recommended Field Checks
 
 Recommended field validation is enabled by default and emits warnings instead of errors.
