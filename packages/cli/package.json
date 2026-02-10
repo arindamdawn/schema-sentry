@@ -12,12 +12,32 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arindamdawn/schema-sentry.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/arindamdawn/schema-sentry#readme",
+  "bugs": {
+    "url": "https://github.com/arindamdawn/schema-sentry/issues"
+  },
+  "keywords": [
+    "schema",
+    "json-ld",
+    "structured-data",
+    "seo",
+    "cli",
+    "nextjs"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@schemasentry/core": "workspace:*",
     "commander": "^12.0.0"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
     "lint": "echo \"lint not configured\" && exit 0",
     "test": "vitest run"
   }

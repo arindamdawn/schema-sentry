@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {
+      "@schemasentry/core": ["../core/dist/index.d.ts"]
+    }
+  },
+  "references": []
+}
