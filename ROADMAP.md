@@ -29,18 +29,15 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 **Focus:** Developer experience and schema completeness
 
 - [ ] `schemasentry init` — Interactive setup wizard
-- [ ] `schemasentry audit` — Analyze existing pages and report schema health
-  - Scan all routes and pages
+- [ ] `schemasentry audit` — Analyze existing pages and report schema health (read-only)
+  - Scan routes from manifest and/or filesystem
   - Report missing/partial schema per page
   - Health score for entire site
-- [ ] `schemasentry scaffold` — Generate schema for pages without it
-  - Auto-detect page type from content/URL patterns
-  - Generate sensible defaults based on page analysis
-  - Interactive prompts for customization
-- [ ] Additional schema types (Event, Review, LocalBusiness, ImageObject, VideoObject)
-- [ ] Recommended field validation (beyond required)
+  - JSON output + human summary
+- [ ] Coverage validation (missing schema per route)
+- [ ] Recommended field validation (advisory, configurable)
+- [ ] Additional schema types (Event, Review, LocalBusiness)
 - [ ] CLI improvements (summary stats, timing, better errors)
-- [ ] 20+ GitHub stars 🌟
 
 ## 🧪 Phase 3 (v0.3.0)
 
@@ -50,6 +47,11 @@ Schema Sentry helps your content get discovered by both **traditional search eng
   - Analyze page content and suggest best schema types
   - Recommend additional fields based on context
   - Integration with LLM APIs for smart suggestions
+- [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
+  - Auto-detect page type from content/URL patterns
+  - Generate sensible defaults based on page analysis
+  - Interactive prompts for customization
+- [ ] Additional schema types (VideoObject, ImageObject)
 - [ ] HTML report output with visual diffs
 - [ ] GitHub Actions annotations for PR reviews
 - [ ] Performance verification (200 routes < 5s)
