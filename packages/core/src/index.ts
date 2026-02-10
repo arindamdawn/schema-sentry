@@ -205,6 +205,7 @@ export const HowTo = (input: HowToInput): SchemaNode =>
 export type BreadcrumbItem = {
   name: string;
   url: string;
+  useItemObject?: boolean;
 };
 
 export type BreadcrumbListInput = BaseInput & {
@@ -217,7 +218,7 @@ export const BreadcrumbList = (input: BreadcrumbListInput): SchemaNode =>
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url
+      item: item.useItemObject ? { "@id": item.url, name: item.name } : item.url
     }))
   });
 
@@ -341,6 +342,10 @@ export const validateSchema = (nodes: SchemaNode[]): ValidationResult => {
         });
       }
     }
+
+    if (type === "BreadcrumbList") {
+      validateBreadcrumbList(node, pathPrefix, issues);
+    }
   });
 
   const errorCount = issues.filter((issue) => issue.severity === "error")
@@ -404,6 +409,83 @@ const hasAuthor = (node: SchemaNode): boolean => {
   }
 
   return false;
+};
+
+const validateBreadcrumbList = (
+  node: SchemaNode,
+  pathPrefix: string,
+  issues: ValidationIssue[]
+): void => {
+  const itemListElement = (node as JsonLdObject).itemListElement;
+  if (!Array.isArray(itemListElement)) {
+    return;
+  }
+
+  itemListElement.forEach((entry, index) => {
+    if (!entry || typeof entry !== "object") {
+      issues.push({
+        path: `${pathPrefix}.itemListElement[${index}]`,
+        message: "BreadcrumbList items must be objects",
+        severity: "error",
+        ruleId: "schema.breadcrumb.item"
+      });
+      return;
+    }
+
+    const listItem = entry as JsonLdObject;
+    const position = listItem.position;
+    if (typeof position !== "number" || !Number.isFinite(position) || position <= 0) {
+      issues.push({
+        path: `${pathPrefix}.itemListElement[${index}].position`,
+        message: "ListItem.position must be a positive number",
+        severity: "error",
+        ruleId: "schema.breadcrumb.position"
+      });
+    }
+
+    const item = listItem.item;
+    if (typeof item === "string") {
+      if (!isValidUrl(item)) {
+        issues.push({
+          path: `${pathPrefix}.itemListElement[${index}].item`,
+          message: "ListItem.item must be a valid URL",
+          severity: "error",
+          ruleId: "schema.breadcrumb.item.url"
+        });
+      }
+      return;
+    }
+
+    if (item && typeof item === "object") {
+      const itemObject = item as JsonLdObject;
+      const id = itemObject["@id"] ?? itemObject.url;
+      if (typeof id !== "string" || !isValidUrl(id)) {
+        issues.push({
+          path: `${pathPrefix}.itemListElement[${index}].item`,
+          message: "ListItem.item must include a valid @id or url",
+          severity: "error",
+          ruleId: "schema.breadcrumb.item.url"
+        });
+      }
+      return;
+    }
+
+    issues.push({
+      path: `${pathPrefix}.itemListElement[${index}].item`,
+      message: "ListItem.item is required",
+      severity: "error",
+      ruleId: "schema.breadcrumb.item"
+    });
+  });
+};
+
+const isValidUrl = (value: string): boolean => {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 const sortKeys = (value: JsonLdValue): JsonLdValue => {

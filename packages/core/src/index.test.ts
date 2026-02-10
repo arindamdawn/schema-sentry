@@ -64,20 +64,25 @@ describe("builders", () => {
     const breadcrumb = BreadcrumbList({
       items: [
         { name: "Home", url: "https://acme.com" },
-        { name: "Blog", url: "https://acme.com/blog" },
+        { name: "Blog", url: "https://acme.com/blog", useItemObject: true },
         { name: "Article", url: "https://acme.com/blog/article" }
       ]
     });
 
     expect(breadcrumb["@type"]).toBe("BreadcrumbList");
-    expect(breadcrumb.itemListElement).toHaveLength(3);
-    expect(breadcrumb.itemListElement[0]).toEqual({
+    const items = breadcrumb.itemListElement as Array<{ "@type": string; position: number; name: string; item: unknown }>;
+    expect(items).toHaveLength(3);
+    expect(items[0]).toEqual({
       "@type": "ListItem",
       position: 1,
       name: "Home",
       item: "https://acme.com"
     });
-    expect(breadcrumb.itemListElement[2].position).toBe(3);
+    expect(items[1].item).toEqual({
+      "@id": "https://acme.com/blog",
+      name: "Blog"
+    });
+    expect(items[2].position).toBe(3);
   });
 });
 
@@ -150,6 +155,30 @@ describe("validateSchema", () => {
 
     const result = validateSchema([node as any]);
     expect(result.issues.some((issue) => issue.ruleId === "schema.required.itemListElement"))
+      .toBe(true);
+  });
+
+  it("validates BreadcrumbList list items for position and URL", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 0,
+          item: "not-a-url"
+        },
+        {
+          "@type": "ListItem",
+          item: { "@id": "https://acme.com/blog" }
+        }
+      ]
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.breadcrumb.position"))
+      .toBe(true);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.breadcrumb.item.url"))
       .toBe(true);
   });
 });
