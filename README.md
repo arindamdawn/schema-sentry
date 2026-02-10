@@ -23,6 +23,20 @@ Schema Sentry solves this by enforcing schema in CI, providing deterministic out
 - **CLI validation** with clear errors and machine-readable output
 - **Zero network calls** in OSS mode
 
+## Supported Schema Types (V1)
+
+- Organization
+- Person
+- Place
+- WebSite
+- WebPage
+- Article
+- BlogPosting
+- Product
+- FAQPage
+- HowTo
+- BreadcrumbList
+
 ## Package Layout
 
 - `@schemasentry/core` — typed builders + validation primitives
