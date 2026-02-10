@@ -1,4 +1,4 @@
-# Schema Sentry
+# Schema Sentry 🛡️
 
 [![CI](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml/badge.svg)](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/@schemasentry%2Fcore.svg)](https://www.npmjs.com/package/@schemasentry/core)
@@ -90,8 +90,7 @@ import { Schema, Article, Organization } from "@schemasentry/next";
 
 const org = Organization({
   name: "Acme Corp",
-  url: "https://acme.com",
-  logo: "https://acme.com/logo.png"
+  url: "https://acme.com"
 });
 
 const article = Article({
@@ -130,7 +129,18 @@ pnpm schemasentry validate \
   --data ./schema-sentry.data.json
 ```
 
-The CLI emits JSON by default and exits non-zero on errors.
+The CLI emits JSON output and exits with code 1 on errors, making it perfect for CI/CD pipelines.
+
+### Understanding Manifest vs Data
+
+| File | Purpose | How It Works |
+|------|---------|---------------|
+| `schema-sentry.manifest.json` | Defines **expected schema types** per route | You create this manually - tells Schema Sentry what each page should have |
+| `schema-sentry.data.json` | Contains the **actual schema data** | You create this manually - mirrors your actual schema |
+
+**Why two files?** The manifest ensures every route has the right schema type. The data file validates that your actual schema matches expectations.
+
+> **Future:** v0.2.0 will auto-generate these files from your pages, making setup instant.
 
 ## ✅ Supported Schema Types (V1)
 
