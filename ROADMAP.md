@@ -28,7 +28,7 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 
 **Focus:** Developer experience and schema completeness
 
-- [ ] `schemasentry init` — Interactive setup wizard
+- [x] `schemasentry init` — Interactive setup wizard
 - [ ] `schemasentry audit` — Analyze existing pages and report schema health (read-only)
   - Scan routes from manifest and/or filesystem
   - Report missing/partial schema per page

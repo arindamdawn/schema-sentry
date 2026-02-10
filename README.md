@@ -124,6 +124,8 @@ export default function Page() {
 ## 🧪 CLI
 
 ```bash
+pnpm schemasentry init
+
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
   --data ./schema-sentry.data.json
