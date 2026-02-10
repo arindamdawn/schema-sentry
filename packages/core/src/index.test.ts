@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   Article,
   BlogPosting,
+  BreadcrumbList,
   Organization,
   SCHEMA_CONTEXT,
   stableStringify,
@@ -57,6 +58,26 @@ describe("builders", () => {
       "@type": "Person",
       name: "Jane Doe"
     });
+  });
+
+  it("creates BreadcrumbList with ListItem elements", () => {
+    const breadcrumb = BreadcrumbList({
+      items: [
+        { name: "Home", url: "https://acme.com" },
+        { name: "Blog", url: "https://acme.com/blog" },
+        { name: "Article", url: "https://acme.com/blog/article" }
+      ]
+    });
+
+    expect(breadcrumb["@type"]).toBe("BreadcrumbList");
+    expect(breadcrumb.itemListElement).toHaveLength(3);
+    expect(breadcrumb.itemListElement[0]).toEqual({
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: "https://acme.com"
+    });
+    expect(breadcrumb.itemListElement[2].position).toBe(3);
   });
 });
 
@@ -119,5 +140,16 @@ describe("validateSchema", () => {
 
     const result = validateSchema([node as any]);
     expect(result.score).toBeLessThan(100);
+  });
+
+  it("validates BreadcrumbList requires itemListElement", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "BreadcrumbList"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.itemListElement"))
+      .toBe(true);
   });
 });

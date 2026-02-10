@@ -22,7 +22,8 @@ export type SchemaTypeName =
   | "BlogPosting"
   | "Product"
   | "FAQPage"
-  | "HowTo";
+  | "HowTo"
+  | "BreadcrumbList";
 
 export type SchemaNode = JsonLdObject & {
   "@context": typeof SCHEMA_CONTEXT;
@@ -201,6 +202,25 @@ export const HowTo = (input: HowToInput): SchemaNode =>
     }))
   });
 
+export type BreadcrumbItem = {
+  name: string;
+  url: string;
+};
+
+export type BreadcrumbListInput = BaseInput & {
+  items: BreadcrumbItem[];
+};
+
+export const BreadcrumbList = (input: BreadcrumbListInput): SchemaNode =>
+  withBase("BreadcrumbList", {
+    itemListElement: input.items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url
+    }))
+  });
+
 export type Manifest = {
   routes: Record<string, SchemaTypeName[]>;
 };
@@ -297,6 +317,20 @@ export const validateSchema = (nodes: SchemaNode[]): ValidationResult => {
         continue;
       }
 
+      if (field === "itemListElement") {
+        const value = (node as JsonLdObject)[field];
+        const ok = Array.isArray(value) && value.length > 0;
+        if (!ok) {
+          issues.push({
+            path: `${pathPrefix}.itemListElement`,
+            message: "BreadcrumbList must include at least one breadcrumb item",
+            severity: "error",
+            ruleId: "schema.required.itemListElement"
+          });
+        }
+        continue;
+      }
+
       const value = (node as JsonLdObject)[field];
       if (isEmpty(value)) {
         issues.push({
@@ -331,7 +365,8 @@ const REQUIRED_FIELDS: Record<SchemaTypeName, string[]> = {
   BlogPosting: ["headline", "author", "datePublished", "url"],
   Product: ["name", "description", "url"],
   FAQPage: ["mainEntity"],
-  HowTo: ["name", "step"]
+  HowTo: ["name", "step"],
+  BreadcrumbList: ["itemListElement"]
 };
 
 const isSchemaType = (value: unknown): value is SchemaTypeName =>
