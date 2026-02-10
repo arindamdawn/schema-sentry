@@ -135,12 +135,27 @@ program
   )
   .option("-y, --yes", "Use defaults and skip prompts")
   .option("-f, --force", "Overwrite existing files")
-  .action(async (options: { manifest: string; data: string; yes?: boolean; force?: boolean }) => {
+  .option("--scan", "Scan the filesystem for routes and add WebPage entries")
+  .option("--root <path>", "Project root for scanning", ".")
+  .action(async (options: {
+    manifest: string;
+    data: string;
+    yes?: boolean;
+    force?: boolean;
+    scan?: boolean;
+    root?: string;
+  }) => {
     const manifestPath = path.resolve(process.cwd(), options.manifest);
     const dataPath = path.resolve(process.cwd(), options.data);
     const force = options.force ?? false;
     const useDefaults = options.yes ?? false;
     const answers = useDefaults ? getDefaultAnswers() : await promptAnswers();
+    const scannedRoutes = options.scan
+      ? await scanRoutes({ rootDir: path.resolve(process.cwd(), options.root ?? ".") })
+      : [];
+    if (options.scan && scannedRoutes.length === 0) {
+      console.error("No routes found during scan.");
+    }
 
     const [overwriteManifest, overwriteData] = await resolveOverwrites({
       manifestPath,
@@ -154,7 +169,8 @@ program
       dataPath,
       overwriteManifest,
       overwriteData,
-      answers
+      answers,
+      scannedRoutes
     });
 
     printInitSummary({ manifestPath, dataPath, result });

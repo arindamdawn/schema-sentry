@@ -20,6 +20,12 @@ describe("init helpers", () => {
     });
   });
 
+  it("adds scanned routes as WebPage entries", () => {
+    const manifest = buildManifest(["/faq", "/blog/[slug]"]);
+    expect(manifest.routes["/faq"]).toEqual(["WebPage"]);
+    expect(manifest.routes["/blog/[slug]"]).toEqual(["Article"]);
+  });
+
   it("builds data using provided answers", () => {
     const answers = getDefaultAnswers();
     const data = buildData(answers, {
@@ -35,6 +41,19 @@ describe("init helpers", () => {
     expect(blog.length).toBe(1);
     expect(blog[0]?.["@type"]).toBe("Article");
     expect(blog[0]?.datePublished).toBe("2026-02-10");
+  });
+
+  it("adds WebPage data for scanned routes", () => {
+    const answers = getDefaultAnswers();
+    const data = buildData(answers, {
+      today: new Date("2026-02-10T00:00:00.000Z"),
+      scannedRoutes: ["/faq"]
+    });
+
+    const faq = data.routes["/faq"] ?? [];
+    expect(faq.length).toBe(1);
+    expect(faq[0]?.["@type"]).toBe("WebPage");
+    expect(faq[0]?.url).toBe("https://acme.com/faq");
   });
 
   it("writes init files and respects overwrite flags", async () => {

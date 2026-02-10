@@ -126,6 +126,8 @@ export default function Page() {
 ```bash
 pnpm schemasentry init
 
+pnpm schemasentry init --scan
+
 pnpm schemasentry audit \
   --data ./schema-sentry.data.json
 
