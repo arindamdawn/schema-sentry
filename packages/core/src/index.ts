@@ -16,11 +16,14 @@ export type SchemaTypeName =
   | "Organization"
   | "Person"
   | "Place"
+  | "LocalBusiness"
   | "WebSite"
   | "WebPage"
   | "Article"
   | "BlogPosting"
   | "Product"
+  | "Event"
+  | "Review"
   | "FAQPage"
   | "HowTo"
   | "BreadcrumbList";
@@ -83,6 +86,20 @@ export type LocationInput = BaseInput & {
 
 export const Location = (input: LocationInput): SchemaNode =>
   withBase("Place", input);
+
+export type LocalBusinessInput = BaseInput & {
+  name: string;
+  address?: string;
+  url?: string;
+  telephone?: string;
+  image?: string;
+  priceRange?: string;
+  sameAs?: string[];
+  description?: string;
+};
+
+export const LocalBusiness = (input: LocalBusinessInput): SchemaNode =>
+  withBase("LocalBusiness", input);
 
 export type WebSiteInput = BaseInput & {
   name: string;
@@ -158,6 +175,90 @@ export const Product = (input: ProductInput): SchemaNode => {
           }
         }
       : {})
+  });
+};
+
+export type EventInput = BaseInput & {
+  name: string;
+  startDate: string;
+  endDate?: string;
+  url?: string;
+  description?: string;
+  locationName?: string;
+  locationAddress?: string;
+  locationUrl?: string;
+  organizerName?: string;
+};
+
+export const Event = (input: EventInput): SchemaNode => {
+  const {
+    locationName,
+    locationAddress,
+    locationUrl,
+    organizerName,
+    ...rest
+  } = input;
+
+  return withBase("Event", {
+    ...rest,
+    ...(locationName || locationAddress || locationUrl
+      ? {
+          location: {
+            "@type": "Place",
+            ...(locationName ? { name: locationName } : {}),
+            ...(locationAddress ? { address: locationAddress } : {}),
+            ...(locationUrl ? { url: locationUrl } : {})
+          }
+        }
+      : {}),
+    ...(organizerName
+      ? {
+          organizer: {
+            "@type": "Organization",
+            name: organizerName
+          }
+        }
+      : {})
+  });
+};
+
+export type ReviewInput = BaseInput & {
+  itemName: string;
+  authorName: string;
+  ratingValue: number;
+  bestRating?: number;
+  worstRating?: number;
+  reviewBody?: string;
+  datePublished?: string;
+  url?: string;
+};
+
+export const Review = (input: ReviewInput): SchemaNode => {
+  const {
+    itemName,
+    authorName,
+    ratingValue,
+    bestRating,
+    worstRating,
+    ...rest
+  } = input;
+
+  return withBase("Review", {
+    ...rest,
+    itemReviewed: {
+      "@type": "Thing",
+      name: itemName
+    },
+    author: {
+      "@type": "Person",
+      name: authorName
+    },
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue,
+      ...(bestRating !== undefined ? { bestRating } : {}),
+      ...(worstRating !== undefined ? { worstRating } : {})
+    }
   });
 };
 
@@ -364,11 +465,14 @@ const REQUIRED_FIELDS: Record<SchemaTypeName, string[]> = {
   Organization: ["name"],
   Person: ["name"],
   Place: ["name"],
+  LocalBusiness: ["name"],
   WebSite: ["name", "url"],
   WebPage: ["name", "url"],
   Article: ["headline", "author", "datePublished", "url"],
   BlogPosting: ["headline", "author", "datePublished", "url"],
   Product: ["name", "description", "url"],
+  Event: ["name", "startDate"],
+  Review: ["itemReviewed", "reviewRating", "author"],
   FAQPage: ["mainEntity"],
   HowTo: ["name", "step"],
   BreadcrumbList: ["itemListElement"]

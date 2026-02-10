@@ -36,7 +36,7 @@ Schema Sentry helps your content get discovered by both **traditional search eng
   - JSON output + human summary
 - [ ] Coverage validation (missing schema per route)
 - [ ] Recommended field validation (advisory, configurable)
-- [ ] Additional schema types (Event, Review, LocalBusiness)
+- [x] Additional schema types (Event, Review, LocalBusiness)
 - [ ] CLI improvements (summary stats, timing, better errors)
 
 ## 🧪 Phase 3 (v0.3.0)

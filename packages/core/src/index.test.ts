@@ -3,7 +3,10 @@ import {
   Article,
   BlogPosting,
   BreadcrumbList,
+  Event,
+  LocalBusiness,
   Organization,
+  Review,
   SCHEMA_CONTEXT,
   stableStringify,
   validateSchema
@@ -83,6 +86,66 @@ describe("builders", () => {
       name: "Blog"
     });
     expect(items[2].position).toBe(3);
+  });
+
+  it("creates LocalBusiness with base fields", () => {
+    const business = LocalBusiness({
+      name: "Acme Coffee",
+      address: "1 Market St, Springfield",
+      url: "https://acme.com"
+    });
+
+    expect(business["@type"]).toBe("LocalBusiness");
+    expect(business.name).toBe("Acme Coffee");
+    expect(business.address).toBe("1 Market St, Springfield");
+  });
+
+  it("creates Event with optional location and organizer", () => {
+    const event = Event({
+      name: "Launch Party",
+      startDate: "2026-02-15",
+      locationName: "Acme HQ",
+      locationAddress: "100 Main St, Springfield",
+      locationUrl: "https://acme.com/locations/hq",
+      organizerName: "Acme Corp",
+      url: "https://acme.com/events/launch"
+    });
+
+    expect(event["@type"]).toBe("Event");
+    expect(event.location).toEqual({
+      "@type": "Place",
+      name: "Acme HQ",
+      address: "100 Main St, Springfield",
+      url: "https://acme.com/locations/hq"
+    });
+    expect(event.organizer).toEqual({
+      "@type": "Organization",
+      name: "Acme Corp"
+    });
+  });
+
+  it("creates Review with item, author, and rating", () => {
+    const review = Review({
+      itemName: "Acme Widget",
+      authorName: "Jane Doe",
+      ratingValue: 4.5,
+      reviewBody: "Great build quality.",
+      url: "https://acme.com/reviews/widget"
+    });
+
+    expect(review["@type"]).toBe("Review");
+    expect(review.itemReviewed).toEqual({
+      "@type": "Thing",
+      name: "Acme Widget"
+    });
+    expect(review.author).toEqual({
+      "@type": "Person",
+      name: "Jane Doe"
+    });
+    expect(review.reviewRating).toEqual({
+      "@type": "Rating",
+      ratingValue: 4.5
+    });
   });
 });
 
@@ -179,6 +242,44 @@ describe("validateSchema", () => {
     expect(result.issues.some((issue) => issue.ruleId === "schema.breadcrumb.position"))
       .toBe(true);
     expect(result.issues.some((issue) => issue.ruleId === "schema.breadcrumb.item.url"))
+      .toBe(true);
+  });
+
+  it("validates Event requires startDate", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "Event",
+      name: "Launch Party"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.startDate"))
+      .toBe(true);
+  });
+
+  it("validates Review requires itemReviewed and reviewRating", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "Review",
+      author: { "@type": "Person", name: "Jane Doe" }
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.itemReviewed"))
+      .toBe(true);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.reviewRating"))
+      .toBe(true);
+  });
+
+  it("recognizes LocalBusiness and enforces required name", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "LocalBusiness"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.type")).toBe(false);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.name"))
       .toBe(true);
   });
 });

@@ -147,11 +147,14 @@ The CLI emits JSON output and exits with code 1 on errors, making it perfect for
 - Organization
 - Person
 - Place
+- LocalBusiness
 - WebSite
 - WebPage
 - Article
 - BlogPosting
 - Product
+- Event
+- Review
 - FAQPage
 - HowTo
 - BreadcrumbList
