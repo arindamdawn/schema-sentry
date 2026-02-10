@@ -62,4 +62,56 @@ describe("buildReport", () => {
     const report = buildReport(manifest, data);
     expect(report.summary.warnings).toBeGreaterThan(0);
   });
+
+  it("adds recommended field warnings by default", () => {
+    const manifest: Manifest = {
+      routes: {
+        "/": ["Organization"]
+      }
+    };
+
+    const data: SchemaDataFile = {
+      routes: {
+        "/": [
+          {
+            "@context": SCHEMA_CONTEXT,
+            "@type": "Organization",
+            name: "Acme"
+          }
+        ]
+      }
+    };
+
+    const report = buildReport(manifest, data);
+    expect(report.summary.warnings).toBeGreaterThan(0);
+    expect(
+      report.routes[0]?.issues.some(
+        (issue) => issue.ruleId === "schema.recommended.url"
+      )
+    ).toBe(true);
+  });
+
+  it("can disable recommended field warnings", () => {
+    const manifest: Manifest = {
+      routes: {
+        "/": ["Organization"]
+      }
+    };
+
+    const data: SchemaDataFile = {
+      routes: {
+        "/": [
+          {
+            "@context": SCHEMA_CONTEXT,
+            "@type": "Organization",
+            name: "Acme"
+          }
+        ]
+      }
+    };
+
+    const report = buildReport(manifest, data, { recommended: false });
+    expect(report.summary.warnings).toBe(0);
+    expect(report.routes[0]?.issues.length).toBe(0);
+  });
 });

@@ -336,14 +336,22 @@ export type ValidationIssue = {
   ruleId: string;
 };
 
+export type ValidationOptions = {
+  recommended?: boolean;
+};
+
 export type ValidationResult = {
   ok: boolean;
   score: number;
   issues: ValidationIssue[];
 };
 
-export const validateSchema = (nodes: SchemaNode[]): ValidationResult => {
+export const validateSchema = (
+  nodes: SchemaNode[],
+  options: ValidationOptions = {}
+): ValidationResult => {
   const issues: ValidationIssue[] = [];
+  const { recommended = true } = options;
 
   if (!nodes.length) {
     issues.push({
@@ -444,6 +452,21 @@ export const validateSchema = (nodes: SchemaNode[]): ValidationResult => {
       }
     }
 
+    if (recommended) {
+      const recommendedFields = RECOMMENDED_FIELDS[type] ?? [];
+      for (const field of recommendedFields) {
+        const value = (node as JsonLdObject)[field];
+        if (isEmpty(value)) {
+          issues.push({
+            path: `${pathPrefix}.${field}`,
+            message: `Recommended field '${field}' is missing`,
+            severity: "warn",
+            ruleId: `schema.recommended.${field}`
+          });
+        }
+      }
+    }
+
     if (type === "BreadcrumbList") {
       validateBreadcrumbList(node, pathPrefix, issues);
     }
@@ -476,6 +499,23 @@ const REQUIRED_FIELDS: Record<SchemaTypeName, string[]> = {
   FAQPage: ["mainEntity"],
   HowTo: ["name", "step"],
   BreadcrumbList: ["itemListElement"]
+};
+
+const RECOMMENDED_FIELDS: Record<SchemaTypeName, string[]> = {
+  Organization: ["url", "logo", "sameAs"],
+  Person: ["url", "sameAs", "jobTitle"],
+  Place: ["address", "url"],
+  LocalBusiness: ["address", "telephone", "url"],
+  WebSite: ["description"],
+  WebPage: ["description", "isPartOf"],
+  Article: ["description", "image", "dateModified"],
+  BlogPosting: ["description", "image", "dateModified"],
+  Product: ["image", "brand", "sku"],
+  Event: ["description", "location", "organizer", "url"],
+  Review: ["reviewBody", "datePublished", "url"],
+  FAQPage: [],
+  HowTo: [],
+  BreadcrumbList: []
 };
 
 const isSchemaType = (value: unknown): value is SchemaTypeName =>

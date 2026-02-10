@@ -130,6 +130,7 @@ pnpm schemasentry validate \
 ```
 
 The CLI emits JSON output and exits with code 1 on errors, making it perfect for CI/CD pipelines.
+Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
 
 ### Understanding Manifest vs Data
 

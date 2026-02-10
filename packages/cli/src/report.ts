@@ -4,6 +4,7 @@ import {
   type Manifest,
   type SchemaNode,
   type SchemaTypeName,
+  type ValidationOptions,
   type ValidationIssue
 } from "@schemasentry/core";
 
@@ -33,7 +34,13 @@ export type Report = {
   routes: RouteReport[];
 };
 
-export const buildReport = (manifest: Manifest, data: SchemaDataFile): Report => {
+export type ReportOptions = ValidationOptions;
+
+export const buildReport = (
+  manifest: Manifest,
+  data: SchemaDataFile,
+  options: ReportOptions = {}
+): Report => {
   const manifestRoutes = manifest.routes ?? {};
   const dataRoutes = data.routes ?? {};
   const allRoutes = new Set<string>([
@@ -48,7 +55,7 @@ export const buildReport = (manifest: Manifest, data: SchemaDataFile): Report =>
       .map((node) => node["@type"])
       .filter((type): type is SchemaTypeName => typeof type === "string");
 
-    const validation = validateSchema(nodes);
+    const validation = validateSchema(nodes, options);
     const issues: ValidationIssue[] = [...validation.issues];
 
     if (expectedTypes.length > 0) {

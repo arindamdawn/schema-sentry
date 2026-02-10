@@ -169,6 +169,30 @@ describe("validateSchema", () => {
       .toBe(true);
   });
 
+  it("warns on missing recommended fields by default", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "Organization",
+      name: "Acme"
+    } as const;
+
+    const result = validateSchema([node]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.recommended.url"))
+      .toBe(true);
+    expect(result.issues.some((issue) => issue.severity === "warn")).toBe(true);
+  });
+
+  it("can disable recommended field checks", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "Organization",
+      name: "Acme"
+    } as const;
+
+    const result = validateSchema([node], { recommended: false });
+    expect(result.issues).toHaveLength(0);
+  });
+
   it("reports invalid context and type", () => {
     const node = {
       "@context": "https://example.com",

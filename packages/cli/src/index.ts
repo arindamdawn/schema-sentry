@@ -25,7 +25,9 @@ program
     "Path to schema data JSON",
     "schema-sentry.data.json"
   )
-  .action(async (options: { manifest: string; data: string }) => {
+  .option("--no-recommended", "Disable recommended field checks")
+  .action(
+    async (options: { manifest: string; data: string; recommended: boolean }) => {
     const manifestPath = path.resolve(process.cwd(), options.manifest);
     const dataPath = path.resolve(process.cwd(), options.data);
     let raw: string;
@@ -139,10 +141,13 @@ program
       return;
     }
 
-    const report = buildReport(manifest, data);
+    const report = buildReport(manifest, data, {
+      recommended: options.recommended
+    });
     console.log(formatReportOutput(report));
     process.exit(report.ok ? 0 : 1);
-  });
+  }
+  );
 
 program.parse();
 
