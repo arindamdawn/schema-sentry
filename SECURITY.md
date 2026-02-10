@@ -16,5 +16,5 @@ If advisories are unavailable, open a GitHub issue asking for a private contact 
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x   | Yes       |
+| 0.2.x   | Yes       |
 | < 0.1.0 | No        |
