@@ -7,6 +7,7 @@ import {
   type ValidationOptions,
   type ValidationIssue
 } from "@schemasentry/core";
+import { buildCoverageResult, type CoverageSummary } from "./coverage";
 
 export type SchemaDataFile = {
   routes: Record<string, SchemaNode[]>;
@@ -26,6 +27,7 @@ export type ReportSummary = {
   errors: number;
   warnings: number;
   score: number;
+  coverage?: CoverageSummary;
 };
 
 export type Report = {
@@ -43,12 +45,9 @@ export const buildReport = (
 ): Report => {
   const manifestRoutes = manifest.routes ?? {};
   const dataRoutes = data.routes ?? {};
-  const allRoutes = new Set<string>([
-    ...Object.keys(manifestRoutes),
-    ...Object.keys(dataRoutes)
-  ]);
+  const coverage = buildCoverageResult(manifest, data);
 
-  const routes = Array.from(allRoutes).sort().map((route) => {
+  const routes = coverage.allRoutes.map((route) => {
     const expectedTypes = manifestRoutes[route] ?? [];
     const nodes = dataRoutes[route] ?? [];
     const foundTypes = nodes
@@ -56,38 +55,10 @@ export const buildReport = (
       .filter((type): type is SchemaTypeName => typeof type === "string");
 
     const validation = validateSchema(nodes, options);
-    const issues: ValidationIssue[] = [...validation.issues];
-
-    if (expectedTypes.length > 0) {
-      if (nodes.length === 0) {
-        issues.push({
-          path: `routes["${route}"]`,
-          message: "No schema blocks found for route",
-          severity: "error",
-          ruleId: "coverage.missing_route"
-        });
-      }
-
-      for (const expectedType of expectedTypes) {
-        if (!foundTypes.includes(expectedType)) {
-          issues.push({
-            path: `routes["${route}"].types`,
-            message: `Missing expected schema type '${expectedType}'`,
-            severity: "error",
-            ruleId: "coverage.missing_type"
-          });
-        }
-      }
-    }
-
-    if (!manifestRoutes[route] && nodes.length > 0) {
-      issues.push({
-        path: `routes["${route}"]`,
-        message: "Route has schema but is missing from manifest",
-        severity: "warn",
-        ruleId: "coverage.unlisted_route"
-      });
-    }
+    const issues: ValidationIssue[] = [
+      ...validation.issues,
+      ...(coverage.issuesByRoute[route] ?? [])
+    ];
 
     const errorCount = issues.filter((issue) => issue.severity === "error")
       .length;
@@ -125,7 +96,8 @@ export const buildReport = (
       routes: routes.length,
       errors: summaryErrors,
       warnings: summaryWarnings,
-      score: summaryScore
+      score: summaryScore,
+      coverage: coverage.summary
     },
     routes
   };

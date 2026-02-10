@@ -8,6 +8,7 @@ import {
 } from "@schemasentry/core";
 import type { Report } from "./report";
 import type { SchemaDataFile } from "./report";
+import { buildCoverageResult } from "./coverage";
 
 export type AuditOptions = ValidationOptions & {
   manifest?: Manifest;
@@ -20,14 +21,14 @@ export const buildAuditReport = (
   const dataRoutes = data.routes ?? {};
   const manifestRoutes = options.manifest?.routes ?? {};
   const coverageEnabled = Boolean(options.manifest);
+  const coverage = coverageEnabled
+    ? buildCoverageResult(options.manifest as Manifest, data)
+    : null;
   const allRoutes = coverageEnabled
-    ? new Set<string>([
-        ...Object.keys(manifestRoutes),
-        ...Object.keys(dataRoutes)
-      ])
-    : new Set<string>(Object.keys(dataRoutes));
+    ? coverage?.allRoutes ?? []
+    : Object.keys(dataRoutes).sort();
 
-  const routes = Array.from(allRoutes).sort().map((route) => {
+  const routes = allRoutes.map((route) => {
     const expectedTypes = coverageEnabled ? manifestRoutes[route] ?? [] : [];
     const nodes = dataRoutes[route] ?? [];
     const foundTypes = nodes
@@ -35,40 +36,10 @@ export const buildAuditReport = (
       .filter((type): type is SchemaTypeName => typeof type === "string");
 
     const validation = validateSchema(nodes, options);
-    const issues: ValidationIssue[] = [...validation.issues];
-
-    if (coverageEnabled) {
-      if (expectedTypes.length > 0) {
-        if (nodes.length === 0) {
-          issues.push({
-            path: `routes["${route}"]`,
-            message: "No schema blocks found for route",
-            severity: "error",
-            ruleId: "coverage.missing_route"
-          });
-        }
-
-        for (const expectedType of expectedTypes) {
-          if (!foundTypes.includes(expectedType)) {
-            issues.push({
-              path: `routes["${route}"].types`,
-              message: `Missing expected schema type '${expectedType}'`,
-              severity: "error",
-              ruleId: "coverage.missing_type"
-            });
-          }
-        }
-      }
-
-      if (!manifestRoutes[route] && nodes.length > 0) {
-        issues.push({
-          path: `routes["${route}"]`,
-          message: "Route has schema but is missing from manifest",
-          severity: "warn",
-          ruleId: "coverage.unlisted_route"
-        });
-      }
-    }
+    const issues: ValidationIssue[] = [
+      ...validation.issues,
+      ...(coverage?.issuesByRoute[route] ?? [])
+    ];
 
     const errorCount = issues.filter((issue) => issue.severity === "error")
       .length;
@@ -106,7 +77,8 @@ export const buildAuditReport = (
       routes: routes.length,
       errors: summaryErrors,
       warnings: summaryWarnings,
-      score: summaryScore
+      score: summaryScore,
+      ...(coverageEnabled ? { coverage: coverage?.summary } : {})
     },
     routes
   };
