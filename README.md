@@ -1,86 +1,83 @@
 # Schema Sentry
 
-Type-safe structured data for Next.js App Router, enforced in CI.
+[![CI](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml/badge.svg)](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml)
+[![npm version](https://badge.fury.io/js/@schemasentry%2Fcore.svg)](https://www.npmjs.com/package/@schemasentry/core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Schema Sentry provides a small SDK + CLI for generating and validating JSON-LD with deterministic output. It is built for maintainability, predictable diffs, and CI-grade enforcement while keeping scope sustainable for a solo maintainer.
+> **Type-safe structured data for Next.js App Router, enforced in CI.**
 
-## Why Schema Sentry
+Schema Sentry provides a small SDK + CLI for generating and validating JSON-LD with deterministic output. Built for maintainability, predictable diffs, and CI-grade enforcement.
 
-Teams often add JSON-LD late, inconsistently, and without validation. That leads to:
+## ✨ Features
 
-- Missing or incomplete schema on key routes
-- Hard-to-debug CI failures after content changes
-- Inconsistent JSON-LD output that creates noisy diffs
+- 🔒 **Type-safe builders** for 11 common schema types
+- 🎯 **Deterministic JSON-LD** for clean diffs and stable CI
+- ⚛️ **App Router component** `<Schema />` for seamless Next.js integration
+- 📊 **Manifest-driven coverage** ensures every route has schema
+- 🔍 **CLI validation** with clear, actionable errors
+- 🚀 **Zero network calls** - works offline in OSS mode
 
-Schema Sentry solves this by enforcing schema in CI, providing deterministic output, and keeping a minimal, framework-aware SDK.
+## 📦 Packages
 
-## Features
+| Package | Version | Description |
+|---------|---------|-------------|
+| [`@schemasentry/core`](https://www.npmjs.com/package/@schemasentry/core) | [![npm](https://img.shields.io/npm/v/@schemasentry/core.svg)](https://www.npmjs.com/package/@schemasentry/core) | Typed builders + validation primitives |
+| [`@schemasentry/next`](https://www.npmjs.com/package/@schemasentry/next) | [![npm](https://img.shields.io/npm/v/@schemasentry/next.svg)](https://www.npmjs.com/package/@schemasentry/next) | App Router `<Schema />` component |
+| [`@schemasentry/cli`](https://www.npmjs.com/package/@schemasentry/cli) | [![npm](https://img.shields.io/npm/v/@schemasentry/cli.svg)](https://www.npmjs.com/package/@schemasentry/cli) | CI validation and report output |
 
-- **Typed builders** for common schema types
-- **Deterministic JSON-LD output** for clean diffs and stable CI
-- **App Router `<Schema />` component** for Next.js
-- **Manifest-driven coverage** to ensure routes have schema
-- **CLI validation** with clear errors and machine-readable output
-- **Zero network calls** in OSS mode
+## 🚀 Quick Start
 
-## Supported Schema Types (V1)
-
-- Organization
-- Person
-- Place
-- WebSite
-- WebPage
-- Article
-- BlogPosting
-- Product
-- FAQPage
-- HowTo
-- BreadcrumbList
-
-## Package Layout
-
-- `@schemasentry/core` — typed builders + validation primitives
-- `@schemasentry/next` — App Router `<Schema />` component
-- `@schemasentry/cli` — CI validation and report output
-
-## Install
+### Installation
 
 ```bash
+# Using pnpm (recommended)
 pnpm add @schemasentry/next @schemasentry/core
 pnpm add -D @schemasentry/cli
+
+# Using npm
+npm install @schemasentry/next @schemasentry/core
+npm install -D @schemasentry/cli
+
+# Using yarn
+yarn add @schemasentry/next @schemasentry/core
+yarn add -D @schemasentry/cli
 ```
 
-## App Router Usage
+### Basic Usage
 
 ```tsx
+// app/blog/[slug]/page.tsx
 import { Schema, Article, Organization } from "@schemasentry/next";
 
-const org = Organization({
-  name: "Acme Corp",
-  url: "https://acme.com",
-  logo: "https://acme.com/logo.png"
-});
+export default function BlogPost() {
+  const org = Organization({
+    name: "Acme Corp",
+    url: "https://acme.com",
+    logo: "https://acme.com/logo.png"
+  });
 
-const article = Article({
-  headline: "Launch Update",
-  authorName: "Jane Doe",
-  datePublished: "2026-02-09",
-  url: "https://acme.com/blog/launch"
-});
+  const article = Article({
+    headline: "Launch Update",
+    authorName: "Jane Doe",
+    datePublished: "2026-02-09",
+    url: "https://acme.com/blog/launch"
+  });
 
-export default function Page() {
   return (
     <>
       <Schema data={[org, article]} />
-      <main>...</main>
+      <article>
+        <h1>{article.headline}</h1>
+        {/* Your content */}
+      </article>
     </>
   );
 }
 ```
 
-## Manifest & Coverage
+### CLI Validation
 
-A manifest maps routes to expected schema blocks and powers coverage checks.
+Create a manifest file `schema-sentry.manifest.json`:
 
 ```json
 {
@@ -91,7 +88,7 @@ A manifest maps routes to expected schema blocks and powers coverage checks.
 }
 ```
 
-## CLI
+Validate in CI:
 
 ```bash
 pnpm schemasentry validate \
@@ -99,31 +96,66 @@ pnpm schemasentry validate \
   --data ./schema-sentry.data.json
 ```
 
-The CLI emits JSON by default and exits non-zero on errors. HTML output is planned.
+## 📚 Supported Schema Types
 
-See `schema-sentry.manifest.example.json` and `schema-sentry.data.example.json` for sample inputs.
+### V1 (Available Now)
+- **Organization** - Company or organization info
+- **Person** - Individual person schema
+- **Place** - Physical locations
+- **WebSite** - Site-wide metadata
+- **WebPage** - Individual page schema
+- **Article** - Blog posts, news articles
+- **BlogPosting** - Blog-specific content
+- **Product** - E-commerce products
+- **FAQPage** - Frequently asked questions
+- **HowTo** - Step-by-step instructions
+- **BreadcrumbList** - Navigation breadcrumbs
 
-## Scope (V1)
+## 🎯 Why Schema Sentry?
 
-Schema Sentry focuses on **Next.js App Router only**. Framework-agnostic support is on the roadmap but requires contributor-led PRs.
+Teams often add JSON-LD late, inconsistently, and without validation. That leads to:
 
-Standard response for out-of-scope requests:
+- ❌ Missing or incomplete schema on key routes
+- ❌ Hard-to-debug CI failures after content changes  
+- ❌ Inconsistent JSON-LD output creating noisy diffs
 
-> That's a great idea. The focus right now is perfecting the App Router experience. I've noted it on the roadmap. PRs are welcome!
+Schema Sentry solves this by:
+- ✅ Enforcing schema presence via manifest-driven CI checks
+- ✅ Providing deterministic output for stable diffs
+- ✅ Validating schema completeness before deployment
+- ✅ Keeping a minimal, framework-aware SDK
 
-## Roadmap Highlights
+## 🛣️ Roadmap
 
-- **MVP (v0.1.0):** builders, deterministic output, App Router `<Schema />`, CLI JSON report
-- **v0.2.0:** coverage checks, recommended field validation, completeness scoring
-- **v0.3.0:** HTML reports, example app, docs expansion
-- **v1.0.0:** stable API and CLI contract, performance verification
+- ✅ **v0.1.0** - Core builders, validation, CLI (Released!)
+- 🚧 **v0.2.0** - Init wizard, extended types, coverage checks
+- 📅 **v0.3.0** - HTML reports, GitHub annotations, Product Hunt
+- 📅 **v1.0.0** - Stable API, performance benchmarks
 
-See `ROADMAP.md` for milestones and `/notes/RELEASE_ROADMAP.md` for release planning (local).
+See [ROADMAP.md](ROADMAP.md) for detailed planning.
 
-## Contributing
+## 🤝 Contributing
 
-See `CONTRIBUTING.md` for workflow, scope guardrails, and expectations.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## License
+**Quick start for contributors:**
 
-MIT © Schema Sentry
+```bash
+pnpm install
+pnpm build
+pnpm test
+```
+
+## 📄 License
+
+MIT © [Arindam Dawn](https://github.com/arindamdawn)
+
+## 💬 Support
+
+- 🐛 [Report bugs](https://github.com/arindamdawn/schema-sentry/issues/new?template=bug_report.md)
+- ✨ [Request features](https://github.com/arindamdawn/schema-sentry/issues/new?template=feature_request.md)
+- 💼 [Discussions](https://github.com/arindamdawn/schema-sentry/discussions)
+
+---
+
+**Made with ❤️ for the Next.js community**

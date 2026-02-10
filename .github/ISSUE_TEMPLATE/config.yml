@@ -1,1 +1,11 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
+contact_links:
+  - name: 🤔 Ask a Question
+    url: https://github.com/arindamdawn/schema-sentry/discussions/new?category=q-a
+    about: Ask questions and get help from the community
+  - name: 📖 Documentation
+    url: https://github.com/arindamdawn/schema-sentry#readme
+    about: Check the README for usage instructions
+  - name: 🗺️ Roadmap
+    url: https://github.com/arindamdawn/schema-sentry/blob/main/ROADMAP.md
+    about: See planned features and upcoming releases

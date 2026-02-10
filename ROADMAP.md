@@ -2,9 +2,11 @@
 
 Last updated: 2026-02-10
 
-## Current Status: v0.1.0 Ready for Release 🚀
+## Current Status: v0.1.0 Released! 🎉
 
-MVP is complete and tested. All 17 tests passing. Ready to publish to npm.
+**MVP is live on npm!** All 17 tests passing. 
+
+📦 **Install now:** `pnpm add @schemasentry/next @schemasentry/core`
 
 See detailed release planning in `/notes/RELEASE_ROADMAP.md`.
 
