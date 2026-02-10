@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { readFile } from "fs/promises";
+import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import path from "path";
 import { stableStringify, type Manifest } from "@schemasentry/core";
 import { buildReport, type SchemaDataFile } from "./report";
@@ -9,15 +10,15 @@ import { buildAuditReport } from "./audit";
 import { formatSummaryLine } from "./summary";
 import { ConfigError, loadConfig, resolveRecommended } from "./config";
 import { scanRoutes } from "./routes";
-import { createInterface } from "readline/promises";
-import { stdin as input, stdout as output } from "process";
+import { createInterface } from "node:readline/promises";
+import { stdin as input, stdout as output } from "node:process";
 
 const program = new Command();
 
 program
   .name("schemasentry")
   .description("Schema Sentry CLI")
-  .version("0.1.0");
+  .version(resolveCliVersion());
 
 program
   .command("validate")
@@ -45,17 +46,10 @@ program
     try {
       raw = await readFile(manifestPath, "utf8");
     } catch (error) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "manifest.not_found",
-              message: `Manifest not found at ${manifestPath}`,
-              suggestion: "Run `schemasentry init` to generate starter files."
-            }
-          ]
-        })
+      printCliError(
+        "manifest.not_found",
+        `Manifest not found at ${manifestPath}`,
+        "Run `schemasentry init` to generate starter files."
       );
       process.exit(1);
       return;
@@ -65,35 +59,20 @@ program
     try {
       manifest = JSON.parse(raw) as Manifest;
     } catch (error) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "manifest.invalid_json",
-              message: "Manifest is not valid JSON",
-              suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
-            }
-          ]
-        })
+      printCliError(
+        "manifest.invalid_json",
+        "Manifest is not valid JSON",
+        "Check the JSON syntax or regenerate with `schemasentry init`."
       );
       process.exit(1);
       return;
     }
 
     if (!isManifest(manifest)) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "manifest.invalid_shape",
-              message:
-                "Manifest must contain a 'routes' object with string array values",
-              suggestion: "Ensure each route maps to an array of schema type names."
-            }
-          ]
-        })
+      printCliError(
+        "manifest.invalid_shape",
+        "Manifest must contain a 'routes' object with string array values",
+        "Ensure each route maps to an array of schema type names."
       );
       process.exit(1);
       return;
@@ -103,17 +82,10 @@ program
     try {
       dataRaw = await readFile(dataPath, "utf8");
     } catch (error) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "data.not_found",
-              message: `Schema data not found at ${dataPath}`,
-              suggestion: "Run `schemasentry init` to generate starter files."
-            }
-          ]
-        })
+      printCliError(
+        "data.not_found",
+        `Schema data not found at ${dataPath}`,
+        "Run `schemasentry init` to generate starter files."
       );
       process.exit(1);
       return;
@@ -123,35 +95,20 @@ program
     try {
       data = JSON.parse(dataRaw) as SchemaDataFile;
     } catch (error) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "data.invalid_json",
-              message: "Schema data is not valid JSON",
-              suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
-            }
-          ]
-        })
+      printCliError(
+        "data.invalid_json",
+        "Schema data is not valid JSON",
+        "Check the JSON syntax or regenerate with `schemasentry init`."
       );
       process.exit(1);
       return;
     }
 
     if (!isSchemaData(data)) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "data.invalid_shape",
-              message:
-                "Schema data must contain a 'routes' object with array values",
-              suggestion: "Ensure each route maps to an array of JSON-LD blocks."
-            }
-          ]
-        })
+      printCliError(
+        "data.invalid_shape",
+        "Schema data must contain a 'routes' object with array values",
+        "Ensure each route maps to an array of JSON-LD blocks."
       );
       process.exit(1);
       return;
@@ -232,17 +189,10 @@ program
     try {
       dataRaw = await readFile(dataPath, "utf8");
     } catch (error) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "data.not_found",
-              message: `Schema data not found at ${dataPath}`,
-              suggestion: "Run `schemasentry init` to generate starter files."
-            }
-          ]
-        })
+      printCliError(
+        "data.not_found",
+        `Schema data not found at ${dataPath}`,
+        "Run `schemasentry init` to generate starter files."
       );
       process.exit(1);
       return;
@@ -252,35 +202,20 @@ program
     try {
       data = JSON.parse(dataRaw) as SchemaDataFile;
     } catch (error) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "data.invalid_json",
-              message: "Schema data is not valid JSON",
-              suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
-            }
-          ]
-        })
+      printCliError(
+        "data.invalid_json",
+        "Schema data is not valid JSON",
+        "Check the JSON syntax or regenerate with `schemasentry init`."
       );
       process.exit(1);
       return;
     }
 
     if (!isSchemaData(data)) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: "data.invalid_shape",
-              message:
-                "Schema data must contain a 'routes' object with array values",
-              suggestion: "Ensure each route maps to an array of JSON-LD blocks."
-            }
-          ]
-        })
+      printCliError(
+        "data.invalid_shape",
+        "Schema data must contain a 'routes' object with array values",
+        "Ensure each route maps to an array of JSON-LD blocks."
       );
       process.exit(1);
       return;
@@ -294,17 +229,10 @@ program
       try {
         manifestRaw = await readFile(manifestPath, "utf8");
       } catch (error) {
-        console.error(
-          stableStringify({
-            ok: false,
-            errors: [
-              {
-                code: "manifest.not_found",
-                message: `Manifest not found at ${manifestPath}`,
-                suggestion: "Run `schemasentry init` to generate starter files."
-              }
-            ]
-          })
+        printCliError(
+          "manifest.not_found",
+          `Manifest not found at ${manifestPath}`,
+          "Run `schemasentry init` to generate starter files."
         );
         process.exit(1);
         return;
@@ -313,35 +241,20 @@ program
       try {
         manifest = JSON.parse(manifestRaw) as Manifest;
       } catch (error) {
-        console.error(
-          stableStringify({
-            ok: false,
-            errors: [
-              {
-                code: "manifest.invalid_json",
-                message: "Manifest is not valid JSON",
-                suggestion: "Check the JSON syntax or regenerate with `schemasentry init`."
-              }
-            ]
-          })
+        printCliError(
+          "manifest.invalid_json",
+          "Manifest is not valid JSON",
+          "Check the JSON syntax or regenerate with `schemasentry init`."
         );
         process.exit(1);
         return;
       }
 
       if (!isManifest(manifest)) {
-        console.error(
-          stableStringify({
-            ok: false,
-            errors: [
-              {
-                code: "manifest.invalid_shape",
-                message:
-                  "Manifest must contain a 'routes' object with string array values",
-                suggestion: "Ensure each route maps to an array of schema type names."
-              }
-            ]
-          })
+        printCliError(
+          "manifest.invalid_shape",
+          "Manifest must contain a 'routes' object with string array values",
+          "Ensure each route maps to an array of schema type names."
         );
         process.exit(1);
         return;
@@ -350,20 +263,22 @@ program
 
     const requiredRoutes = options.scan
       ? await scanRoutes({ rootDir: path.resolve(process.cwd(), options.root ?? ".") })
-      : undefined;
+      : [];
     if (options.scan && requiredRoutes.length === 0) {
       console.error("No routes found during scan.");
     }
 
-    const report = buildAuditReport(data, { recommended, manifest, requiredRoutes });
+    const report = buildAuditReport(data, {
+      recommended,
+      manifest,
+      requiredRoutes: requiredRoutes.length > 0 ? requiredRoutes : undefined
+    });
     console.log(formatReportOutput(report));
     printAuditSummary(report, Boolean(manifest), Date.now() - start);
     process.exit(report.ok ? 0 : 1);
   });
 
-program.parse();
-
-const isManifest = (value: unknown): value is Manifest => {
+function isManifest(value: unknown): value is Manifest {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -380,9 +295,9 @@ const isManifest = (value: unknown): value is Manifest => {
   }
 
   return true;
-};
+}
 
-const isSchemaData = (value: unknown): value is SchemaDataFile => {
+function isSchemaData(value: unknown): value is SchemaDataFile {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -399,14 +314,32 @@ const isSchemaData = (value: unknown): value is SchemaDataFile => {
   }
 
   return true;
-};
+}
 
-const formatReportOutput = (report: ReturnType<typeof buildReport>): string =>
-  stableStringify(report);
+function formatReportOutput(report: ReturnType<typeof buildReport>): string {
+  return stableStringify(report);
+}
 
-const resolveRecommendedOption = async (
-  configPath?: string
-): Promise<boolean> => {
+function printCliError(
+  code: string,
+  message: string,
+  suggestion?: string
+): void {
+  console.error(
+    stableStringify({
+      ok: false,
+      errors: [
+        {
+          code,
+          message,
+          ...(suggestion !== undefined ? { suggestion } : {})
+        }
+      ]
+    })
+  );
+}
+
+async function resolveRecommendedOption(configPath?: string): Promise<boolean> {
   const override = getRecommendedOverride(process.argv);
 
   try {
@@ -414,26 +347,15 @@ const resolveRecommendedOption = async (
     return resolveRecommended(override, config);
   } catch (error) {
     if (error instanceof ConfigError) {
-      console.error(
-        stableStringify({
-          ok: false,
-          errors: [
-            {
-              code: error.code,
-              message: error.message,
-              suggestion: error.suggestion
-            }
-          ]
-        })
-      );
+      printCliError(error.code, error.message, error.suggestion);
       process.exit(1);
       return true;
     }
     throw error;
   }
-};
+}
 
-const getRecommendedOverride = (argv: string[]): boolean | undefined => {
+function getRecommendedOverride(argv: string[]): boolean | undefined {
   if (argv.includes("--recommended")) {
     return true;
   }
@@ -441,12 +363,24 @@ const getRecommendedOverride = (argv: string[]): boolean | undefined => {
     return false;
   }
   return undefined;
-};
+}
 
-const printValidateSummary = (
+function resolveCliVersion(): string {
+  try {
+    const raw = readFileSync(new URL("../package.json", import.meta.url), "utf8");
+    const parsed = JSON.parse(raw) as { version?: string };
+    return parsed.version ?? "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+}
+
+program.parse();
+
+function printValidateSummary(
   report: ReturnType<typeof buildReport>,
   durationMs: number
-) => {
+): void {
   console.error(
     formatSummaryLine("validate", {
       ...report.summary,
@@ -454,13 +388,13 @@ const printValidateSummary = (
       coverage: report.summary.coverage
     })
   );
-};
+}
 
-const printAuditSummary = (
+function printAuditSummary(
   report: ReturnType<typeof buildAuditReport>,
   coverageEnabled: boolean,
   durationMs: number
-) => {
+): void {
   console.error(
     formatSummaryLine("audit", {
       ...report.summary,
@@ -471,9 +405,13 @@ const printAuditSummary = (
   if (!coverageEnabled) {
     console.error("Coverage checks skipped (no manifest provided).");
   }
-};
+}
 
-const promptAnswers = async () => {
+async function promptAnswers(): Promise<{
+  siteName: string;
+  siteUrl: string;
+  authorName: string;
+}> {
   const defaults = getDefaultAnswers();
   const rl = createInterface({ input, output });
 
@@ -485,23 +423,23 @@ const promptAnswers = async () => {
   } finally {
     rl.close();
   }
-};
+}
 
-const ask = async (
+async function ask(
   rl: ReturnType<typeof createInterface>,
   question: string,
   fallback: string
-) => {
+): Promise<string> {
   const answer = (await rl.question(`${question} (${fallback}): `)).trim();
   return answer.length > 0 ? answer : fallback;
-};
+}
 
-const resolveOverwrites = async (options: {
+async function resolveOverwrites(options: {
   manifestPath: string;
   dataPath: string;
   force: boolean;
   interactive: boolean;
-}): Promise<[boolean, boolean]> => {
+}): Promise<[boolean, boolean]> {
   const { manifestPath, dataPath, force, interactive } = options;
   if (force) {
     return [true, true];
@@ -526,26 +464,26 @@ const resolveOverwrites = async (options: {
   } finally {
     rl.close();
   }
-};
+}
 
-const confirm = async (
+async function confirm(
   rl: ReturnType<typeof createInterface>,
   question: string,
   defaultValue: boolean
-) => {
+): Promise<boolean> {
   const hint = defaultValue ? "Y/n" : "y/N";
   const answer = (await rl.question(`${question} (${hint}): `)).trim().toLowerCase();
   if (!answer) {
     return defaultValue;
   }
   return answer === "y" || answer === "yes";
-};
+}
 
-const printInitSummary = (options: {
+function printInitSummary(options: {
   manifestPath: string;
   dataPath: string;
   result: Awaited<ReturnType<typeof writeInitFiles>>;
-}) => {
+}): void {
   const { manifestPath, dataPath, result } = options;
   const created = [];
   if (result.manifest !== "skipped") {
@@ -572,4 +510,4 @@ const printInitSummary = (options: {
   if (created.length > 0) {
     console.log("Next: run `schemasentry validate` to verify your setup.");
   }
-};
+}

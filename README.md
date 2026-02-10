@@ -162,7 +162,7 @@ CLI flags override config. Use `--config ./path/to/config.json` to point at a cu
 
 **Why two files?** The manifest ensures every route has the right schema type. The data file validates that your actual schema matches expectations.
 
-> **Future:** v0.2.0 will auto-generate these files from your pages, making setup instant.
+Use `schemasentry init` to generate starter files, and `schemasentry audit --scan` to detect missing routes.
 
 ## ✅ Supported Schema Types (V1)
 

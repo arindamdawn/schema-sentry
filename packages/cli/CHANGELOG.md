@@ -1,5 +1,16 @@
 # @schemasentry/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 792616b: Add v0.2.0 developer experience updates: new schema types, recommended field warnings, init/audit commands, coverage improvements, and richer CLI summaries/config support.
+
+### Patch Changes
+
+- Updated dependencies [792616b]
+  - @schemasentry/core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
