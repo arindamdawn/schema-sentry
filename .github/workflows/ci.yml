@@ -26,7 +26,7 @@ jobs:
       - name: Build packages
         run: pnpm --filter=!schema-sentry-example-next-app -r build
       - name: Run lint
-        run: pnpm lint
+        run: pnpm --filter=!schema-sentry-example-next-app -r lint
       - name: Run typecheck
         run: pnpm typecheck
       - name: Run tests
