@@ -6,11 +6,9 @@ on:
   pull_request:
 
 jobs:
-  test:
+  build:
+    name: Build and Test (Node.js ${{ matrix.node }})
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18, 20]
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
