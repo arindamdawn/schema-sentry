@@ -19,6 +19,9 @@ permissions:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       version: ${{ steps.get_version.outputs.version }}
       has_changeset: ${{ steps.check_changeset.outputs.has_changeset }}
@@ -57,6 +60,9 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     environment: release
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -83,12 +89,9 @@ jobs:
         run: pnpm test
       - name: Publish to npm
         run: pnpm release
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create GitHub Release
         env:
           VERSION: ${{ needs.prepare.outputs.version }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create v${VERSION} \
             --title "v${VERSION}" \
