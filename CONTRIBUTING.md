@@ -75,7 +75,7 @@ pnpm changeset
 For maintainers:
 
 ```bash
-pnpm version-packages
+pnpm changeset version
 pnpm release
 ```
 
