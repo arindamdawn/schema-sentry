@@ -1,10 +1,19 @@
-# Schema Sentry 🛡️
+<div align="center">
+  <img src="docs/assets/schema-sentry-banner.png" alt="Schema Sentry Banner" width="100%" />
 
-[![CI](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml/badge.svg)](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml)
-[![npm version](https://badge.fury.io/js/@schemasentry%2Fcore.svg)](https://www.npmjs.com/package/@schemasentry/core)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  # Schema Sentry 🛡️
+  
+  [![CI](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml/badge.svg)](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml)
+  [![npm version](https://badge.fury.io/js/@schemasentry%2Fcore.svg)](https://www.npmjs.com/package/@schemasentry/core)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Type-safe structured data for Next.js App Router—built for SEO and AI-powered discovery.**
+  <br />
+
+  > **Type-safe structured data for Next.js App Router—built for SEO and AI-powered discovery.**
+  
+  [Getting Started](#-install) • [Documentation](docs/) • [Examples](examples/)
+</div>
+
 
 Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines and AI systems.
 
