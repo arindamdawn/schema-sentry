@@ -10,6 +10,7 @@
     "lint": "pnpm -r lint",
     "release": "pnpm -r build && changeset publish",
     "test": "pnpm -r test",
+    "benchmark:200": "pnpm --filter @schemasentry/cli benchmark:200",
     "format": "pnpm -r format",
     "typecheck": "tsc -b --pretty false",
     "typecheck:watch": "tsc -b -w --pretty false",

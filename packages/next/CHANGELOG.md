@@ -1,5 +1,36 @@
 # @schemasentry/next
 
+## 0.3.0
+
+### Minor Changes
+
+- ## v0.3.0 - CI Reporting and Audit Visibility
+
+  ### Added
+
+  - **HTML Report Output**: Generate shareable HTML reports with `--format html --output <path>`
+  - **GitHub Actions Annotations**: Emit PR annotations with `--annotations github` for errors and warnings
+  - **Multiple Output Formats**: Support for JSON and HTML output formats
+  - **Output File Support**: Write reports to file with `-o, --output <path>`
+  - **VideoObject Schema Type**: New builder for video content
+  - **ImageObject Schema Type**: New builder for image content
+  - **Performance Benchmark Test**: Validates 200 routes in under 5 seconds
+
+  ### Improved
+
+  - **CI Integration**: Better support for automated validation pipelines
+  - **Documentation**: Comprehensive CI guide with examples
+
+  ### Changed
+
+  - **Default Format**: JSON remains default for machine readability
+  - **Annotation Mode**: Disabled by default, enable with `--annotations github`
+
+### Patch Changes
+
+- Updated dependencies
+  - @schemasentry/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

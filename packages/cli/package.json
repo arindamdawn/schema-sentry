@@ -1,6 +1,6 @@
 {
   "name": "@schemasentry/cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CLI for Schema Sentry validation and reporting.",
   "license": "MIT",
   "type": "module",
@@ -37,6 +37,7 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
+    "benchmark:200": "node ./scripts/benchmark-200-routes.mjs",
     "lint": "echo \"lint not configured\" && exit 0",
     "test": "vitest run",
     "prepack": "pnpm build"

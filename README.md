@@ -158,6 +158,16 @@ pnpm schemasentry audit --data ./schema-sentry.data.json --manifest ./schema-sen
 pnpm schemasentry audit --data ./schema-sentry.data.json --scan
 ```
 
+6. Generate an HTML report:
+
+```bash
+pnpm schemasentry audit \
+  --data ./schema-sentry.data.json \
+  --manifest ./schema-sentry.manifest.json \
+  --format html \
+  --output ./schema-sentry-report.html
+```
+
 **All commands**
 
 ```bash
@@ -179,10 +189,24 @@ pnpm schemasentry audit \
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
   --data ./schema-sentry.data.json
+
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json \
+  --format html \
+  --output ./schema-sentry-validate-report.html
+
+pnpm schemasentry audit \
+  --data ./schema-sentry.data.json \
+  --format html \
+  --output ./schema-sentry-audit-report.html
 ```
 
-The CLI emits JSON output and exits with code 1 on errors, making it perfect for CI/CD pipelines.
+The CLI emits JSON output by default and exits with code 1 on errors, making it perfect for CI/CD pipelines.
+Use `--format html --output <path>` to generate a shareable report file.
+Use `--annotations github` in GitHub Actions to emit PR annotations.
 Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
+See `docs/ci.md` for complete CI workflow examples.
 
 ### Optional Config
 
@@ -218,6 +242,8 @@ Use `schemasentry init` to generate starter files. Add `--scan` to include all d
 - Article
 - BlogPosting
 - Product
+- VideoObject
+- ImageObject
 - Event
 - Review
 - FAQPage

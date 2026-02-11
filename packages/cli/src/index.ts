@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import path from "path";
 import { stableStringify, type Manifest } from "@schemasentry/core";
-import { buildReport, type SchemaDataFile } from "./report";
+import { buildReport, type Report, type SchemaDataFile } from "./report";
 import { fileExists, getDefaultAnswers, writeInitFiles } from "./init";
 import { buildAuditReport } from "./audit";
 import { formatSummaryLine } from "./summary";
 import { ConfigError, loadConfig, resolveRecommended } from "./config";
 import { scanRoutes } from "./routes";
+import { renderHtmlReport } from "./html";
+import { emitGitHubAnnotations } from "./annotations";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
@@ -34,10 +36,22 @@ program
     "schema-sentry.data.json"
   )
   .option("-c, --config <path>", "Path to config JSON")
+  .option("--format <format>", "Report format (json|html)", "json")
+  .option("--annotations <provider>", "Emit CI annotations (none|github)", "none")
+  .option("-o, --output <path>", "Write report output to file")
   .option("--recommended", "Enable recommended field checks")
   .option("--no-recommended", "Disable recommended field checks")
-  .action(async (options: { manifest: string; data: string; config?: string }) => {
+  .action(async (options: {
+    manifest: string;
+    data: string;
+    config?: string;
+    format?: string;
+    annotations?: string;
+    output?: string;
+  }) => {
     const start = Date.now();
+    const format = resolveOutputFormat(options.format);
+    const annotationsMode = resolveAnnotationsMode(options.annotations);
     const recommended = await resolveRecommendedOption(options.config);
     const manifestPath = path.resolve(process.cwd(), options.manifest);
     const dataPath = path.resolve(process.cwd(), options.data);
@@ -115,7 +129,13 @@ program
     }
 
     const report = buildReport(manifest, data, { recommended });
-    console.log(formatReportOutput(report));
+    await emitReport({
+      report,
+      format,
+      outputPath: options.output,
+      title: "Schema Sentry Validate Report"
+    });
+    emitAnnotations(report, annotationsMode, "validate");
     printValidateSummary(report, Date.now() - start);
     process.exit(report.ok ? 0 : 1);
   });
@@ -188,6 +208,9 @@ program
   .option("--scan", "Scan the filesystem for routes")
   .option("--root <path>", "Project root for scanning", ".")
   .option("-c, --config <path>", "Path to config JSON")
+  .option("--format <format>", "Report format (json|html)", "json")
+  .option("--annotations <provider>", "Emit CI annotations (none|github)", "none")
+  .option("-o, --output <path>", "Write report output to file")
   .option("--recommended", "Enable recommended field checks")
   .option("--no-recommended", "Disable recommended field checks")
   .action(async (options: {
@@ -196,8 +219,13 @@ program
     config?: string;
     scan?: boolean;
     root?: string;
+    format?: string;
+    annotations?: string;
+    output?: string;
   }) => {
     const start = Date.now();
+    const format = resolveOutputFormat(options.format);
+    const annotationsMode = resolveAnnotationsMode(options.annotations);
     const recommended = await resolveRecommendedOption(options.config);
     const dataPath = path.resolve(process.cwd(), options.data);
     let dataRaw: string;
@@ -289,7 +317,13 @@ program
       manifest,
       requiredRoutes: requiredRoutes.length > 0 ? requiredRoutes : undefined
     });
-    console.log(formatReportOutput(report));
+    await emitReport({
+      report,
+      format,
+      outputPath: options.output,
+      title: "Schema Sentry Audit Report"
+    });
+    emitAnnotations(report, annotationsMode, "audit");
     printAuditSummary(report, Boolean(manifest), Date.now() - start);
     process.exit(report.ok ? 0 : 1);
   });
@@ -332,8 +366,92 @@ function isSchemaData(value: unknown): value is SchemaDataFile {
   return true;
 }
 
-function formatReportOutput(report: ReturnType<typeof buildReport>): string {
+type OutputFormat = "json" | "html";
+type AnnotationsMode = "none" | "github";
+
+function resolveOutputFormat(value?: string): OutputFormat {
+  const format = (value ?? "json").trim().toLowerCase();
+  if (format === "json" || format === "html") {
+    return format;
+  }
+
+  printCliError(
+    "output.invalid_format",
+    `Unsupported report format '${value ?? ""}'`,
+    "Use --format json or --format html."
+  );
+  process.exit(1);
+  return "json";
+}
+
+function resolveAnnotationsMode(value?: string): AnnotationsMode {
+  const mode = (value ?? "none").trim().toLowerCase();
+  if (mode === "none" || mode === "github") {
+    return mode;
+  }
+
+  printCliError(
+    "annotations.invalid_provider",
+    `Unsupported annotations provider '${value ?? ""}'`,
+    "Use --annotations none or --annotations github."
+  );
+  process.exit(1);
+  return "none";
+}
+
+function formatReportOutput(
+  report: Report,
+  format: OutputFormat,
+  title: string
+): string {
+  if (format === "html") {
+    return renderHtmlReport(report, { title });
+  }
+
   return stableStringify(report);
+}
+
+async function emitReport(options: {
+  report: Report;
+  format: OutputFormat;
+  outputPath?: string;
+  title: string;
+}): Promise<void> {
+  const { report, format, outputPath, title } = options;
+  const content = formatReportOutput(report, format, title);
+
+  if (!outputPath) {
+    console.log(content);
+    return;
+  }
+
+  const resolvedPath = path.resolve(process.cwd(), outputPath);
+  try {
+    await mkdir(path.dirname(resolvedPath), { recursive: true });
+    await writeFile(resolvedPath, content, "utf8");
+    console.error(`Report written to ${resolvedPath}`);
+  } catch (error) {
+    const reason =
+      error instanceof Error && error.message.length > 0
+        ? error.message
+        : "Unknown file system error";
+    printCliError(
+      "output.write_failed",
+      `Could not write report to ${resolvedPath}: ${reason}`
+    );
+    process.exit(1);
+  }
+}
+
+function emitAnnotations(
+  report: Report,
+  mode: AnnotationsMode,
+  commandLabel: string
+): void {
+  if (mode !== "github") {
+    return;
+  }
+  emitGitHubAnnotations(report, commandLabel);
 }
 
 function printCliError(

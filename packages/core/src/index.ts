@@ -22,6 +22,8 @@ export type SchemaTypeName =
   | "Article"
   | "BlogPosting"
   | "Product"
+  | "VideoObject"
+  | "ImageObject"
   | "Event"
   | "Review"
   | "FAQPage"
@@ -177,6 +179,31 @@ export const Product = (input: ProductInput): SchemaNode => {
       : {})
   });
 };
+
+export type ImageObjectInput = BaseInput & {
+  contentUrl: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  url?: string;
+};
+
+export const ImageObject = (input: ImageObjectInput): SchemaNode =>
+  withBase("ImageObject", input);
+
+export type VideoObjectInput = BaseInput & {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string;
+  contentUrl?: string;
+  embedUrl?: string;
+  duration?: string;
+  url?: string;
+};
+
+export const VideoObject = (input: VideoObjectInput): SchemaNode =>
+  withBase("VideoObject", input);
 
 export type EventInput = BaseInput & {
   name: string;
@@ -494,6 +521,8 @@ const REQUIRED_FIELDS: Record<SchemaTypeName, string[]> = {
   Article: ["headline", "author", "datePublished", "url"],
   BlogPosting: ["headline", "author", "datePublished", "url"],
   Product: ["name", "description", "url"],
+  VideoObject: ["name", "description", "thumbnailUrl", "uploadDate"],
+  ImageObject: ["contentUrl"],
   Event: ["name", "startDate"],
   Review: ["itemReviewed", "reviewRating", "author"],
   FAQPage: ["mainEntity"],
@@ -511,6 +540,8 @@ const RECOMMENDED_FIELDS: Record<SchemaTypeName, string[]> = {
   Article: ["description", "image", "dateModified"],
   BlogPosting: ["description", "image", "dateModified"],
   Product: ["image", "brand", "sku"],
+  VideoObject: ["contentUrl", "embedUrl", "duration", "url"],
+  ImageObject: ["caption", "width", "height", "url"],
   Event: ["description", "location", "organizer", "url"],
   Review: ["reviewBody", "datePublished", "url"],
   FAQPage: [],
