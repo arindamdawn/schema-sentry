@@ -4,13 +4,9 @@ Last updated: 2026-02-11
 
 ## 🎉 Current Status
 
-**v0.2.0 is live!** Published to npm and ready to use.
+**v0.3.0 is live!** Published to npm and ready to use.
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
-
----
-
-Schema Sentry helps your content get discovered by both **traditional search engines** and **AI-powered assistants** (ChatGPT, Claude, Perplexity, etc.) through proper structured data.
 
 ---
 
@@ -39,37 +35,29 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 - ✅ Additional schema types (Event, Review, LocalBusiness)
 - ✅ CLI improvements (summary stats, timing, better errors)
 
-## 🚀 Phase 3 (v0.3.0) — Next Release
+## ✅ Phase 3 (v0.3.0) — COMPLETE
 
 **Focus:** CI reporting and audit visibility
 
-### Scope
+### Released
 
-- [ ] HTML report output for `validate` and `audit`
-  - Add `--format html --output <path>` while keeping JSON output as default
-  - Include summary metrics and per-route issues
-- [ ] GitHub Actions annotations for PR reviews
-  - Add optional annotations mode for CI (`::error` / `::warning`)
-  - Keep machine-readable JSON report output for downstream tooling
-- [ ] Additional schema types (VideoObject, ImageObject)
-  - Add builders, validation rules, tests, and docs updates
-- [ ] Performance verification (200 routes < 5s)
-  - Add reproducible benchmark fixture + command
-  - Add CI guardrail to detect regressions
-- [ ] CI documentation + examples
-  - Provide workflow snippet for annotations
-  - Provide workflow snippet for uploading HTML reports as artifacts
+- ✅ HTML report output (`--format html --output <path>`)
+- ✅ GitHub Actions annotations (`--annotations github`)
+- ✅ Additional schema types (VideoObject, ImageObject)
+- ✅ Performance verification (200 routes < 5s)
+- ✅ CI documentation + examples
+
+## 🚀 Phase 3.1 (v0.3.1) — Next Release
+
+**Focus:** Publishing fix
+
+- [ ] Release workflow improvements
+- [ ] NPM unpublish before republish
 
 ### Exit Criteria
 
-- [ ] All scoped items merged with tests
-- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
-- [ ] Changeset and changelog entries are ready for release
-
-### Not In v0.3.0
-
-- `schemasentry suggest`
-- `schemasentry scaffold`
+- [ ] Release workflow passes
+- [ ] Packages published to npm
 
 ## 🧪 Phase 4 (v0.4.0)
 

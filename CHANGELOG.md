@@ -8,6 +8,26 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-02-11
+
+### Fixed
+- Release workflow to unpublish existing npm packages before publishing
+- GitHub tag handling to delete existing tags before creating releases
+
+## [0.3.0] - 2026-02-11
+
+### Added
+- HTML report output with `--format html --output <path>`
+- GitHub Actions annotations with `--annotations github` for PR reviews
+- VideoObject schema type for video content
+- ImageObject schema type for image content
+- Performance benchmark test (200 routes < 5s)
+- CI integration documentation
+
+### Changed
+- Multiple output formats supported (JSON, HTML)
+- Default output format remains JSON for machine readability
+
 ## [0.2.0] - 2026-02-10
 
 ### Added
@@ -45,6 +65,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.1
+[0.3.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.0
 [0.2.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.2.0
 [0.1.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.1.0
