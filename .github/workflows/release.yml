@@ -90,7 +90,15 @@ jobs:
       - name: Configure npm auth
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - name: Publish to npm
-        run: pnpm release
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          # Unpublish existing packages if they already exist
+          npm unpublish @schemasentry/core@${VERSION} --force 2>/dev/null || true
+          npm unpublish @schemasentry/next@${VERSION} --force 2>/dev/null || true
+          npm unpublish @schemasentry/cli@${VERSION} --force 2>/dev/null || true
+          # Publish packages
+          pnpm release
       - name: Delete existing tag (if any)
         env:
           VERSION: ${{ needs.prepare.outputs.version }}
