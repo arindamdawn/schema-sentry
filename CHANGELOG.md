@@ -8,6 +8,16 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-02-11
+
+### Added
+- README files for npm packages (@schemasentry/core, @schemasentry/cli, @schemasentry/next)
+- Banner image for project README
+
+### Changed
+- README layout with centered banner and navigation links
+- ROADMAP updated with v0.4.0 detailed scope
+
 ## [0.3.1] - 2026-02-11
 
 ### Fixed
@@ -65,7 +75,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.2
 [0.3.1]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.1
 [0.3.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.0
 [0.2.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.2.0
