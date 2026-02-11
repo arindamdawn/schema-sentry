@@ -8,6 +8,9 @@
 
 Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines and AI systems.
 
+**Current release:** `v0.3.1` (publishing workflow reliability fixes)  
+**Next release target:** `v0.4.0` (`schemasentry suggest`, read-only experimental with provider adapters)
+
 ## ✨ Features
 
 - 🔒 **Type-safe builders** for 13+ schema types (including VideoObject, ImageObject)

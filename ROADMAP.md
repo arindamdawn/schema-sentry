@@ -4,7 +4,7 @@ Last updated: 2026-02-11
 
 ## 🎉 Current Status
 
-**v0.3.0 is live!** Published to npm and ready to use.
+**v0.3.1 is live!** Published to npm and ready to use.
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
 
@@ -47,31 +47,64 @@ Last updated: 2026-02-11
 - ✅ Performance verification (200 routes < 5s)
 - ✅ CI documentation + examples
 
-## 🚀 Phase 3.1 (v0.3.1) — Next Release
+## ✅ Phase 3.1 (v0.3.1) — COMPLETE
 
 **Focus:** Publishing fix
 
-- [ ] Release workflow improvements
-- [ ] NPM unpublish before republish
+- ✅ Release workflow improvements
+- ✅ NPM unpublish before republish
+- ✅ GitHub tag conflict handling during release
 
-### Exit Criteria
+## 🧪 Phase 4 (v0.4.0) — Next Release
 
-- [ ] Release workflow passes
-- [ ] Packages published to npm
+**Focus:** AI-assisted authoring (experimental, read-only first)
 
-## 🧪 Phase 4 (v0.4.0)
+### Feasibility Assessment
 
-**Focus:** AI-assisted authoring (experimental)
+- ⚠️ Current Phase 4 scope is too broad for a single release (new command surface + LLM integration + write/update behavior + launch assets).
+- ✅ Feasible if broken into read-only recommendation first, then write/update automation.
 
-- [ ] `schemasentry suggest` — AI-powered schema recommendations
-  - Analyze page content and suggest best schema types
-  - Recommend additional fields based on context
-  - Integration with LLM APIs for smart suggestions
+### v0.4.0 Scope (Implementable)
+
+- [ ] `schemasentry suggest` (read-only, experimental)
+  - Analyze route content/manifest and suggest schema types + missing fields
+  - Emit deterministic JSON output for CI review (`--format json` default)
+  - No file writes in this phase
+- [ ] Provider architecture for suggestions
+  - Integrate Vercel AI SDK in `@schemasentry/cli` through an adapter layer
+  - Support OpenAI, Anthropic, Gemini, and OpenRouter as configurable providers
+  - Support `--provider` selection and provider-specific API key env vars
+  - Graceful fallback/error model when provider is not configured
+- [ ] Safety and observability
+  - Explicit `--experimental` gate for AI-assisted command
+  - Clear command/runtime docs for offline/OSS mode behavior
+- [ ] Docs + examples
+  - Usage docs for `suggest`
+  - CI example showing read-only suggestion reports
+
+### v0.4.0 Exit Criteria
+
+- [ ] `schemasentry suggest` shipped with tests
+- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+- [ ] Changelog + docs updated with experimental limitations
+
+## 🧪 Phase 4.1 (v0.4.1)
+
+**Focus:** Scaffold automation and authoring workflow
+
 - [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
   - Auto-detect page type from content/URL patterns
   - Generate sensible defaults based on page analysis
   - Interactive prompts for customization
+- [ ] Dry-run mode + diff preview before writes
+- [ ] Rollback-safe write strategy for generated updates
+
+## 🚀 Phase 4.2 (v0.4.2)
+
+**Focus:** Adoption assets and launch readiness
+
 - [ ] Video tutorials and expanded docs
+- [ ] Product messaging and launch checklist
 - [ ] **Product Hunt launch** 🚀
 
 ## 🏁 Phase 5 (v1.0.0)
