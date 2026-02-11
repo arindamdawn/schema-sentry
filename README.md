@@ -10,14 +10,15 @@ Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD
 
 ## ✨ Features
 
-- 🔒 **Type-safe builders** for 11+ common schema types
+- 🔒 **Type-safe builders** for 13+ schema types (including VideoObject, ImageObject)
 - 🎯 **Deterministic JSON-LD** for clean, reviewable diffs
 - ⚛️ **App Router `<Schema />` component** for seamless Next.js integration
 - 🧭 **Manifest-driven coverage** ensures every route has schema
 - 🔍 **CLI validation** with clear, actionable errors
-- 📊 **Schema audit** — Analyze site health and detect missing schema (v0.2.0)
-- 🧪 **CLI commands today** — `init`, `validate`, and `audit`
-- 🛣️ **Next up (v0.3.0)** — HTML reports, PR annotations, and more schema types
+- 📊 **Schema audit** — Analyze site health and detect missing schema
+- 🧪 **CLI commands** — `init`, `validate`, and `audit`
+- 📄 **HTML Reports** — Generate shareable reports with `--format html --output <path>`
+- 🗣️ **PR Annotations** — GitHub Actions annotations with `--annotations github`
 - 📴 **Zero network calls** in OSS mode
 - 🤖 **AI-ready output** optimized for LLM consumption and citations
 
