@@ -91,6 +91,12 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - name: Publish to npm
         run: pnpm release
+      - name: Delete existing tag (if any)
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          git tag -d v${VERSION} 2>/dev/null || true
+          git push origin :refs/tags/v${VERSION} 2>/dev/null || true
       - name: Create GitHub Release
         env:
           VERSION: ${{ needs.prepare.outputs.version }}
