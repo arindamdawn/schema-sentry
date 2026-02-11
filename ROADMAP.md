@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-02-10
+Last updated: 2026-02-11
 
 ## 🎉 Current Status
 
@@ -43,11 +43,33 @@ Schema Sentry helps your content get discovered by both **traditional search eng
 
 **Focus:** CI reporting and audit visibility
 
-- [ ] HTML report output (summary + per-route issues)
+### Scope
+
+- [ ] HTML report output for `validate` and `audit`
+  - Add `--format html --output <path>` while keeping JSON output as default
+  - Include summary metrics and per-route issues
 - [ ] GitHub Actions annotations for PR reviews
+  - Add optional annotations mode for CI (`::error` / `::warning`)
+  - Keep machine-readable JSON report output for downstream tooling
 - [ ] Additional schema types (VideoObject, ImageObject)
+  - Add builders, validation rules, tests, and docs updates
 - [ ] Performance verification (200 routes < 5s)
+  - Add reproducible benchmark fixture + command
+  - Add CI guardrail to detect regressions
 - [ ] CI documentation + examples
+  - Provide workflow snippet for annotations
+  - Provide workflow snippet for uploading HTML reports as artifacts
+
+### Exit Criteria
+
+- [ ] All scoped items merged with tests
+- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+- [ ] Changeset and changelog entries are ready for release
+
+### Not In v0.3.0
+
+- `schemasentry suggest`
+- `schemasentry scaffold`
 
 ## 🧪 Phase 4 (v0.4.0)
 
