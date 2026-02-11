@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build and Test (Node.js ${{ matrix.node }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20]
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
@@ -25,6 +28,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build packages
         run: pnpm --filter=!schema-sentry-example-next-app -r build
+      - name: Verify audit performance target
+        run: pnpm --filter @schemasentry/cli benchmark:200
       - name: Run lint
         run: pnpm --filter=!schema-sentry-example-next-app -r lint
       - name: Run typecheck

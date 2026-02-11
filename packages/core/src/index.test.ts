@@ -4,12 +4,14 @@ import {
   BlogPosting,
   BreadcrumbList,
   Event,
+  ImageObject,
   LocalBusiness,
   Organization,
   Review,
   SCHEMA_CONTEXT,
   stableStringify,
-  validateSchema
+  validateSchema,
+  VideoObject
 } from "./index";
 
 describe("stableStringify", () => {
@@ -146,6 +148,25 @@ describe("builders", () => {
       "@type": "Rating",
       ratingValue: 4.5
     });
+  });
+
+  it("creates ImageObject and VideoObject builders", () => {
+    const image = ImageObject({
+      contentUrl: "https://acme.com/assets/hero.jpg",
+      caption: "Hero image"
+    });
+    const video = VideoObject({
+      name: "Launch Demo",
+      description: "Overview of new features",
+      thumbnailUrl: "https://acme.com/assets/demo-thumb.jpg",
+      uploadDate: "2026-02-11",
+      contentUrl: "https://acme.com/assets/demo.mp4"
+    });
+
+    expect(image["@type"]).toBe("ImageObject");
+    expect(image.contentUrl).toBe("https://acme.com/assets/hero.jpg");
+    expect(video["@type"]).toBe("VideoObject");
+    expect(video.thumbnailUrl).toBe("https://acme.com/assets/demo-thumb.jpg");
   });
 });
 
@@ -292,6 +313,35 @@ describe("validateSchema", () => {
     expect(result.issues.some((issue) => issue.ruleId === "schema.required.itemReviewed"))
       .toBe(true);
     expect(result.issues.some((issue) => issue.ruleId === "schema.required.reviewRating"))
+      .toBe(true);
+  });
+
+  it("validates ImageObject requires contentUrl", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "ImageObject"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.type")).toBe(false);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.contentUrl"))
+      .toBe(true);
+  });
+
+  it("validates VideoObject required fields", () => {
+    const node = {
+      "@context": SCHEMA_CONTEXT,
+      "@type": "VideoObject",
+      name: "Demo"
+    } as const;
+
+    const result = validateSchema([node as any]);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.type")).toBe(false);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.description"))
+      .toBe(true);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.thumbnailUrl"))
+      .toBe(true);
+    expect(result.issues.some((issue) => issue.ruleId === "schema.required.uploadDate"))
       .toBe(true);
   });
 

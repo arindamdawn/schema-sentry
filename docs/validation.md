@@ -6,8 +6,24 @@ Schema Sentry validates JSON-LD for:
 - Recommended fields (advisory warnings)
 - Manifest coverage
 
-The CLI emits a JSON report to stdout and a human-readable summary to stderr.
-HTML output is planned.
+The CLI emits a JSON report to stdout and a human-readable summary to stderr by default.
+Use HTML output when you need a shareable report artifact.
+Use `--annotations github` in GitHub Actions to emit per-issue PR annotations.
+
+```bash
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json \
+  --format html \
+  --output ./schema-sentry-validate-report.html
+```
+
+```bash
+pnpm schemasentry audit \
+  --data ./schema-sentry.data.json \
+  --format html \
+  --output ./schema-sentry-audit-report.html
+```
 
 ## Audit
 

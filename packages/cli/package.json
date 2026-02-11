@@ -37,6 +37,7 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
+    "benchmark:200": "node ./scripts/benchmark-200-routes.mjs",
     "lint": "echo \"lint not configured\" && exit 0",
     "test": "vitest run",
     "prepack": "pnpm build"
