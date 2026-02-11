@@ -1,6 +1,6 @@
 {
   "name": "@schemasentry/core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Typed schema builders and validation primitives for Schema Sentry.",
   "license": "MIT",
   "type": "module",
