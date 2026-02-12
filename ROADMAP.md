@@ -131,9 +131,10 @@ Last updated: 2026-02-12
   - Snippets for common schema types
   - Quick actions to generate schema stubs
 - [ ] CLI schema visualization
-  - Tree/diagram output showing schema hierarchy
-  - Entity relationship visualization
-  - `--format tree` and `--format diagram` flags
+  - Tree output showing schema hierarchy with nesting
+  - Table output with columns: Route, Schema Types, Blocks, Status
+  - Diagram output for entity relationships
+  - `--format tree`, `--format table`, `--format diagram` flags
 
 ## 🧪 Phase 4.3 (v0.7.0)
 
