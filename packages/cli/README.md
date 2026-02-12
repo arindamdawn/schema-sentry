@@ -56,6 +56,20 @@ pnpm schemasentry audit \
   --output ./report.html
 ```
 
+### `collect`
+
+Collect JSON-LD blocks from built HTML output and emit schema data JSON:
+
+```bash
+pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
+```
+
+Check collected output against your current data file (CI drift guard):
+
+```bash
+pnpm schemasentry collect --root ./out --check --data ./schema-sentry.data.json
+```
+
 ## Options
 
 | Option | Description |
@@ -63,6 +77,8 @@ pnpm schemasentry audit \
 | `--format json\|html` | Output format |
 | `--annotations none\|github` | CI annotations |
 | `-o, --output <path>` | Write output to file |
+| `--root <path>` | Root directory to scan for HTML output (`collect`) |
+| `--check` | Compare collected output with existing data and fail on drift (`collect`) |
 | `--recommended / --no-recommended` | Enable recommended field checks |
 
 ## Documentation
