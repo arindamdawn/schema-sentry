@@ -222,6 +222,13 @@ pnpm schemasentry collect \
   --root ./out \
   --check \
   --data ./schema-sentry.data.json
+
+pnpm schemasentry collect \
+  --root ./out \
+  --routes / /blog /faq \
+  --strict-routes \
+  --check \
+  --data ./schema-sentry.data.json
 ```
 
 The CLI emits JSON output by default and exits with code 1 on errors, making it perfect for CI/CD pipelines.
