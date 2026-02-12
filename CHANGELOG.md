@@ -18,9 +18,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - End-to-end example script demonstrating `init` → `collect` → `validate` workflow
 
 ### Changed
-- CLI now reads from collected data file when available
-- Improved data file handling for CI workflows
-- Updated documentation with collect command examples
+- Added collect workflow and drift-check documentation across README and CI docs
+- Added route-filter examples for `collect` (`--routes`, `--strict-routes`)
 
 ## [0.3.2] - 2026-02-11
 

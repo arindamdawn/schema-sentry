@@ -201,10 +201,14 @@ For static exports, point `--root` to your export directory (for example `./out`
 
 | Option | Description |
 |--------|-------------|
-| `--format json\|html` | Output format (default: json) |
-| `--annotations none\|github` | Emit CI annotations (default: none) |
+| `--format json\|html` | Output format (`validate`/`audit`, default: json) |
+| `--annotations none\|github` | Emit CI annotations (`validate`/`audit`, default: none) |
 | `-o, --output <path>` | Write output to file |
-| `--recommended / --no-recommended` | Enable/disable recommended field checks (default: enabled) |
+| `--recommended / --no-recommended` | Enable/disable recommended field checks (`validate`/`audit`, default: enabled) |
+| `--root <path>` | Root directory to scan for HTML output (`collect`) |
+| `--routes <routes...>` | Collect only selected routes (`collect`) |
+| `--strict-routes` | Fail when a requested route is missing (`collect`) |
+| `--check` | Compare collected output with existing schema data and fail on drift (`collect`) |
 
 ## Performance the CLI validation Guardrail
 
