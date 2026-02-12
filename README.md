@@ -17,8 +17,8 @@
 
 Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines and AI systems.
 
-**Current release:** `v0.3.1` (publishing workflow reliability fixes)  
-**Next release target:** `v0.4.0` (`schemasentry suggest`, read-only experimental with provider adapters)
+**Current release:** `v0.3.2` (documentation and release-readiness polish)  
+**Next release target:** `v0.4.0` (`schemasentry collect`, HTML output collection + CI drift checks)
 
 ## ✨ Features
 
@@ -213,6 +213,15 @@ pnpm schemasentry audit \
   --data ./schema-sentry.data.json \
   --format html \
   --output ./schema-sentry-audit-report.html
+
+pnpm schemasentry collect \
+  --root ./out \
+  --output ./schema-sentry.data.json
+
+pnpm schemasentry collect \
+  --root ./out \
+  --check \
+  --data ./schema-sentry.data.json
 ```
 
 The CLI emits JSON output by default and exits with code 1 on errors, making it perfect for CI/CD pipelines.

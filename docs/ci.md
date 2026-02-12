@@ -167,6 +167,25 @@ Use `audit` command to analyze site-wide schema coverage:
       --output ./audit-report.json
 ```
 
+## Data Drift Check in CI
+
+Use `collect --check` to detect when rendered JSON-LD output has diverged from
+`schema-sentry.data.json`:
+
+```yaml
+- name: Build app output
+  run: pnpm --filter schema-sentry-example-next-app build
+
+- name: Detect schema data drift
+  run: |
+    pnpm schemasentry collect \
+      --root ./examples/next-app/.next/server/app \
+      --check \
+      --data ./examples/next-app/schema-sentry.data.json
+```
+
+For static exports, point `--root` to your export directory (for example `./out`).
+
 ## Configuration
 
 ### Required Files

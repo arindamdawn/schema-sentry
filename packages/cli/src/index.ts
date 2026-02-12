@@ -7,11 +7,18 @@ import { stableStringify, type Manifest } from "@schemasentry/core";
 import { buildReport, type Report, type SchemaDataFile } from "./report";
 import { fileExists, getDefaultAnswers, writeInitFiles } from "./init";
 import { buildAuditReport } from "./audit";
-import { formatSummaryLine } from "./summary";
+import { formatDuration, formatSummaryLine } from "./summary";
 import { ConfigError, loadConfig, resolveRecommended } from "./config";
 import { scanRoutes } from "./routes";
 import { renderHtmlReport } from "./html";
 import { emitGitHubAnnotations } from "./annotations";
+import {
+  collectSchemaData,
+  compareSchemaData,
+  formatSchemaDataDrift,
+  type CollectStats,
+  type CollectWarning
+} from "./collect";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
@@ -328,6 +335,134 @@ program
     process.exit(report.ok ? 0 : 1);
   });
 
+program
+  .command("collect")
+  .description("Collect JSON-LD blocks from built HTML output")
+  .option("--root <path>", "Root directory to scan for HTML files", ".")
+  .option("--format <format>", "Output format (json)", "json")
+  .option("-o, --output <path>", "Write collected schema data to file")
+  .option("--check", "Compare collected output with an existing schema data file")
+  .option(
+    "-d, --data <path>",
+    "Path to existing schema data JSON for --check",
+    "schema-sentry.data.json"
+  )
+  .action(async (options: {
+    root?: string;
+    format?: string;
+    output?: string;
+    check?: boolean;
+    data: string;
+  }) => {
+    const start = Date.now();
+    const format = resolveCollectOutputFormat(options.format);
+    const rootDir = path.resolve(process.cwd(), options.root ?? ".");
+    const check = options.check ?? false;
+
+    let collected: Awaited<ReturnType<typeof collectSchemaData>>;
+    try {
+      collected = await collectSchemaData({ rootDir });
+    } catch (error) {
+      const reason =
+        error instanceof Error && error.message.length > 0
+          ? error.message
+          : "Unknown file system error";
+      printCliError(
+        "collect.scan_failed",
+        `Could not scan HTML output at ${rootDir}: ${reason}`,
+        "Point --root to a directory containing built HTML output."
+      );
+      process.exit(1);
+      return;
+    }
+
+    if (collected.stats.htmlFiles === 0) {
+      printCliError(
+        "collect.no_html",
+        `No HTML files found under ${rootDir}`,
+        "Point --root to a static output directory (for example ./out)."
+      );
+      process.exit(1);
+      return;
+    }
+
+    let driftDetected = false;
+    if (check) {
+      const existingPath = path.resolve(process.cwd(), options.data);
+      let existingRaw: string;
+
+      try {
+        existingRaw = await readFile(existingPath, "utf8");
+      } catch (error) {
+        printCliError(
+          "data.not_found",
+          `Schema data not found at ${existingPath}`,
+          "Run `schemasentry collect --output ./schema-sentry.data.json` to generate it."
+        );
+        process.exit(1);
+        return;
+      }
+
+      let existingData: SchemaDataFile;
+      try {
+        existingData = JSON.parse(existingRaw) as SchemaDataFile;
+      } catch (error) {
+        printCliError(
+          "data.invalid_json",
+          "Schema data is not valid JSON",
+          "Check the JSON syntax or regenerate with `schemasentry collect --output`."
+        );
+        process.exit(1);
+        return;
+      }
+
+      if (!isSchemaData(existingData)) {
+        printCliError(
+          "data.invalid_shape",
+          "Schema data must contain a 'routes' object with array values",
+          "Ensure each route maps to an array of JSON-LD blocks."
+        );
+        process.exit(1);
+        return;
+      }
+
+      const drift = compareSchemaData(existingData, collected.data);
+      driftDetected = drift.hasChanges;
+      if (driftDetected) {
+        console.error(formatSchemaDataDrift(drift));
+      } else {
+        console.error("collect | No schema data drift detected.");
+      }
+    }
+
+    const content = formatCollectOutput(collected.data, format);
+    if (options.output) {
+      const resolvedPath = path.resolve(process.cwd(), options.output);
+      try {
+        await mkdir(path.dirname(resolvedPath), { recursive: true });
+        await writeFile(resolvedPath, `${content}\n`, "utf8");
+        console.error(`Collected data written to ${resolvedPath}`);
+      } catch (error) {
+        const reason =
+          error instanceof Error && error.message.length > 0
+            ? error.message
+            : "Unknown file system error";
+        printCliError(
+          "output.write_failed",
+          `Could not write collected data to ${resolvedPath}: ${reason}`
+        );
+        process.exit(1);
+        return;
+      }
+    } else if (!check) {
+      console.log(content);
+    }
+
+    printCollectWarnings(collected.warnings);
+    printCollectSummary(collected.stats, Date.now() - start, check, driftDetected);
+    process.exit(driftDetected ? 1 : 0);
+  });
+
 function isManifest(value: unknown): value is Manifest {
   if (!value || typeof value !== "object") {
     return false;
@@ -367,6 +502,7 @@ function isSchemaData(value: unknown): value is SchemaDataFile {
 }
 
 type OutputFormat = "json" | "html";
+type CollectOutputFormat = "json";
 type AnnotationsMode = "none" | "github";
 
 function resolveOutputFormat(value?: string): OutputFormat {
@@ -399,6 +535,21 @@ function resolveAnnotationsMode(value?: string): AnnotationsMode {
   return "none";
 }
 
+function resolveCollectOutputFormat(value?: string): CollectOutputFormat {
+  const format = (value ?? "json").trim().toLowerCase();
+  if (format === "json") {
+    return format;
+  }
+
+  printCliError(
+    "output.invalid_format",
+    `Unsupported collect output format '${value ?? ""}'`,
+    "Use --format json."
+  );
+  process.exit(1);
+  return "json";
+}
+
 function formatReportOutput(
   report: Report,
   format: OutputFormat,
@@ -409,6 +560,16 @@ function formatReportOutput(
   }
 
   return stableStringify(report);
+}
+
+function formatCollectOutput(
+  data: SchemaDataFile,
+  format: CollectOutputFormat
+): string {
+  if (format === "json") {
+    return stableStringify(data);
+  }
+  return stableStringify(data);
 }
 
 async function emitReport(options: {
@@ -539,6 +700,42 @@ function printAuditSummary(
   if (!coverageEnabled) {
     console.error("Coverage checks skipped (no manifest provided).");
   }
+}
+
+function printCollectWarnings(warnings: CollectWarning[]): void {
+  if (warnings.length === 0) {
+    return;
+  }
+
+  const maxPrinted = 10;
+  console.error(`collect | Warnings: ${warnings.length}`);
+  for (const warning of warnings.slice(0, maxPrinted)) {
+    console.error(`- ${warning.file}: ${warning.message}`);
+  }
+  if (warnings.length > maxPrinted) {
+    console.error(`- ... ${warnings.length - maxPrinted} more warning(s)`);
+  }
+}
+
+function printCollectSummary(
+  stats: CollectStats,
+  durationMs: number,
+  checked: boolean,
+  driftDetected: boolean
+): void {
+  const parts = [
+    `HTML files: ${stats.htmlFiles}`,
+    `Routes: ${stats.routes}`,
+    `Blocks: ${stats.blocks}`,
+    `Invalid blocks: ${stats.invalidBlocks}`,
+    `Duration: ${formatDuration(durationMs)}`
+  ];
+
+  if (checked) {
+    parts.push(`Check: ${driftDetected ? "drift_detected" : "clean"}`);
+  }
+
+  console.error(`collect | ${parts.join(" | ")}`);
 }
 
 async function promptAnswers(): Promise<{

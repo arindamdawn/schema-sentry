@@ -87,3 +87,9 @@ The CLI expects a schema data file with JSON-LD blocks per route.
   }
 }
 ```
+
+You can generate this file from built HTML output:
+
+```bash
+pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
+```
