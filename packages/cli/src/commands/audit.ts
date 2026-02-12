@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { readFile } from "node:fs/promises";
+import { promises as fs } from "node:fs";
 import path from "path";
 import chalk from "chalk";
 import type { Manifest } from "@schemasentry/core";
@@ -30,6 +31,7 @@ export const auditCommand = new Command("audit")
   .option("--scan", "Scan the filesystem for routes")
   .option("--root <path>", "Project root for scanning", ".")
   .option("--app-dir <path>", "Path to Next.js app directory for source scanning", "./app")
+  .option("--source-scan", "Enable source file scanning for ghost route detection", false)
   .option("-c, --config <path>", "Path to config JSON")
   .option("--format <format>", "Report format (json|html)", "json")
   .option("--annotations <provider>", "Emit CI annotations (none|github)", "none")
@@ -43,6 +45,7 @@ export const auditCommand = new Command("audit")
     scan?: boolean;
     root?: string;
     appDir?: string;
+    sourceScan?: boolean;
     format?: string;
     annotations?: string;
     output?: string;
@@ -92,9 +95,12 @@ export const auditCommand = new Command("audit")
       data = undefined;
     }
 
-    // Scan source files to detect Schema component usage
-    console.error(chalk.gray("Scanning source files for Schema components..."));
-    const sourceScan = await scanSourceFiles({ rootDir: options.root ?? ".", appDir });
+    // Scan source files to detect Schema component usage (skip if --source-scan=false)
+    // Default is true (enabled)
+    const sourceScanEnabled = options.sourceScan !== false;
+    const sourceScanResult = !sourceScanEnabled
+      ? { routes: [], totalFiles: 0, filesWithSchema: 0, filesMissingSchema: 0 }
+      : await scanSourceFiles({ rootDir: options.root ?? ".", appDir });
 
     // Scan filesystem for routes if requested
     const scannedRoutes = options.scan
@@ -102,10 +108,11 @@ export const auditCommand = new Command("audit")
       : [];
 
     // Identify ghost routes (routes in manifest but no Schema component in source)
+    // Skip ghost route detection if source scanning is disabled
     const ghostRoutes: string[] = [];
-    if (manifest) {
+    if (manifest && sourceScanEnabled) {
       for (const route of Object.keys(manifest.routes)) {
-        const sourceInfo = sourceScan.routes.find(r => r.route === route);
+        const sourceInfo = sourceScanResult.routes.find(r => r.route === route);
         if (!sourceInfo?.hasSchemaUsage) {
           ghostRoutes.push(route);
         }
@@ -147,14 +154,12 @@ export const auditCommand = new Command("audit")
       report,
       hasManifest: Boolean(manifest),
       ghostRoutes,
-      sourceScan,
+      sourceScan: sourceScanResult,
       durationMs: Date.now() - start
     });
     
     process.exit(report.ok && ghostRoutes.length === 0 ? 0 : 1);
   });
-
-import { promises as fs } from "node:fs";
 
 type EnhancedAuditSummaryOptions = {
   report: ReturnType<typeof buildAuditReport>;
@@ -181,11 +186,13 @@ function printEnhancedAuditSummary(options: EnhancedAuditSummaryOptions): void {
   console.error(`   Duration: ${formatDuration(durationMs)}`);
   
   // Source code analysis
-  console.error(chalk.gray(`\n📁 Source Code Analysis:`));
-  console.error(`   Page files found: ${sourceScan.totalFiles}`);
-  console.error(chalk.green(`   ✅ With Schema components: ${sourceScan.filesWithSchema}`));
-  if (sourceScan.filesMissingSchema > 0) {
-    console.error(chalk.red(`   ❌ Missing Schema: ${sourceScan.filesMissingSchema}`));
+  if (sourceScan.totalFiles > 0) {
+    console.error(chalk.gray(`\n📁 Source Code Analysis:`));
+    console.error(`   Page files found: ${sourceScan.totalFiles}`);
+    console.error(chalk.green(`   ✅ With Schema components: ${sourceScan.filesWithSchema}`));
+    if (sourceScan.filesMissingSchema > 0) {
+      console.error(chalk.red(`   ❌ Missing Schema: ${sourceScan.filesMissingSchema}`));
+    }
   }
   
   // Ghost routes
