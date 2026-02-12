@@ -11,8 +11,8 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.4.0` (new `schemasentry collect` command for automated JSON-LD extraction)
-**Next release target:** `v0.5.0` (`schemasentry scaffold` first, plus pattern-based auto-detection)
+**Current release:** `v0.5.0` (new `schemasentry scaffold` command with pattern-based auto-detection)
+**Next release target:** `v0.6.0` (VS Code extension and CLI visualization)
 
 ## ✨ Features
 
@@ -23,7 +23,8 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 - 🔍 **CLI validation** with clear, actionable errors for CI/CD pipelines
 - 📊 **Schema audit** — Analyze site health, detect missing/incomplete schema
 - 📥 **Automated data collection** — `collect` command scans built apps to auto-generate schema data files
-- 🧪 **CLI commands** — `init`, `validate`, `audit`, `collect` for complete workflows
+- 🧪 **CLI commands** — `init`, `validate`, `audit`, `collect`, `scaffold` for complete workflows
+- 🏗️ **Schema scaffolding** — `scaffold` command auto-generates schema stubs from URL patterns (/blog/* → BlogPosting, /products/* → Product)
 - 📄 **HTML Reports** — Generate shareable reports with `--format html --output <path>`
 - 🗣️ **PR Annotations** — GitHub Actions annotations with `--annotations github`
 - 📴 **Zero network calls** in OSS mode (privacy-first, offline-friendly)
@@ -224,6 +225,21 @@ pnpm schemasentry collect \
   --strict-routes \
   --check \
   --data ./schema-sentry.data.json
+
+pnpm schemasentry scaffold \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json
+
+pnpm schemasentry scaffold \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json \
+  --write
+
+pnpm schemasentry scaffold \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json \
+  --write \
+  --force
 ```
 
 The CLI emits JSON output by default and exits with code 1 on errors, making it perfect for CI/CD pipelines.

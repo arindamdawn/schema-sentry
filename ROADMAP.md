@@ -94,30 +94,32 @@ Last updated: 2026-02-12
 9. Plugin API for custom org rules
 10. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
-## 🧪 Phase 4.1 (v0.5.0) — Next Release
+## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
 **Focus:** Core authoring workflow and adoption
 
-### v0.5.0 Scope
+### Released
 
-- [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
+- ✅ `schemasentry scaffold` — Generate schema for pages without it (write/update)
   - Use auto-detected page types as defaults
   - `--dry-run` as default behavior with explicit diff preview
   - `--write` gate for file updates
   - Rollback-safe write strategy for generated updates
-- [ ] Pattern-based auto-detection
+- ✅ Pattern-based auto-detection
   - Infer schema types from URL patterns (e.g., `/blog/*` → BlogPosting, `/products/*` → Product)
   - Auto-generate manifest entries based on route conventions
   - Configurable pattern rules in schema-sentry.config.json
-- [ ] Docs + examples
+- ✅ Docs + examples
   - End-to-end setup: `collect` -> `auto-detect` -> `scaffold` -> `validate`
   - CI guidance for dry-run schema generation checks
 
 ### v0.5.0 Exit Criteria
 
-- [ ] Auto-detection + scaffold shipped with tests
-- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
-- [ ] Changelog + docs updated with usage and safety notes
+- ✅ Auto-detection + scaffold shipped with tests
+- ✅ `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+- ✅ Changelog + docs updated with usage and safety notes
+
+## 🧪 Phase 4.2 (v0.6.0) — Next Release
 
 ## 🧪 Phase 4.2 (v0.6.0)
 

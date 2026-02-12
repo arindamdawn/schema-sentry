@@ -20,6 +20,11 @@ import {
   type CollectStats,
   type CollectWarning
 } from "./collect";
+import {
+  scaffoldSchema,
+  formatScaffoldPreview,
+  applyScaffold
+} from "./scaffold";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
@@ -490,6 +495,85 @@ program
       strictRoutes
     });
     process.exit(driftDetected ? 1 : 0);
+  });
+
+program
+  .command("scaffold")
+  .description("Generate schema stubs for routes without schema (dry-run by default)")
+  .option(
+    "-m, --manifest <path>",
+    "Path to manifest JSON",
+    "schema-sentry.manifest.json"
+  )
+  .option(
+    "-d, --data <path>",
+    "Path to schema data JSON",
+    "schema-sentry.data.json"
+  )
+  .option("--root <path>", "Project root for scanning", ".")
+  .option("--write", "Apply changes (default is dry-run)")
+  .option("-f, --force", "Skip confirmation prompts")
+  .action(async (options: {
+    manifest: string;
+    data: string;
+    root?: string;
+    write?: boolean;
+    force?: boolean;
+  }) => {
+    const start = Date.now();
+    const manifestPath = path.resolve(process.cwd(), options.manifest);
+    const dataPath = path.resolve(process.cwd(), options.data);
+    const rootDir = path.resolve(process.cwd(), options.root ?? ".");
+    const dryRun = !(options.write ?? false);
+    const force = options.force ?? false;
+
+    const result = await scaffoldSchema({
+      manifestPath,
+      dataPath,
+      rootDir,
+      dryRun,
+      force
+    });
+
+    console.error(formatScaffoldPreview(result));
+
+    if (!result.wouldUpdate) {
+      process.exit(0);
+      return;
+    }
+
+    if (dryRun) {
+      console.error("\nDry run complete. Use --write to apply changes.");
+      process.exit(0);
+      return;
+    }
+
+    if (!force) {
+      console.error("\nScaffolding will update:");
+      console.error(`  - ${manifestPath}`);
+      console.error(`  - ${dataPath}`);
+      console.error("\nUse --force to skip this confirmation.");
+    }
+
+    try {
+      await applyScaffold(result, {
+        manifestPath,
+        dataPath,
+        rootDir,
+        dryRun,
+        force
+      });
+      console.error(`\nScaffold complete in ${Date.now() - start}ms`);
+      process.exit(0);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      printCliError(
+        "scaffold.apply_failed",
+        `Failed to apply scaffold: ${message}`,
+        "Check file permissions or disk space."
+      );
+      process.exit(1);
+    }
   });
 
 function isManifest(value: unknown): value is Manifest {
