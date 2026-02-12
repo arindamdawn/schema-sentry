@@ -8,6 +8,21 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-02-12
+
+### Added
+- `schemasentry scaffold` - New command to generate schema stubs for pages without schema
+  - Pattern-based auto-detection infers schema types from URL conventions (/blog/* → BlogPosting, /products/* → Product)
+  - Dry-run mode by default with `--write` flag to apply changes
+  - Rollback-safe file updates with `--force` to skip confirmation
+  - Type-specific schema stubs: BlogPosting, Product, FAQPage, HowTo, Event, Article, Organization, WebSite
+- Pattern-based auto-detection module with 15+ default URL patterns
+- Configurable pattern rules support in schema-sentry.config.json
+
+### Changed
+- Updated README with scaffold command documentation and examples
+- Updated ROADMAP to mark v0.5.0 complete
+
 ## [0.4.0] - 2026-02-12
 
 ### Added
