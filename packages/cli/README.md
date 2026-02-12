@@ -70,6 +70,17 @@ Check collected output against your current data file (CI drift guard):
 pnpm schemasentry collect --root ./out --check --data ./schema-sentry.data.json
 ```
 
+Collect and compare only selected routes, failing if any required route is missing:
+
+```bash
+pnpm schemasentry collect \
+  --root ./out \
+  --routes / /blog /faq \
+  --strict-routes \
+  --check \
+  --data ./schema-sentry.data.json
+```
+
 ## Options
 
 | Option | Description |
@@ -78,6 +89,8 @@ pnpm schemasentry collect --root ./out --check --data ./schema-sentry.data.json
 | `--annotations none\|github` | CI annotations |
 | `-o, --output <path>` | Write output to file |
 | `--root <path>` | Root directory to scan for HTML output (`collect`) |
+| `--routes <routes...>` | Collect only specific routes (`collect`) |
+| `--strict-routes` | Fail when any route passed to `--routes` is missing (`collect`) |
 | `--check` | Compare collected output with existing data and fail on drift (`collect`) |
 | `--recommended / --no-recommended` | Enable recommended field checks |
 

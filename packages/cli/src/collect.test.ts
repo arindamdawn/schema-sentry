@@ -5,7 +5,8 @@ import path from "node:path";
 import {
   collectSchemaData,
   compareSchemaData,
-  formatSchemaDataDrift
+  formatSchemaDataDrift,
+  normalizeRouteFilter
 } from "./collect";
 import type { SchemaDataFile } from "./report";
 
@@ -54,6 +55,8 @@ describe("collectSchemaData", () => {
     expect(result.stats.routes).toBe(2);
     expect(result.stats.blocks).toBe(2);
     expect(result.stats.invalidBlocks).toBe(0);
+    expect(result.requestedRoutes).toEqual([]);
+    expect(result.missingRoutes).toEqual([]);
     expect(result.data.routes["/"]?.[0]?.["@type"]).toBe("Organization");
     expect(result.data.routes["/blog"]?.[0]?.["@type"]).toBe("WebPage");
   });
@@ -82,6 +85,43 @@ describe("collectSchemaData", () => {
       "Organization",
       "WebPage"
     ]);
+  });
+
+  it("supports route filtering and reports missing requested routes", async () => {
+    const rootDir = await makeTempDir();
+    await writeFile(
+      rootDir,
+      "index.html",
+      [
+        "<html><body>",
+        '<script type="application/ld+json">',
+        '{"@context":"https://schema.org","@type":"Organization","name":"Acme"}',
+        "</script>",
+        "</body></html>"
+      ].join("\n")
+    );
+    await writeFile(
+      rootDir,
+      "blog/index.html",
+      [
+        "<html><body>",
+        '<script type="application/ld+json">',
+        '{"@context":"https://schema.org","@type":"WebPage","name":"Blog","url":"https://acme.com/blog"}',
+        "</script>",
+        "</body></html>"
+      ].join("\n")
+    );
+
+    const result = await collectSchemaData({
+      rootDir,
+      routes: ["/", "/missing"]
+    });
+
+    expect(result.stats.routes).toBe(1);
+    expect(result.stats.blocks).toBe(1);
+    expect(Object.keys(result.data.routes)).toEqual(["/"]);
+    expect(result.requestedRoutes).toEqual(["/", "/missing"]);
+    expect(result.missingRoutes).toEqual(["/missing"]);
   });
 });
 
@@ -132,7 +172,17 @@ describe("compareSchemaData", () => {
     expect(drift.addedRoutes).toEqual(["/new"]);
     expect(drift.removedRoutes).toEqual(["/legacy"]);
     expect(drift.changedRoutes).toEqual(["/"]);
-    expect(formatSchemaDataDrift(drift)).toContain("Schema data drift detected");
+    expect(drift.changedRouteDetails[0]?.route).toBe("/");
+    const formatted = formatSchemaDataDrift(drift);
+    expect(formatted).toContain("Schema data drift detected");
+    expect(formatted).toContain("Changed route details:");
+    expect(formatted).toContain("/ blocks 1->1");
   });
 });
 
+describe("normalizeRouteFilter", () => {
+  it("normalizes comma-separated and repeated values", () => {
+    const normalized = normalizeRouteFilter(["/blog,/faq", "/blog", "/", ""]);
+    expect(normalized).toEqual(["/", "/blog", "/faq"]);
+  });
+});

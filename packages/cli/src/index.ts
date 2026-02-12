@@ -16,6 +16,7 @@ import {
   collectSchemaData,
   compareSchemaData,
   formatSchemaDataDrift,
+  normalizeRouteFilter,
   type CollectStats,
   type CollectWarning
 } from "./collect";
@@ -339,6 +340,8 @@ program
   .command("collect")
   .description("Collect JSON-LD blocks from built HTML output")
   .option("--root <path>", "Root directory to scan for HTML files", ".")
+  .option("--routes <routes...>", "Only collect specific routes (repeat or comma-separated)")
+  .option("--strict-routes", "Fail when any route passed via --routes is missing")
   .option("--format <format>", "Output format (json)", "json")
   .option("-o, --output <path>", "Write collected schema data to file")
   .option("--check", "Compare collected output with an existing schema data file")
@@ -349,6 +352,8 @@ program
   )
   .action(async (options: {
     root?: string;
+    routes?: string[];
+    strictRoutes?: boolean;
     format?: string;
     output?: string;
     check?: boolean;
@@ -358,10 +363,12 @@ program
     const format = resolveCollectOutputFormat(options.format);
     const rootDir = path.resolve(process.cwd(), options.root ?? ".");
     const check = options.check ?? false;
+    const requestedRoutes = normalizeRouteFilter(options.routes ?? []);
+    const strictRoutes = options.strictRoutes ?? false;
 
     let collected: Awaited<ReturnType<typeof collectSchemaData>>;
     try {
-      collected = await collectSchemaData({ rootDir });
+      collected = await collectSchemaData({ rootDir, routes: requestedRoutes });
     } catch (error) {
       const reason =
         error instanceof Error && error.message.length > 0
@@ -381,6 +388,16 @@ program
         "collect.no_html",
         `No HTML files found under ${rootDir}`,
         "Point --root to a static output directory (for example ./out)."
+      );
+      process.exit(1);
+      return;
+    }
+
+    if (strictRoutes && collected.missingRoutes.length > 0) {
+      printCliError(
+        "collect.missing_required_routes",
+        `Required routes were not found in collected HTML: ${collected.missingRoutes.join(", ")}`,
+        "Rebuild output, adjust --root, or update --routes."
       );
       process.exit(1);
       return;
@@ -426,7 +443,11 @@ program
         return;
       }
 
-      const drift = compareSchemaData(existingData, collected.data);
+      const existingDataForCompare =
+        requestedRoutes.length > 0
+          ? filterSchemaDataByRoutes(existingData, requestedRoutes)
+          : existingData;
+      const drift = compareSchemaData(existingDataForCompare, collected.data);
       driftDetected = drift.hasChanges;
       if (driftDetected) {
         console.error(formatSchemaDataDrift(drift));
@@ -459,7 +480,15 @@ program
     }
 
     printCollectWarnings(collected.warnings);
-    printCollectSummary(collected.stats, Date.now() - start, check, driftDetected);
+    printCollectSummary({
+      stats: collected.stats,
+      durationMs: Date.now() - start,
+      checked: check,
+      driftDetected,
+      requestedRoutes: collected.requestedRoutes,
+      missingRoutes: collected.missingRoutes,
+      strictRoutes
+    });
     process.exit(driftDetected ? 1 : 0);
   });
 
@@ -717,12 +746,24 @@ function printCollectWarnings(warnings: CollectWarning[]): void {
   }
 }
 
-function printCollectSummary(
-  stats: CollectStats,
-  durationMs: number,
-  checked: boolean,
-  driftDetected: boolean
-): void {
+function printCollectSummary(options: {
+  stats: CollectStats;
+  durationMs: number;
+  checked: boolean;
+  driftDetected: boolean;
+  requestedRoutes: string[];
+  missingRoutes: string[];
+  strictRoutes: boolean;
+}): void {
+  const {
+    stats,
+    durationMs,
+    checked,
+    driftDetected,
+    requestedRoutes,
+    missingRoutes,
+    strictRoutes
+  } = options;
   const parts = [
     `HTML files: ${stats.htmlFiles}`,
     `Routes: ${stats.routes}`,
@@ -734,8 +775,33 @@ function printCollectSummary(
   if (checked) {
     parts.push(`Check: ${driftDetected ? "drift_detected" : "clean"}`);
   }
+  if (requestedRoutes.length > 0) {
+    parts.push(`Route filter: ${requestedRoutes.length}`);
+  }
+  if (missingRoutes.length > 0) {
+    parts.push(`Missing filtered routes: ${missingRoutes.length}`);
+  }
+  if (strictRoutes) {
+    parts.push("Strict routes: enabled");
+  }
 
   console.error(`collect | ${parts.join(" | ")}`);
+}
+
+function filterSchemaDataByRoutes(
+  data: SchemaDataFile,
+  routes: string[]
+): SchemaDataFile {
+  const filteredRoutes: SchemaDataFile["routes"] = {};
+  for (const route of routes) {
+    if (Object.prototype.hasOwnProperty.call(data.routes, route)) {
+      filteredRoutes[route] = data.routes[route];
+    }
+  }
+
+  return {
+    routes: filteredRoutes
+  };
 }
 
 async function promptAnswers(): Promise<{

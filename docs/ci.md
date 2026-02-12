@@ -180,6 +180,8 @@ Use `collect --check` to detect when rendered JSON-LD output has diverged from
   run: |
     pnpm schemasentry collect \
       --root ./examples/next-app/.next/server/app \
+      --routes / /blog /faq \
+      --strict-routes \
       --check \
       --data ./examples/next-app/schema-sentry.data.json
 ```

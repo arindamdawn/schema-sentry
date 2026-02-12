@@ -5,6 +5,7 @@ import type { SchemaDataFile } from "./report";
 
 export type CollectOptions = {
   rootDir: string;
+  routes?: string[];
 };
 
 export type CollectWarning = {
@@ -23,6 +24,8 @@ export type CollectResult = {
   data: SchemaDataFile;
   stats: CollectStats;
   warnings: CollectWarning[];
+  requestedRoutes: string[];
+  missingRoutes: string[];
 };
 
 export type SchemaDataDrift = {
@@ -30,6 +33,15 @@ export type SchemaDataDrift = {
   addedRoutes: string[];
   removedRoutes: string[];
   changedRoutes: string[];
+  changedRouteDetails: RouteDriftDetail[];
+};
+
+export type RouteDriftDetail = {
+  route: string;
+  beforeBlocks: number;
+  afterBlocks: number;
+  addedTypes: string[];
+  removedTypes: string[];
 };
 
 const IGNORED_DIRECTORIES = new Set([".git", "node_modules", ".pnpm-store"]);
@@ -41,6 +53,7 @@ export const collectSchemaData = async (
   options: CollectOptions
 ): Promise<CollectResult> => {
   const rootDir = path.resolve(options.rootDir);
+  const requestedRoutes = normalizeRouteFilter(options.routes ?? []);
   const htmlFiles = (await walkHtmlFiles(rootDir)).sort((a, b) => a.localeCompare(b));
   const routes: Record<string, SchemaNode[]> = {};
   const warnings: CollectWarning[] = [];
@@ -63,17 +76,34 @@ export const collectSchemaData = async (
     warnings.push(...extracted.warnings);
   }
 
+  const missingRoutes: string[] = [];
+  const filteredRoutes =
+    requestedRoutes.length > 0 ? filterRoutesByAllowlist(routes, requestedRoutes) : routes;
+  if (requestedRoutes.length > 0) {
+    for (const route of requestedRoutes) {
+      if (!Object.prototype.hasOwnProperty.call(filteredRoutes, route)) {
+        missingRoutes.push(route);
+      }
+    }
+  }
+  const filteredBlockCount = Object.values(filteredRoutes).reduce(
+    (total, nodes) => total + nodes.length,
+    0
+  );
+
   return {
     data: {
-      routes: sortRoutes(routes)
+      routes: sortRoutes(filteredRoutes)
     },
     stats: {
       htmlFiles: htmlFiles.length,
-      routes: Object.keys(routes).length,
-      blocks: blockCount,
+      routes: Object.keys(filteredRoutes).length,
+      blocks: filteredBlockCount,
       invalidBlocks
     },
-    warnings
+    warnings,
+    requestedRoutes,
+    missingRoutes
   };
 };
 
@@ -101,12 +131,16 @@ export const compareSchemaData = (
         stableStringify(collectedRoutes[route] as unknown as JsonLdObject)
     )
     .sort();
+  const changedRouteDetails = changedRoutes.map((route) =>
+    buildRouteDriftDetail(route, existingRoutes[route] ?? [], collectedRoutes[route] ?? [])
+  );
 
   return {
     hasChanges: addedRoutes.length > 0 || removedRoutes.length > 0 || changedRoutes.length > 0,
     addedRoutes,
     removedRoutes,
-    changedRoutes
+    changedRoutes,
+    changedRouteDetails
   };
 };
 
@@ -130,6 +164,15 @@ export const formatSchemaDataDrift = (
   }
   if (drift.changedRoutes.length > 0) {
     lines.push(formatRoutePreview("Changed routes", drift.changedRoutes, maxRoutes));
+    const details = drift.changedRouteDetails
+      .slice(0, maxRoutes)
+      .map((detail) => formatRouteDriftDetail(detail));
+    if (details.length > 0) {
+      lines.push("Changed route details:");
+      for (const detail of details) {
+        lines.push(`- ${detail}`);
+      }
+    }
   }
 
   return lines.join("\n");
@@ -146,12 +189,40 @@ const formatRoutePreview = (
   return `${label}: ${preview.join(", ")}${suffix}`;
 };
 
+const formatRouteDriftDetail = (detail: RouteDriftDetail): string => {
+  const added = detail.addedTypes.length > 0 ? detail.addedTypes.join(",") : "(none)";
+  const removed =
+    detail.removedTypes.length > 0 ? detail.removedTypes.join(",") : "(none)";
+  return `${detail.route} blocks ${detail.beforeBlocks}->${detail.afterBlocks} | +types ${added} | -types ${removed}`;
+};
+
 const sortRoutes = (
   routes: Record<string, SchemaNode[]>
 ): Record<string, SchemaNode[]> =>
   Object.fromEntries(
     Object.entries(routes).sort(([a], [b]) => a.localeCompare(b))
   ) as Record<string, SchemaNode[]>;
+
+const filterRoutesByAllowlist = (
+  routes: Record<string, SchemaNode[]>,
+  allowlist: string[]
+): Record<string, SchemaNode[]> => {
+  const filtered: Record<string, SchemaNode[]> = {};
+  for (const route of allowlist) {
+    if (Object.prototype.hasOwnProperty.call(routes, route)) {
+      filtered[route] = routes[route];
+    }
+  }
+  return filtered;
+};
+
+export const normalizeRouteFilter = (input: string[]): string[] => {
+  const normalized = input
+    .flatMap((entry) => entry.split(","))
+    .map((route) => route.trim())
+    .filter((route) => route.length > 0);
+  return Array.from(new Set(normalized)).sort();
+};
 
 const walkHtmlFiles = async (rootDir: string): Promise<string[]> => {
   const entries = await fs.readdir(rootDir, { withFileTypes: true });
@@ -256,3 +327,29 @@ const normalizeParsedBlock = (value: unknown): SchemaNode[] => {
 
 const isJsonObject = (value: unknown): value is JsonLdObject =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
+
+const buildRouteDriftDetail = (
+  route: string,
+  beforeNodes: SchemaNode[],
+  afterNodes: SchemaNode[]
+): RouteDriftDetail => {
+  const beforeTypes = new Set(beforeNodes.map((node) => schemaTypeLabel(node)));
+  const afterTypes = new Set(afterNodes.map((node) => schemaTypeLabel(node)));
+  const addedTypes = Array.from(afterTypes).filter((type) => !beforeTypes.has(type)).sort();
+  const removedTypes = Array.from(beforeTypes)
+    .filter((type) => !afterTypes.has(type))
+    .sort();
+
+  return {
+    route,
+    beforeBlocks: beforeNodes.length,
+    afterBlocks: afterNodes.length,
+    addedTypes,
+    removedTypes
+  };
+};
+
+const schemaTypeLabel = (node: SchemaNode): string => {
+  const type = node["@type"];
+  return typeof type === "string" && type.trim().length > 0 ? type : "(unknown)";
+};
