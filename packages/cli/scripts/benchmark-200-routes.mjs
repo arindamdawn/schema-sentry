@@ -90,6 +90,8 @@ const run = async () => {
       dataPath,
       "--root",
       tempDir,
+      "--app-dir",
+      appDir,
       "--no-recommended"
     ];
 
