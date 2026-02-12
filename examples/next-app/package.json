@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "schema:validate": "schemasentry validate --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json"
+    "schema:validate": "schemasentry validate --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json",
+    "schema:collect": "schemasentry collect --root ./.next/server/app --output ./schema-sentry.data.collected.json",
+    "schema:drift": "schemasentry collect --root ./.next/server/app --check --data ./schema-sentry.data.json",
+    "schema:e2e": "node ./scripts/schema-e2e.mjs"
   },
   "dependencies": {
     "@schemasentry/next": "workspace:*",

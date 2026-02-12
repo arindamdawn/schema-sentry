@@ -78,23 +78,23 @@ Last updated: 2026-02-12
 
 ### v0.4.0 Scope (Highest Priority)
 
-- [ ] `schemasentry collect` (read-only)
+- [x] `schemasentry collect` (read-only)
   - Collect JSON-LD per route by scanning/crawling app output
   - Generate deterministic `schema-sentry.data.json` output
-  - Support `--output`, `--format json`, and `--root`
+  - Support `--output`, `--format json`, `--root`, and route filtering (`--routes`)
   - No file writes unless explicit output path is provided
-- [ ] CI-safe diff mode
+- [x] CI-safe diff mode
   - Compare collected data against existing data file
   - Exit non-zero on drift to catch stale schema data in PRs
-- [ ] Docs + examples
+- [x] Docs + examples
   - End-to-end setup: `init` -> `collect` -> `validate`
   - CI example for data drift detection
 
 ### v0.4.0 Exit Criteria
 
-- [ ] `schemasentry collect` shipped with tests
-- [ ] Benchmark remains within current 200-route performance target
-- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+- [x] `schemasentry collect` shipped with tests
+- [x] Benchmark remains within current 200-route performance target
+- [x] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
 
 ## 🧪 Phase 4.1 (v0.5.0)
 

@@ -283,6 +283,12 @@ Use `schemasentry init` to generate starter files. Add `--scan` to include all d
 
 A minimal Next.js App Router example lives in `examples/next-app` and includes a manifest and data file. It targets Next.js 16.1.6 and React 19.1.1.
 
+Run the end-to-end workflow demo (`init -> collect -> validate`):
+
+```bash
+pnpm --filter schema-sentry-example-next-app schema:e2e
+```
+
 ## ✅ Compatibility
 
 - Next.js App Router (Next.js 13.4+)
