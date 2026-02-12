@@ -11,8 +11,8 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.5.0` (new `schemasentry scaffold` command with pattern-based auto-detection)
-**Next release target:** `v0.6.0` (VS Code extension and CLI visualization)
+**Current release:** `v0.6.0` (⚠️ BREAKING CHANGES: validate now checks built HTML to eliminate false positives)
+**Next release target:** `v0.7.0` (VS Code extension and CLI visualization)
 
 ## ✨ Features
 
@@ -24,7 +24,9 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 - 📊 **Schema audit** — Analyze site health, detect missing/incomplete schema
 - 📥 **Automated data collection** — `collect` command scans built apps to auto-generate schema data files
 - 🧪 **CLI commands** — `init`, `validate`, `audit`, `collect`, `scaffold` for complete workflows
-- 🏗️ **Schema scaffolding** — `scaffold` command auto-generates schema stubs from URL patterns (/blog/* → BlogPosting, /products/* → Product)
+- ✅ **Reality Check validation** — `validate` checks actual built HTML output, not just JSON files (zero false positives!)
+- 👻 **Ghost route detection** — `audit` finds routes in manifest without Schema components in source code
+- 🏗️ **Schema scaffolding** — `scaffold` shows copy-paste component code with full examples from URL patterns (/blog/* → BlogPosting, /products/* → Product)
 - 📄 **HTML Reports** — Generate shareable reports with `--format html --output <path>`
 - 🗣️ **PR Annotations** — GitHub Actions annotations with `--annotations github`
 - 📴 **Zero network calls** in OSS mode (privacy-first, offline-friendly)
@@ -132,6 +134,21 @@ export default function Page() {
 
 ## 🧪 CLI
 
+### Important: Understanding the Workflow
+
+Schema Sentry validates **reality, not just configuration files**. The CLI checks your **actual built HTML output** to ensure schema is properly rendered. This eliminates false positives that plague other tools.
+
+**The Correct Workflow:**
+
+1. **`init`** → Create starter manifest and data files
+2. **`scaffold`** → See what code you need to add to your pages
+3. **Add Schema components** → Copy-paste code into your page.tsx files
+4. **`next build`** → Build your Next.js app
+5. **`validate`** → Validate actual HTML output (catches missing schema!)
+6. **`audit`** → Check for ghost routes and health issues
+
+---
+
 **Quick start**
 
 1. Generate starter files:
@@ -140,106 +157,71 @@ export default function Page() {
 pnpm schemasentry init
 ```
 
-2. Optionally scan your app and add `WebPage` entries for discovered routes:
+2. See what schema you need to add:
 
 ```bash
-pnpm schemasentry init --scan
+pnpm schemasentry scaffold --root ./app
 ```
 
-3. Validate coverage and rules:
+3. Copy-paste the generated code into your page.tsx files
+
+4. Build your Next.js app:
+
+```bash
+next build
+```
+
+5. **Validate reality** (checks actual HTML, not just config files):
 
 ```bash
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json
+  --root ./.next/server/app
 ```
 
-4. Audit schema health:
-
-```bash
-pnpm schemasentry audit --data ./schema-sentry.data.json
-pnpm schemasentry audit --data ./schema-sentry.data.json --manifest ./schema-sentry.manifest.json
-```
-
-5. Scan for missing routes:
-
-```bash
-pnpm schemasentry audit --data ./schema-sentry.data.json --scan
-```
-
-6. Generate an HTML report:
+6. Audit for ghost routes and issues:
 
 ```bash
 pnpm schemasentry audit \
-  --data ./schema-sentry.data.json \
   --manifest ./schema-sentry.manifest.json \
-  --format html \
-  --output ./schema-sentry-report.html
+  --root ./app
 ```
 
 **All commands**
 
 ```bash
+# Initialize starter files
 pnpm schemasentry init
-
 pnpm schemasentry init --scan
 
-pnpm schemasentry audit \
-  --data ./schema-sentry.data.json
+# See what schema code to add (shows copy-paste examples)
+pnpm schemasentry scaffold --root ./app
+pnpm schemasentry scaffold --root ./app --write
 
-pnpm schemasentry audit \
-  --data ./schema-sentry.data.json \
-  --manifest ./schema-sentry.manifest.json
+# Validate ACTUAL HTML OUTPUT (catches missing schema!)
+pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./.next/server/app
+pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./out
 
-pnpm schemasentry audit \
-  --data ./schema-sentry.data.json \
-  --scan
+# Audit for ghost routes (routes in manifest but no Schema component)
+pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --root ./app
+pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --root ./app --scan
 
+# Collect schema from built HTML
+pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
+pnpm schemasentry collect --root ./.next/server/app --check --data ./schema-sentry.data.json
+
+# Generate reports
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json
-
-pnpm schemasentry validate \
-  --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json \
+  --root ./.next/server/app \
   --format html \
-  --output ./schema-sentry-validate-report.html
+  --output ./report.html
 
 pnpm schemasentry audit \
-  --data ./schema-sentry.data.json \
+  --manifest ./schema-sentry.manifest.json \
+  --root ./app \
   --format html \
-  --output ./schema-sentry-audit-report.html
-
-pnpm schemasentry collect \
-  --root ./out \
-  --output ./schema-sentry.data.json
-
-pnpm schemasentry collect \
-  --root ./out \
-  --check \
-  --data ./schema-sentry.data.json
-
-pnpm schemasentry collect \
-  --root ./out \
-  --routes / /blog /faq \
-  --strict-routes \
-  --check \
-  --data ./schema-sentry.data.json
-
-pnpm schemasentry scaffold \
-  --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json
-
-pnpm schemasentry scaffold \
-  --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json \
-  --write
-
-pnpm schemasentry scaffold \
-  --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json \
-  --write \
-  --force
+  --output ./audit-report.html
 ```
 
 The CLI emits JSON output by default and exits with code 1 on errors, making it perfect for CI/CD pipelines.
@@ -265,11 +247,25 @@ CLI flags override config. Use `--config ./path/to/config.json` to point at a cu
 | File | Purpose | How It Works |
 |------|---------|---------------|
 | `schema-sentry.manifest.json` | Defines **expected schema types** per route | You create this manually - tells Schema Sentry what each page should have |
-| `schema-sentry.data.json` | Contains the **actual schema data** | You create this manually - mirrors your actual schema |
+| `schema-sentry.data.json` | Contains the **actual schema data** (legacy) | **DEPRECATED**: Use `schemasentry validate` instead, which checks actual HTML |
 
-**Why two files?** The manifest ensures every route has the right schema type. The data file validates that your actual schema matches expectations.
+**Why validate against HTML instead of JSON files?**
 
-Use `schemasentry init` to generate starter files. Add `--scan` to include all discovered routes as `WebPage` entries, and use `schemasentry audit --scan` to detect missing routes later.
+Other tools validate JSON config files, which gives you **false positives**. You can have perfect JSON files but your pages still lack schema markup! Schema Sentry v0.6.0+ validates your **actual built HTML output**, ensuring your schema is truly rendered.
+
+**Old way (v0.5.0 and earlier - DON'T DO THIS):**
+```bash
+# ❌ Validates JSON files against each other - FALSE POSITIVES!
+schemasentry validate --manifest manifest.json --data data.json
+```
+
+**New way (v0.6.0+ - DO THIS):**
+```bash
+# ✅ Validates actual built HTML against manifest - NO FALSE POSITIVES!
+schemasentry validate --manifest manifest.json --root ./.next/server/app
+```
+
+Use `schemasentry init` to generate starter files. Use `schemasentry scaffold` to see what code to add. Use `schemasentry validate` after building to verify your schema is actually rendered.
 
 ## ✅ Supported Schema Types (V1)
 

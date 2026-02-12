@@ -8,6 +8,76 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-02-12
+
+### ⚠️ BREAKING CHANGES
+
+- **Reality Check validation**: The `validate` command now validates built HTML output instead of JSON data files. This eliminates false positives but requires building your app first.
+  - **Migration**: Change from `schemasentry validate --manifest x --data y` to `schemasentry validate --manifest x --root ./.next/server/app`
+  - The `--data` flag is no longer required for validate (deprecated)
+
+### Added
+
+- **Reality Check validation system** (`src/reality.ts`)
+  - Validates actual rendered JSON-LD in built HTML files
+  - Cross-references manifest, source code, and HTML output
+  - Reports "ghost routes" - routes in manifest without Schema components
+  - Reports "missing in HTML" - routes with components but not built
+  - Reports type mismatches between manifest and actual HTML
+
+- **Source code scanning** (`src/source.ts`)
+  - Detects Schema component imports and usage in TSX/JSX files
+  - Maps page files to routes automatically
+  - Identifies routes missing Schema components
+
+- **Enhanced scaffold command**
+  - Shows full copy-paste component code examples
+  - Generates proper imports and builder code
+  - Maps routes to correct file paths
+  - Colorized output with chalk
+
+- **Enhanced audit command**
+  - Detects ghost routes (manifest entries without Schema components)
+  - Reports source code coverage statistics
+  - Shows which files have/don't have schema
+
+- **Beautiful CLI output**
+  - Added chalk dependency for colored output
+  - Emoji-enhanced status indicators
+  - Clear visual hierarchy in reports
+  - Green/red/yellow status colors
+
+### Changed
+
+- **validate command**: Complete rewrite to perform reality checks
+  - Now requires `--root` pointing to built HTML directory
+  - Validates actual HTML instead of JSON files
+  - No more false positives!
+  - Still supports `--format html` and `--annotations github`
+
+- **scaffold command**: Enhanced output
+  - Shows actual component code to copy-paste
+  - Better visual formatting
+  - Clear next steps guidance
+
+- **audit command**: Added source scanning
+  - Checks for ghost routes
+  - Reports source file analysis
+  - Enhanced summary output
+
+### Deprecated
+
+- `schema-sentry.data.json` file usage is now deprecated for validation
+  - Use `schemasentry validate --root <built-output>` instead
+  - `collect` command still uses data files for drift detection
+  - `scaffold` command still updates data files for backward compatibility
+
+### Fixed
+
+- **Critical**: Eliminated false positives in validation
+  - Old behavior: Validated JSON files against each other (could pass without actual schema)
+  - New behavior: Validates actual HTML output (only passes if schema is truly rendered)
+
 ## [0.5.0] - 2026-02-12
 
 ### Added
