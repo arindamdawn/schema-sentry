@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import chalk from "chalk";
 import { stableStringify, type Manifest, type SchemaNode, type SchemaTypeName } from "@schemasentry/core";
 import type { SchemaDataFile } from "./report";
 import { generateManifestEntries, inferSchemaTypes, type PatternRule } from "./patterns";
@@ -156,21 +157,181 @@ const generateSchemaStub = (type: SchemaTypeName, route: string): SchemaNode => 
   }
 };
 
+export type ComponentCodeExample = {
+  route: string;
+  filePath: string;
+  code: string;
+  imports: string[];
+  builders: string[];
+};
+
+export const generateComponentCode = (
+  route: string,
+  types: SchemaTypeName[],
+  siteUrl: string = "https://yoursite.com"
+): ComponentCodeExample => {
+  // Map route to likely file path
+  const filePath = routeToFilePath(route);
+  
+  // Generate builder code for each type
+  const builders: string[] = [];
+  const imports = new Set<string>(["Schema"]);
+  
+  for (const type of types) {
+    imports.add(type);
+    const builderCode = generateBuilderCode(type, route, siteUrl);
+    builders.push(builderCode);
+  }
+  
+  // Generate full component code
+  const code = `import { ${Array.from(imports).join(", ")} } from "@schemasentry/next";
+
+${builders.join("\n\n")}
+
+export default function Page() {
+  return (
+    <>
+      <Schema data={[${types.join(", ").toLowerCase()}]} />
+      {/* Your existing page content */}
+    </>
+  );
+}`;
+
+  return {
+    route,
+    filePath,
+    code,
+    imports: Array.from(imports),
+    builders
+  };
+};
+
+const routeToFilePath = (route: string): string => {
+  if (route === "/") {
+    return "app/page.tsx";
+  }
+  
+  // Convert route to file path
+  // /blog/[slug] -> app/blog/[slug]/page.tsx
+  const segments = route.split("/").filter(Boolean);
+  return `app/${segments.join("/")}/page.tsx`;
+};
+
+const generateBuilderCode = (
+  type: SchemaTypeName,
+  route: string,
+  siteUrl: string
+): string => {
+  const normalizedRoute = route === "/" ? "" : route;
+  const fullUrl = `${siteUrl}${normalizedRoute}`;
+  const today = new Date().toISOString().split("T")[0];
+  
+  const varName = type.charAt(0).toLowerCase() + type.slice(1);
+  
+  switch (type) {
+    case "BlogPosting":
+      return `const ${varName} = BlogPosting({
+  headline: "Blog Post Title",
+  authorName: "Author Name",
+  datePublished: "${today}",
+  url: "${fullUrl}"
+});`;
+    
+    case "Article":
+      return `const ${varName} = Article({
+  headline: "Article Headline",
+  authorName: "Author Name",
+  datePublished: "${today}",
+  url: "${fullUrl}"
+});`;
+    
+    case "Product":
+      return `const ${varName} = Product({
+  name: "Product Name",
+  description: "Product description",
+  url: "${fullUrl}"
+});`;
+    
+    case "Organization":
+      return `const ${varName} = Organization({
+  name: "Organization Name",
+  url: "${siteUrl}"
+});`;
+    
+    case "WebSite":
+      return `const ${varName} = WebSite({
+  name: "Website Name",
+  url: "${siteUrl}"
+});`;
+    
+    case "WebPage":
+      return `const ${varName} = WebPage({
+  name: "Page Name",
+  url: "${fullUrl}"
+});`;
+    
+    case "FAQPage":
+      return `const ${varName} = FAQPage({
+  questions: [
+    { question: "Question 1?", answer: "Answer 1" }
+  ]
+});`;
+    
+    case "HowTo":
+      return `const ${varName} = HowTo({
+  name: "How-To Title",
+  steps: [
+    { text: "Step 1 description" }
+  ]
+});`;
+    
+    case "Event":
+      return `const ${varName} = Event({
+  name: "Event Name",
+  startDate: "${today}"
+});`;
+    
+    default:
+      return `const ${varName} = ${type}({
+  name: "${type} Name"
+});`;
+  }
+};
+
 export const formatScaffoldPreview = (result: ScaffoldResult): string => {
   if (result.routesToScaffold.length === 0) {
-    return "No routes need schema generation.";
+    return "✅ No routes need schema generation. All routes have schema!";
   }
 
   const lines: string[] = [
-    `Routes to scaffold: ${result.routesToScaffold.length}`,
-    ""
+    `📋 Found ${result.routesToScaffold.length} route(s) that need schema:\n`
   ];
 
-  for (const route of result.routesToScaffold) {
+  for (const route of result.routesToScaffold.slice(0, 5)) {
     const types = result.manifestUpdates[route] || [];
-    lines.push(`  ${route}`);
-    lines.push(`    Schema types: ${types.join(", ") || "None detected"}`);
+    const example = generateComponentCode(route, types);
+    
+    lines.push(chalk.cyan.bold(`📄 ${route}`));
+    lines.push(chalk.gray(`   File: ${example.filePath}`));
+    lines.push(chalk.gray(`   Types: ${types.join(", ") || "WebPage"}`));
+    lines.push("");
+    lines.push(chalk.yellow("   Add this code to your page:"));
+    lines.push(chalk.gray("   ─────────────────────────────────────────"));
+    lines.push(example.code.split("\n").map(l => "   " + l).join("\n"));
+    lines.push(chalk.gray("   ─────────────────────────────────────────\n"));
   }
+
+  if (result.routesToScaffold.length > 5) {
+    lines.push(chalk.gray(`... and ${result.routesToScaffold.length - 5} more routes`));
+  }
+
+  lines.push(chalk.blue("\n💡 Next steps:"));
+  lines.push("   1. Copy the code above into each route's page.tsx file");
+  lines.push("   2. Customize the values (titles, names, URLs)");
+  lines.push("   3. Run `next build` to build your app");
+  lines.push("   4. Run `schemasentry validate` to verify\n");
+  
+  lines.push(chalk.gray("   Note: Use --write to also update the manifest and data JSON files"));
 
   return lines.join("\n");
 };

@@ -119,13 +119,60 @@ Last updated: 2026-02-12
 - ✅ `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
 - ✅ Changelog + docs updated with usage and safety notes
 
-## 🧪 Phase 4.2 (v0.6.0) — Next Release
+## ✅ Phase 4.2 (v0.6.0) — COMPLETE
 
-## 🧪 Phase 4.2 (v0.6.0)
+**Focus:** Zero false positives - validate reality, not just configuration
+
+### v0.6.0 Released
+
+**⚠️ BREAKING CHANGES** - Critical fixes to eliminate false positives:
+
+- ✅ **Reality Check validation** - `validate` command now checks built HTML output
+  - Validates actual rendered JSON-LD in built HTML files
+  - Cross-references source code, manifest, and HTML output
+  - Eliminates false positives from JSON-only validation
+  - Requires `--root` pointing to built output directory
+  
+- ✅ **Ghost route detection** - `audit` command finds phantom routes
+  - Detects routes in manifest that lack Schema components in source
+  - Reports routes with Schema imports but no actual usage
+  - Identifies pages that exist but have no schema configuration
+  
+- ✅ **Enhanced scaffolding** - Shows copy-paste component code
+  - Generates full TypeScript/React code examples
+  - Shows exact imports and component structure needed
+  - Maps routes to correct file paths automatically
+  - Colorized output with syntax highlighting via chalk
+  
+- ✅ **Source code scanning** - New `src/source.ts` module
+  - AST-lite detection of Schema component imports and usage
+  - Maps page files to routes automatically
+  - Reports coverage gaps between source and manifest
+  
+- ✅ **Beautiful CLI output** - Colored, emoji-enhanced reporting
+  - Green/red/yellow status indicators
+  - Clear error messages with actionable suggestions
+  - Summary statistics with visual hierarchy
+  - Progress indicators during long operations
+
+### Migration Guide
+
+**Before (v0.5.0 - false positives):**
+```bash
+schemasentry validate --manifest ./manifest.json --data ./data.json
+```
+
+**After (v0.6.0 - reality check):**
+```bash
+next build  # Must build first!
+schemasentry validate --manifest ./manifest.json --root ./.next/server/app
+```
+
+## 🧪 Phase 4.3 (v0.7.0) — Next Release
 
 **Focus:** Editor and visualization developer experience
 
-### v0.6.0 Scope
+### v0.7.0 Scope
 
 - [ ] VS Code extension
   - Schema preview panel while editing components
