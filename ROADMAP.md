@@ -4,7 +4,7 @@ Last updated: 2026-02-12
 
 ## 🎉 Current Status
 
-**v0.3.2 is live!** Published to npm and ready to use.
+**v0.4.0 is live!** Published to npm and ready to use.
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
 
@@ -63,40 +63,33 @@ Last updated: 2026-02-12
 - ✅ README presentation improvements
 - ✅ Roadmap scope clarification for upcoming releases
 
-## 🚦 Priority Queue (Highest Impact First)
-
-1. `schemasentry collect` (remove manual data-file bottleneck)
-2. `schemasentry suggest` (read-only AI recommendations)
-3. `schemasentry scaffold` (safe write/update workflow)
-4. Rulesets for rich results and AI citations
-5. Plugin API for custom org rules
-6. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
-
-## 🧪 Phase 4 (v0.4.0) — Next Release
+## ✅ Phase 4 (v0.4.0) — COMPLETE
 
 **Focus:** Friction removal in onboarding and CI
 
-### v0.4.0 Scope (Highest Priority)
+### Released
 
-- [x] `schemasentry collect` (read-only)
+- ✅ `schemasentry collect` (read-only)
   - Collect JSON-LD per route by scanning/crawling app output
   - Generate deterministic `schema-sentry.data.json` output
   - Support `--output`, `--format json`, `--root`, and route filtering (`--routes`)
   - No file writes unless explicit output path is provided
-- [x] CI-safe diff mode
+- ✅ CI-safe diff mode
   - Compare collected data against existing data file
   - Exit non-zero on drift to catch stale schema data in PRs
-- [x] Docs + examples
+- ✅ Docs + examples
   - End-to-end setup: `init` -> `collect` -> `validate`
   - CI example for data drift detection
 
-### v0.4.0 Exit Criteria
+## 🚦 Priority Queue (Highest Impact First)
 
-- [x] `schemasentry collect` shipped with tests
-- [x] Benchmark remains within current 200-route performance target
-- [x] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+1. `schemasentry suggest` (read-only AI recommendations)
+2. `schemasentry scaffold` (safe write/update workflow)
+3. Rulesets for rich results and AI citations
+4. Plugin API for custom org rules
+5. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
-## 🧪 Phase 4.1 (v0.5.0)
+## 🧪 Phase 4.1 (v0.5.0) — Next Release
 
 **Focus:** AI-assisted authoring (experimental, read-only)
 

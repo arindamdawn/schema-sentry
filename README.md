@@ -1,38 +1,33 @@
 <div align="center">
   <img src="docs/assets/schema-sentry-banner.png" alt="Schema Sentry Banner" width="100%" />
 
-  # Schema Sentry 🛡️
-  
-  [![CI](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml/badge.svg)](https://github.com/arindamdawn/schema-sentry/actions/workflows/ci.yml)
-  [![npm version](https://badge.fury.io/js/@schemasentry%2Fcore.svg)](https://www.npmjs.com/package/@schemasentry/core)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Schema Sentry 🛡️
 
-  <br />
-
-  > **Type-safe structured data for Next.js App Router—built for SEO and AI-powered discovery.**
+**Type-safe JSON-LD structured data for Next.js App Router—built for SEO, AI discovery, and CI validation.**
   
   [Getting Started](#-install) • [Documentation](docs/) • [Examples](examples/)
 </div>
 
 
-Schema Sentry provides a small SDK and CLI for generating and validating JSON-LD with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines and AI systems.
+Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.3.2` (documentation and release-readiness polish)  
-**Next release target:** `v0.4.0` (`schemasentry collect`, HTML output collection + CI drift checks)
+**Current release:** `v0.4.0` (new `schemasentry collect` command for automated JSON-LD extraction)
+**Next release target:** `v0.5.0` (AI-assisted schema suggestions)
 
 ## ✨ Features
 
-- 🔒 **Type-safe builders** for 13+ schema types (including VideoObject, ImageObject)
-- 🎯 **Deterministic JSON-LD** for clean, reviewable diffs
+- 🔒 **Type-safe JSON-LD builders** for 15+ schema types (Organization, Article, Product, FAQPage, HowTo, VideoObject, ImageObject, Event, Review, and more)
+- 🎯 **Deterministic JSON-LD output** for clean, reviewable version control diffs
 - ⚛️ **App Router `<Schema />` component** for seamless Next.js integration
-- 🧭 **Manifest-driven coverage** ensures every route has schema
-- 🔍 **CLI validation** with clear, actionable errors
-- 📊 **Schema audit** — Analyze site health and detect missing schema
-- 🧪 **CLI commands** — `init`, `validate`, and `audit`
+- 🧭 **Manifest-driven schema coverage** ensures every route has proper structured data
+- 🔍 **CLI validation** with clear, actionable errors for CI/CD pipelines
+- 📊 **Schema audit** — Analyze site health, detect missing/incomplete schema
+- 📥 **Automated data collection** — `collect` command scans built apps to auto-generate schema data files
+- 🧪 **CLI commands** — `init`, `validate`, `audit`, `collect` for complete workflows
 - 📄 **HTML Reports** — Generate shareable reports with `--format html --output <path>`
 - 🗣️ **PR Annotations** — GitHub Actions annotations with `--annotations github`
-- 📴 **Zero network calls** in OSS mode
-- 🤖 **AI-ready output** optimized for LLM consumption and citations
+- 📴 **Zero network calls** in OSS mode (privacy-first, offline-friendly)
+- 🤖 **AI-ready output** optimized for LLM consumption, citations, and AI agent recommendations
 
 ## 🧠 Why Structured Data Matters for Both Traditional and AI Search
 
