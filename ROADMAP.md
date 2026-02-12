@@ -4,7 +4,7 @@ Last updated: 2026-02-12
 
 ## 🎉 Current Status
 
-**v0.4.0 is live!** Published to npm and ready to use.
+**v0.6.0 is live!** Published to npm and ready to use.
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
 
