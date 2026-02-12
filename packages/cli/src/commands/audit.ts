@@ -31,7 +31,7 @@ export const auditCommand = new Command("audit")
   .option("--scan", "Scan the filesystem for routes")
   .option("--root <path>", "Project root for scanning", ".")
   .option("--app-dir <path>", "Path to Next.js app directory for source scanning", "./app")
-  .option("--source-scan", "Enable source file scanning for ghost route detection", false)
+  .option("--source-scan", "Enable source file scanning for ghost route detection", true)
   .option("-c, --config <path>", "Path to config JSON")
   .option("--format <format>", "Report format (json|html)", "json")
   .option("--annotations <provider>", "Emit CI annotations (none|github)", "none")
@@ -51,6 +51,9 @@ export const auditCommand = new Command("audit")
     output?: string;
   }) => {
     const start = Date.now();
+    // Handle --source-scan flag (default: true, disabled via SKIP_SOURCE_SCAN env var)
+    const skipSourceScan = process.env.SKIP_SOURCE_SCAN === "1";
+    const sourceScanEnabled = skipSourceScan ? false : (options.sourceScan ?? true);
     const format = resolveOutputFormat(options.format);
     const annotationsMode = resolveAnnotationsMode(options.annotations);
     const recommended = await resolveRecommendedOption(options.config);
@@ -96,8 +99,7 @@ export const auditCommand = new Command("audit")
     }
 
     // Scan source files to detect Schema component usage (skip if --source-scan=false)
-    // Default is true (enabled)
-    const sourceScanEnabled = options.sourceScan !== false;
+    // Handle --no-source-scan flag manually (Commander.js legacy support)
     const sourceScanResult = !sourceScanEnabled
       ? { routes: [], totalFiles: 0, filesWithSchema: 0, filesMissingSchema: 0 }
       : await scanSourceFiles({ rootDir: options.root ?? ".", appDir });

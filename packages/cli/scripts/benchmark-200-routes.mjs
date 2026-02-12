@@ -58,6 +58,7 @@ const run = async () => {
     await writeFile(dataPath, JSON.stringify(fixtures.data), "utf8");
 
     // Benchmark: audit only manifest/data files (no source scanning for performance)
+    const env = { ...process.env, SKIP_SOURCE_SCAN: "1" };
     const args = [
       cliEntryPath,
       "audit",
@@ -69,7 +70,7 @@ const run = async () => {
     ];
 
     const start = performance.now();
-    const result = spawnSync(process.execPath, args, { encoding: "utf8" });
+    const result = spawnSync(process.execPath, args, { encoding: "utf8", env: { ...process.env, SKIP_SOURCE_SCAN: "1" } });
     const durationMs = performance.now() - start;
 
     if (result.status !== 0) {
