@@ -25,7 +25,6 @@ A comprehensive demo of **Schema Sentry** showcasing multiple schema types, real
 - ✅ **HowTo** - Step-by-step guides
 - ✅ **BreadcrumbList** - Navigation breadcrumbs
 - ✅ **Person** - Author information
-- ✅ **AggregateRating** - Product ratings/reviews
 
 ## 🛠️ Development
 
@@ -58,6 +57,29 @@ Expected output:
   "score": 100,
   "issues": []
 }
+```
+
+### End-to-End Workflow (v0.4.0)
+
+Run a complete `init -> collect -> validate` flow:
+
+```bash
+pnpm --filter schema-sentry-example-next-app schema:e2e
+```
+
+This script will:
+
+1. Generate starter files with `schemasentry init` into a temp workspace
+2. Build the Next.js app
+3. Collect JSON-LD from `.next/server/app`
+4. Build a manifest from collected schema types
+5. Validate collected data against that manifest
+
+Additional helpers:
+
+```bash
+pnpm --filter schema-sentry-example-next-app schema:collect
+pnpm --filter schema-sentry-example-next-app schema:drift
 ```
 
 ## 📁 Project Structure
