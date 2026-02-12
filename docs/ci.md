@@ -206,6 +206,31 @@ For static exports, point `--root` to your export directory (for example `./out`
 | `-o, --output <path>` | Write output to file |
 | `--recommended / --no-recommended` | Enable/disable recommended field checks (default: enabled) |
 
+### collect Command Options
+
+The `collect` command extracts JSON-LD from built HTML output:
+
+| Option | Description |
+|--------|-------------|
+| `--root <path>` | Root directory to scan for HTML files (default: current directory) |
+| `--routes <routes...>` | Only collect specific routes (comma-separated or repeat flag) |
+| `--strict-routes` | Fail if any route passed via `--routes` is missing |
+| `--format json` | Output format (default: json, only json supported) |
+| `-o, --output <path>` | Write collected schema data to file |
+| `--check` | Compare collected output with existing schema data file |
+| `-d, --data <path>` | Path to existing schema data file for `--check` (default: schema-sentry.data.json) |
+
+**Example: Collect after build**
+```bash
+pnpm next build
+pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
+```
+
+**Example: Detect schema drift in CI**
+```bash
+pnpm schemasentry collect --root ./out --check --data ./schema-sentry.data.json
+```
+
 ## Performance the CLI validation Guardrail
 
 Benchmark path on a 200-route synthetic fixture and fail if runtime exceeds 5 seconds.

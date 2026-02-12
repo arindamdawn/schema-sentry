@@ -18,9 +18,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - End-to-end example script demonstrating `init` → `collect` → `validate` workflow
 
 ### Changed
-- CLI now reads from collected data file when available
-- Improved data file handling for CI workflows
-- Updated documentation with collect command examples
+- CLI now reads collected data from `schema-sentry.data.json` when available
+- Improved data file handling for CI workflows with `--check` flag for drift detection
 
 ## [0.3.2] - 2026-02-11
 
