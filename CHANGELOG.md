@@ -8,6 +8,20 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-02-12
+
+### Added
+- `schemasentry collect` - New command to collect JSON-LD from built app and generate deterministic schema data file
+- `--output` flag for custom output path
+- `--format json` support for structured output
+- `--root` flag for custom project root directory
+- End-to-end example script demonstrating `init` → `collect` → `validate` workflow
+
+### Changed
+- CLI now reads from collected data file when available
+- Improved data file handling for CI workflows
+- Updated documentation with collect command examples
+
 ## [0.3.2] - 2026-02-11
 
 ### Added
@@ -75,7 +89,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.4.0
 [0.3.2]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.2
 [0.3.1]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.1
 [0.3.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.0
