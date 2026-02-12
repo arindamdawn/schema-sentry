@@ -1,4 +1,4 @@
-import { mkdtemp, rm, writeFile, access } from "node:fs/promises";
+import { mkdtemp, rm, writeFile, access, mkdir } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { performance } from "node:perf_hooks";
 import os from "node:os";
@@ -45,17 +45,41 @@ const buildFixtures = () => {
   };
 };
 
+const createSourceFiles = async (appDir) => {
+  // Create a single page.tsx file with Schema component for benchmark
+  // This prevents ghost route detection from failing
+  const pageContent = `
+import { Schema, Organization } from "@schemasentry/next";
+
+const org = Organization({
+  name: "Benchmark",
+  url: "https://example.com"
+});
+
+export default function Page() {
+  return <Schema data={[org]} />;
+}
+`;
+  
+  await mkdir(appDir, { recursive: true });
+  await writeFile(path.join(appDir, "page.tsx"), pageContent, "utf8");
+};
+
 const run = async () => {
   await ensureBuiltCli();
 
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "schema-sentry-bench-"));
   const manifestPath = path.join(tempDir, "schema-sentry.manifest.json");
   const dataPath = path.join(tempDir, "schema-sentry.data.json");
+  const appDir = path.join(tempDir, "app");
 
   try {
     const fixtures = buildFixtures();
     await writeFile(manifestPath, JSON.stringify(fixtures.manifest), "utf8");
     await writeFile(dataPath, JSON.stringify(fixtures.data), "utf8");
+    
+    // Create source files to prevent ghost route detection
+    await createSourceFiles(appDir);
 
     const args = [
       cliEntryPath,
@@ -64,6 +88,8 @@ const run = async () => {
       manifestPath,
       "--data",
       dataPath,
+      "--root",
+      tempDir,
       "--no-recommended"
     ];
 
