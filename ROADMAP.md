@@ -86,18 +86,18 @@ Last updated: 2026-02-12
 1. VS Code extension (schema preview while editing)
 2. CLI schema visualization (tree/diagram output)
 3. Pattern-based auto-detection (infer schema types from URL patterns)
-4. Pages Router support (extend beyond App Router)
-5. GitHub bot for PR comments
-6. Schema testing framework (assertions for schema correctness)
-7. `schemasentry suggest` (read-only AI recommendations)
-8. `schemasentry scaffold` (safe write/update workflow)
+4. GitHub bot for PR comments (CI automation)
+5. Pages Router support (extend beyond App Router)
+6. `schemasentry scaffold` (safe write/update workflow)
+7. Schema testing framework (assertions for schema correctness)
+8. `schemasentry suggest` (read-only AI recommendations)
 9. Rulesets for rich results and AI citations
 10. Plugin API for custom org rules
 11. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
 ## 🧪 Phase 4.1 (v0.5.0) — Next Release
 
-**Focus:** Developer experience and visualization (user-facing value)
+**Focus:** Developer experience, visualization, and CI automation
 
 ### v0.5.0 Scope
 
@@ -114,14 +114,14 @@ Last updated: 2026-02-12
   - Infer schema types from URL patterns (e.g., `/blog/*` → BlogPosting, `/products/*` → Product)
   - Auto-generate manifest entries based on route conventions
   - Configurable pattern rules in schema-sentry.config.json
-- [ ] Pages Router support
-  - Add `@schemasentry/react` package for Pages Router compatibility
-  - Support `pages/` directory schema injection
-  - Unified CLI works across both routers
+- [ ] GitHub bot for PR comments
+  - Automated schema review on pull requests
+  - Inline comments for schema issues
+  - `/schemasentry` command for on-demand checks
 
 ## 🧪 Phase 4.2 (v0.6.0)
 
-**Focus:** Scaffold automation and CI tooling
+**Focus:** Scaffold automation and framework support
 
 ### v0.6.0 Scope
 
@@ -129,12 +129,12 @@ Last updated: 2026-02-12
   - Auto-detect page type from content/URL patterns
   - Generate sensible defaults based on page analysis
   - Interactive prompts for customization
+- [ ] Pages Router support
+  - Add `@schemasentry/react` package for Pages Router compatibility
+  - Support `pages/` directory schema injection
+  - Unified CLI works across both routers
 - [ ] Dry-run mode + diff preview before writes
 - [ ] Rollback-safe write strategy for generated updates
-- [ ] GitHub bot for PR comments
-  - Automated schema review on pull requests
-  - Inline comments for schema issues
-  - `/schemasentry` command for on-demand checks
 - [ ] Schema testing framework
   - Write assertions like "all articles must have author"
   - Test schema correctness in CI pipelines
