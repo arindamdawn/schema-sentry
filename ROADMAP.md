@@ -83,23 +83,47 @@ Last updated: 2026-02-12
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. VS Code extension (schema preview while editing)
-2. CLI schema visualization (tree/diagram output)
-3. Pattern-based auto-detection (infer schema types from URL patterns)
-4. GitHub bot for PR comments (CI automation)
-5. Pages Router support (extend beyond App Router)
-6. `schemasentry scaffold` (safe write/update workflow)
+1. Pattern-based auto-detection (infer schema types from route conventions)
+2. `schemasentry scaffold` (safe write/update workflow with dry-run default) — **TOP PRIORITY for v0.5.0**
+3. Rulesets for rich results and AI citations
+4. VS Code extension (schema preview while editing)
+5. GitHub bot for PR comments (CI automation)
+6. Pages Router support (extend beyond App Router)
 7. Schema testing framework (assertions for schema correctness)
 8. `schemasentry suggest` (read-only AI recommendations)
-9. Rulesets for rich results and AI citations
-10. Plugin API for custom org rules
-11. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
+9. Plugin API for custom org rules
+10. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
 ## 🧪 Phase 4.1 (v0.5.0) — Next Release
 
-**Focus:** Developer experience, visualization, and CI automation
+**Focus:** Core authoring workflow and adoption
 
 ### v0.5.0 Scope
+
+- [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
+  - Use auto-detected page types as defaults
+  - `--dry-run` as default behavior with explicit diff preview
+  - `--write` gate for file updates
+  - Rollback-safe write strategy for generated updates
+- [ ] Pattern-based auto-detection
+  - Infer schema types from URL patterns (e.g., `/blog/*` → BlogPosting, `/products/*` → Product)
+  - Auto-generate manifest entries based on route conventions
+  - Configurable pattern rules in schema-sentry.config.json
+- [ ] Docs + examples
+  - End-to-end setup: `collect` -> `auto-detect` -> `scaffold` -> `validate`
+  - CI guidance for dry-run schema generation checks
+
+### v0.5.0 Exit Criteria
+
+- [ ] Auto-detection + scaffold shipped with tests
+- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+- [ ] Changelog + docs updated with usage and safety notes
+
+## 🧪 Phase 4.2 (v0.6.0)
+
+**Focus:** Editor and visualization developer experience
+
+### v0.6.0 Scope
 
 - [ ] VS Code extension
   - Schema preview panel while editing components
@@ -110,41 +134,31 @@ Last updated: 2026-02-12
   - Tree/diagram output showing schema hierarchy
   - Entity relationship visualization
   - `--format tree` and `--format diagram` flags
-- [ ] Pattern-based auto-detection
-  - Infer schema types from URL patterns (e.g., `/blog/*` → BlogPosting, `/products/*` → Product)
-  - Auto-generate manifest entries based on route conventions
-  - Configurable pattern rules in schema-sentry.config.json
+
+## 🧪 Phase 4.3 (v0.7.0)
+
+**Focus:** CI automation and broader Next.js coverage
+
+### v0.7.0 Scope
+
 - [ ] GitHub bot for PR comments
   - Automated schema review on pull requests
   - Inline comments for schema issues
   - `/schemasentry` command for on-demand checks
-
-## 🧪 Phase 4.2 (v0.6.0)
-
-**Focus:** Scaffold automation and framework support
-
-### v0.6.0 Scope
-
-- [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
-  - Auto-detect page type from content/URL patterns
-  - Generate sensible defaults based on page analysis
-  - Interactive prompts for customization
 - [ ] Pages Router support
   - Add `@schemasentry/react` package for Pages Router compatibility
   - Support `pages/` directory schema injection
   - Unified CLI works across both routers
-- [ ] Dry-run mode + diff preview before writes
-- [ ] Rollback-safe write strategy for generated updates
 - [ ] Schema testing framework
   - Write assertions like "all articles must have author"
   - Test schema correctness in CI pipelines
   - Custom rule definitions for team policies
 
-## 🧪 Phase 4.3 (v0.7.0)
+## 🧪 Phase 4.4 (v0.8.0)
 
 **Focus:** Rulesets and AI assistance
 
-### v0.7.0 Scope
+### v0.8.0 Scope
 
 - [ ] Rulesets
   - `--rules google` for rich-result-focused checks
@@ -165,11 +179,11 @@ Last updated: 2026-02-12
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
 
-## 🧪 Phase 4.4 (v0.8.0)
+## 🧪 Phase 4.5 (v0.9.0)
 
 **Focus:** Extensibility and ecosystem growth
 
-### v0.8.0 Scope
+### v0.9.0 Scope
 
 - [ ] Plugin API for custom validators and internal rules
 - [ ] Framework adapter interfaces in `@schemasentry/core`
@@ -179,7 +193,7 @@ Last updated: 2026-02-12
   - Contentful integration patterns
   - Strapi integration patterns
 
-## 🚀 Phase 4.5 (v0.9.0)
+## 🚀 Phase 4.6 (v0.9.5)
 
 **Focus:** Adoption assets and launch readiness
 

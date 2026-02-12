@@ -12,7 +12,7 @@
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
 **Current release:** `v0.4.0` (new `schemasentry collect` command for automated JSON-LD extraction)
-**Next release target:** `v0.5.0` (AI-assisted schema suggestions)
+**Next release target:** `v0.5.0` (`schemasentry scaffold` first, plus pattern-based auto-detection)
 
 ## ✨ Features
 
