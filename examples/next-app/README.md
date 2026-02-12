@@ -54,8 +54,14 @@ Expected output:
 ```json
 {
   "ok": true,
-  "score": 100,
-  "issues": []
+  "summary": {
+    "routes": 5,
+    "errors": 0,
+    "warnings": 0,
+    "score": 100,
+    "coverage": {...}
+  },
+  "routes": [...]
 }
 ```
 
