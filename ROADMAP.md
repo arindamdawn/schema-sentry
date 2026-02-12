@@ -83,23 +83,75 @@ Last updated: 2026-02-12
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. `schemasentry suggest` (read-only AI recommendations)
-2. Pattern-based auto-detection (infer schema types from URL patterns)
-3. `schemasentry scaffold` (safe write/update workflow)
+1. VS Code extension (schema preview while editing)
+2. CLI schema visualization (tree/diagram output)
+3. Pattern-based auto-detection (infer schema types from URL patterns)
 4. Pages Router support (extend beyond App Router)
-5. Schema testing framework (assertions for schema correctness)
-6. GitHub bot for PR comments
-7. Rulesets for rich results and AI citations
-8. Plugin API for custom org rules
-9. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
-10. VS Code extension (schema preview while editing)
+5. GitHub bot for PR comments
+6. Schema testing framework (assertions for schema correctness)
+7. `schemasentry suggest` (read-only AI recommendations)
+8. `schemasentry scaffold` (safe write/update workflow)
+9. Rulesets for rich results and AI citations
+10. Plugin API for custom org rules
+11. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
 ## 🧪 Phase 4.1 (v0.5.0) — Next Release
 
-**Focus:** AI-assisted authoring and pattern auto-detection
+**Focus:** Developer experience and visualization (user-facing value)
 
 ### v0.5.0 Scope
 
+- [ ] VS Code extension
+  - Schema preview panel while editing components
+  - Inline decorations showing schema types on hover
+  - Snippets for common schema types
+  - Quick actions to generate schema stubs
+- [ ] CLI schema visualization
+  - Tree/diagram output showing schema hierarchy
+  - Entity relationship visualization
+  - `--format tree` and `--format diagram` flags
+- [ ] Pattern-based auto-detection
+  - Infer schema types from URL patterns (e.g., `/blog/*` → BlogPosting, `/products/*` → Product)
+  - Auto-generate manifest entries based on route conventions
+  - Configurable pattern rules in schema-sentry.config.json
+- [ ] Pages Router support
+  - Add `@schemasentry/react` package for Pages Router compatibility
+  - Support `pages/` directory schema injection
+  - Unified CLI works across both routers
+
+## 🧪 Phase 4.2 (v0.6.0)
+
+**Focus:** Scaffold automation and CI tooling
+
+### v0.6.0 Scope
+
+- [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
+  - Auto-detect page type from content/URL patterns
+  - Generate sensible defaults based on page analysis
+  - Interactive prompts for customization
+- [ ] Dry-run mode + diff preview before writes
+- [ ] Rollback-safe write strategy for generated updates
+- [ ] GitHub bot for PR comments
+  - Automated schema review on pull requests
+  - Inline comments for schema issues
+  - `/schemasentry` command for on-demand checks
+- [ ] Schema testing framework
+  - Write assertions like "all articles must have author"
+  - Test schema correctness in CI pipelines
+  - Custom rule definitions for team policies
+
+## 🧪 Phase 4.3 (v0.7.0)
+
+**Focus:** Rulesets, AI assistance, and policy controls
+
+### v0.7.0 Scope
+
+- [ ] Rulesets
+  - `--rules google` for rich-result-focused checks
+  - `--rules ai-citation` for LLM/citation-focused checks
+- [ ] Team policy controls
+  - Rule severity overrides (error/warn/off)
+  - Rule allowlist/denylist config
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
   - Emit deterministic JSON output for CI review (`--format json` default)
@@ -109,51 +161,9 @@ Last updated: 2026-02-12
   - Support OpenAI, Anthropic, Gemini, and OpenRouter as configurable providers
   - Support `--provider` selection and provider-specific API key env vars
   - Graceful fallback/error model when provider is not configured
-- [ ] Pattern-based auto-detection
-  - Infer schema types from URL patterns (e.g., `/blog/*` → BlogPosting, `/products/*` → Product)
-  - Auto-generate manifest entries based on route conventions
-  - Configurable pattern rules in schema-sentry.config.json
 - [ ] Safety and observability
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
-
-## 🧪 Phase 4.2 (v0.6.0)
-
-**Focus:** Scaffold automation and broader framework support
-
-### v0.6.0 Scope
-
-- [ ] `schemasentry scaffold` — Generate schema for pages without it (write/update)
-  - Auto-detect page type from content/URL patterns
-  - Generate sensible defaults based on page analysis
-  - Interactive prompts for customization
-- [ ] Pages Router support
-  - Add `@schemasentry/react` package for Pages Router compatibility
-  - Support `pages/` directory schema injection
-  - Unified CLI works across both routers
-- [ ] Dry-run mode + diff preview before writes
-- [ ] Rollback-safe write strategy for generated updates
-
-## 🧪 Phase 4.3 (v0.7.0)
-
-**Focus:** Validation depth, testing, and CI tooling
-
-### v0.7.0 Scope
-
-- [ ] Schema testing framework
-  - Write assertions like "all articles must have author"
-  - Test schema correctness in CI pipelines
-  - Custom rule definitions for team policies
-- [ ] GitHub bot for PR comments
-  - Automated schema review on pull requests
-  - Inline comments for schema issues
-  - `/schemasentry` command for on-demand checks
-- [ ] Rulesets
-  - `--rules google` for rich-result-focused checks
-  - `--rules ai-citation` for LLM/citation-focused checks
-- [ ] Team policy controls
-  - Rule severity overrides (error/warn/off)
-  - Rule allowlist/denylist config
 
 ## 🧪 Phase 4.4 (v0.8.0)
 
