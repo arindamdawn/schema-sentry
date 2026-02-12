@@ -1,10 +1,10 @@
 # Roadmap
 
-Last updated: 2026-02-11
+Last updated: 2026-02-12
 
 ## 🎉 Current Status
 
-**v0.3.1 is live!** Published to npm and ready to use.
+**v0.3.2 is live!** Published to npm and ready to use.
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
 
@@ -55,16 +55,50 @@ Last updated: 2026-02-11
 - ✅ NPM unpublish before republish
 - ✅ GitHub tag conflict handling during release
 
+## ✅ Phase 3.2 (v0.3.2) — COMPLETE
+
+**Focus:** Documentation and release readiness polish
+
+- ✅ Package-level README files
+- ✅ README presentation improvements
+- ✅ Roadmap scope clarification for upcoming releases
+
+## 🚦 Priority Queue (Highest Impact First)
+
+1. `schemasentry collect` (remove manual data-file bottleneck)
+2. `schemasentry suggest` (read-only AI recommendations)
+3. `schemasentry scaffold` (safe write/update workflow)
+4. Rulesets for rich results and AI citations
+5. Plugin API for custom org rules
+6. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
+
 ## 🧪 Phase 4 (v0.4.0) — Next Release
 
-**Focus:** AI-assisted authoring (experimental, read-only first)
+**Focus:** Friction removal in onboarding and CI
 
-### Feasibility Assessment
+### v0.4.0 Scope (Highest Priority)
 
-- ⚠️ Current Phase 4 scope is too broad for a single release (new command surface + LLM integration + write/update behavior + launch assets).
-- ✅ Feasible if broken into read-only recommendation first, then write/update automation.
+- [ ] `schemasentry collect` (read-only)
+  - Collect JSON-LD per route by scanning/crawling app output
+  - Generate deterministic `schema-sentry.data.json` output
+  - Support `--output`, `--format json`, and `--root`
+  - No file writes unless explicit output path is provided
+- [ ] CI-safe diff mode
+  - Compare collected data against existing data file
+  - Exit non-zero on drift to catch stale schema data in PRs
+- [ ] Docs + examples
+  - End-to-end setup: `init` -> `collect` -> `validate`
+  - CI example for data drift detection
 
-### v0.4.0 Scope (Implementable)
+### v0.4.0 Exit Criteria
+
+- [ ] `schemasentry collect` shipped with tests
+- [ ] Benchmark remains within current 200-route performance target
+- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
+
+## 🧪 Phase 4.1 (v0.5.0)
+
+**Focus:** AI-assisted authoring (experimental, read-only)
 
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
@@ -78,17 +112,8 @@ Last updated: 2026-02-11
 - [ ] Safety and observability
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
-- [ ] Docs + examples
-  - Usage docs for `suggest`
-  - CI example showing read-only suggestion reports
 
-### v0.4.0 Exit Criteria
-
-- [ ] `schemasentry suggest` shipped with tests
-- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass
-- [ ] Changelog + docs updated with experimental limitations
-
-## 🧪 Phase 4.1 (v0.4.1)
+## 🧪 Phase 4.2 (v0.6.0)
 
 **Focus:** Scaffold automation and authoring workflow
 
@@ -99,7 +124,26 @@ Last updated: 2026-02-11
 - [ ] Dry-run mode + diff preview before writes
 - [ ] Rollback-safe write strategy for generated updates
 
-## 🚀 Phase 4.2 (v0.4.2)
+## 🧪 Phase 4.3 (v0.7.0)
+
+**Focus:** Validation depth and policy controls
+
+- [ ] Rulesets
+  - `--rules google` for rich-result-focused checks
+  - `--rules ai-citation` for LLM/citation-focused checks
+- [ ] Team policy controls
+  - Rule severity overrides (error/warn/off)
+  - Rule allowlist/denylist config
+
+## 🧪 Phase 4.4 (v0.8.0)
+
+**Focus:** Extensibility and ecosystem growth
+
+- [ ] Plugin API for custom validators and internal rules
+- [ ] Framework adapter interfaces in `@schemasentry/core`
+- [ ] First non-Next.js adapter (Astro or Remix)
+
+## 🚀 Phase 4.5 (v0.9.0)
 
 **Focus:** Adoption assets and launch readiness
 
@@ -119,9 +163,7 @@ Last updated: 2026-02-11
 
 ## 💡 Post-v1.0 Ideas
 
-- Framework adapters (Astro, Remix, SvelteKit, Angular) — **contributor-led**
 - Visual schema editor
-- AI-assisted schema suggestions
 - Enterprise features (audit logs, team dashboards)
 
 ---
