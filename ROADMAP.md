@@ -83,16 +83,11 @@ Last updated: 2026-02-13
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. Pattern-based auto-detection (infer schema types from route conventions)
-2. `schemasentry scaffold` (safe write/update workflow with dry-run default) — **TOP PRIORITY for v0.5.0**
-3. Rulesets for rich results and AI citations
-4. VS Code extension (schema preview while editing)
-5. GitHub bot for PR comments (CI automation)
-6. Pages Router support (extend beyond App Router)
-7. Schema testing framework (assertions for schema correctness)
-8. `schemasentry suggest` (read-only AI recommendations)
-9. Plugin API for custom org rules
-10. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
+1. **v0.7.0** - Rulesets (`google`, `ai-citation`) + CLI visualization (table default)
+2. **v0.8.0** - GitHub bot + Pages Router support
+3. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
+4. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
+5. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -171,42 +166,37 @@ schemasentry validate --manifest ./manifest.json --build
 
 ## 🧪 Phase 4.3 (v0.7.0) — Next Release
 
-**Focus:** Editor and visualization developer experience
+**Focus:** Rulesets and CLI schema visualization
 
 ### v0.7.0 Scope
 
-- [ ] VS Code extension (MVP)
-  - Schema preview panel while editing components (read-only)
-  - Snippets for common schema types
-  - Command entrypoint to open schema preview from the active editor
-  - Out of scope for v0.7.0: inline decorations and quick actions
-- [ ] CLI schema visualization (MVP)
-  - Tree output showing schema hierarchy with nesting (`--format tree`)
-  - Table output with columns: Route, Schema Types, Blocks, Status (`--format table`)
-  - Shared data model across both outputs to keep results consistent
-  - Out of scope for v0.7.0: diagram/entity relationship output
+- [ ] Rulesets
+  - `--rules google` for Google rich-result-focused checks
+  - `--rules ai-citation` for LLM/citation-focused checks
+  - Shared rule engine architecture for extensibility
+- [ ] CLI schema visualization
+  - Table output by default (`--format table`)
+  - Columns: Route, Schema Types, Blocks, Status
+  - Tree output for hierarchical view (`--format tree`)
+  - Shared data model across both outputs
 - [ ] Docs + examples
-  - Extension setup and usage guide
+  - Rulesets usage guide with examples
   - CLI visualization documentation with sample outputs
 
 ### v0.7.0 Exit Criteria
 
-- [ ] VS Code extension MVP works on the example Next.js app
-- [ ] `--format tree` and `--format table` shipped with tests
+- [ ] `--rules google` and `--rules ai-citation` shipped with tests
+- [ ] `--format table` (default) and `--format tree` shipped with tests
 - [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass in CI
-- [ ] README + docs + changelog updated with usage and limitations
+- [ ] README + docs + changelog updated with usage
 - [ ] No undocumented breaking changes in existing CLI workflows
 
 ## 🧪 Phase 4.4 (v0.8.0)
 
-**Focus:** CI automation, broader Next.js coverage, and policy rules
+**Focus:** CI automation and broader Next.js coverage
 
 ### v0.8.0 Scope
 
-- [ ] Deferred from v0.7.0
-  - VS Code inline decorations showing schema types on hover
-  - VS Code quick actions to generate schema stubs
-  - CLI diagram/entity relationship visualization (`--format diagram`)
 - [ ] GitHub bot for PR comments
   - Automated schema review on pull requests
   - Inline comments for schema issues
@@ -219,12 +209,42 @@ schemasentry validate --manifest ./manifest.json --build
   - Write assertions like "all articles must have author"
   - Test schema correctness in CI pipelines
   - Custom rule definitions for team policies
-- [ ] Rulesets
-  - `--rules google` for rich-result-focused checks
-  - `--rules ai-citation` for LLM/citation-focused checks
 - [ ] Team policy controls
   - Rule severity overrides (error/warn/off)
   - Rule allowlist/denylist config
+- [ ] Deferred from v0.7.0
+  - VS Code extension (moved to v0.9.0)
+  - CLI diagram/entity relationship visualization (`--format diagram`)
+- [ ] Deferred to later
+  - `schemasentry suggest` (AI recommendations)
+  - Provider architecture for AI suggestions
+
+## 🧪 Phase 4.5 (v0.9.0)
+
+**Focus:** Editor experience and extensibility
+
+### v0.9.0 Scope
+
+- [ ] VS Code extension (MVP)
+  - Schema preview panel while editing components (read-only)
+  - Snippets for common schema types
+  - Command entrypoint to open schema preview from the active editor
+  - Out of scope for v0.9.0: inline decorations and quick actions
+- [ ] CLI diagram visualization (`--format diagram`)
+- [ ] Plugin API for custom validators and internal rules
+- [ ] Framework adapter interfaces in `@schemasentry/core`
+- [ ] First non-Next.js adapter (Astro or Remix)
+- [ ] CMS integrations (contributor-friendly)
+  - Sanity.io plugin
+  - Contentful integration patterns
+  - Strapi integration patterns
+
+## 🧪 Phase 4.6 (v0.9.1)
+
+**Focus:** AI-assisted recommendations
+
+### v0.9.1 Scope
+
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
   - Emit deterministic JSON output for CI review (`--format json` default)
@@ -238,21 +258,7 @@ schemasentry validate --manifest ./manifest.json --build
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
 
-## 🧪 Phase 4.5 (v0.9.0)
-
-**Focus:** Extensibility and ecosystem growth
-
-### v0.9.0 Scope
-
-- [ ] Plugin API for custom validators and internal rules
-- [ ] Framework adapter interfaces in `@schemasentry/core`
-- [ ] First non-Next.js adapter (Astro or Remix)
-- [ ] CMS integrations (contributor-friendly)
-  - Sanity.io plugin
-  - Contentful integration patterns
-  - Strapi integration patterns
-
-## 🚀 Phase 4.6 (v0.9.5)
+## 🚀 Phase 4.7 (v0.9.5)
 
 **Focus:** Adoption assets and launch readiness
 
