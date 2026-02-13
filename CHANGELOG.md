@@ -8,23 +8,27 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-02-13
+
 ### Added
 
+- **Rulesets** - Validate schema against specific optimization targets
+  - `--rules google` - Google rich-result focused checks (Product, Article, LocalBusiness, Event, FAQ, HowTo, Review, VideoObject)
+  - `--rules ai-citation` - AI/LLM citation focused checks (author, datePublished, description, entity relationships)
+  - Supports comma-separated: `--rules google,ai-citation`
+- **CLI Visualization** - New output formats for better readability
+  - `--format table` - Table output with Route, Status, Types, Issues columns (now default)
+  - `--format tree` - Hierarchical tree view showing schema structure and issues
 - `validate --build` to run a build command before reality-check validation.
 - `validate --build-command <command>` to override the build command used with `--build`.
 
 ### Changed
 
+- `validate` now uses `--format table` by default (previously json)
 - `validate` now auto-detects built output when `--root` is omitted (`.next/server/app`, `out`, `.next/server/pages`).
 - `audit` now skips legacy coverage checks when no schema data file is loaded, preventing false positives from empty-data assumptions.
 - Source scanning now detects aliased `Schema` component usage (for example `Schema as JsonLdSchema`) to reduce ghost-route false positives.
 - Updated docs and CI examples to use reality-check validation (`--root` / auto-detect) instead of deprecated `validate --data` flows.
-- Refined `v0.7.0` roadmap scope to focus on:
-  - Rulesets: `--rules google` and `--rules ai-citation` for validation
-  - CLI visualization: `--format table` (default) and `--format tree`
-- Deferred VS Code extension to `v0.9.0`.
-- Deferred GitHub bot, Pages Router support, schema testing framework to `v0.8.0`.
-- Deferred AI suggestions (`schemasentry suggest`) to `v0.9.1`.
 
 ## [0.6.0] - 2026-02-12
 

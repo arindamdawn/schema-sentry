@@ -11,8 +11,8 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.6.0` (⚠️ BREAKING CHANGES: validate now checks built HTML to eliminate false positives)
-**Next release target:** `v0.7.0` (Rulesets + CLI visualization in table/tree formats)
+**Current release:** `v0.7.0` (Rulesets + CLI visualization)
+**Next release target:** `v0.8.0` (GitHub bot + Pages Router support)
 
 ## ✨ Features
 
@@ -204,6 +204,17 @@ pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --build
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./.next/server/app
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./out
 
+# Validate with rulesets (google rich results / ai-citation)
+pnpm schemasentry validate --rules google
+pnpm schemasentry validate --rules ai-citation
+pnpm schemasentry validate --rules google,ai-citation
+
+# Output formats (table default, tree, json, html)
+pnpm schemasentry validate --format table
+pnpm schemasentry validate --format tree
+pnpm schemasentry validate --format json
+pnpm schemasentry validate --format html --output ./report.html
+
 # Audit for ghost routes (routes in manifest but no Schema component)
 pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --root ./app
 pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --root ./app --scan
@@ -228,9 +239,9 @@ pnpm schemasentry audit \
   --output ./audit-report.html
 ```
 
-The CLI emits JSON output by default and exits with code 1 on errors, making it perfect for CI/CD pipelines.
-Use `--format html --output <path>` to generate a shareable report file.
+The CLI emits table output by default for better readability. Use `--format json` for machine-readable output or `--format html --output <path>` for shareable reports.
 Use `--annotations github` in GitHub Actions to emit PR annotations.
+Use `--rules google` or `--rules ai-citation` to validate for specific optimization targets.
 Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
 See `docs/ci.md` for complete CI workflow examples.
 
