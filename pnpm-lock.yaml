@@ -91,6 +91,15 @@ importers:
         specifier: ^19.1.1
         version: 19.2.4(react@19.2.4)
 
+  packages/react:
+    dependencies:
+      '@schemasentry/core':
+        specifier: workspace:*
+        version: link:../core
+      react:
+        specifier: '>=18'
+        version: 19.2.4
+
 packages:
 
   '@ampproject/remapping@2.3.0':

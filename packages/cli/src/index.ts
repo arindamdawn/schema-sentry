@@ -5,6 +5,8 @@ import { initCommand } from "./commands/init.js";
 import { auditCommand } from "./commands/audit.js";
 import { collectCommand } from "./commands/collect.js";
 import { scaffoldCommand } from "./commands/scaffold.js";
+import { botCommand } from "./commands/bot.js";
+import { testCommand } from "./commands/test.js";
 import { resolveCliVersion } from "./commands/utils.js";
 
 const program = new Command();
@@ -20,5 +22,7 @@ program.addCommand(validateCommand);
 program.addCommand(auditCommand);
 program.addCommand(collectCommand);
 program.addCommand(scaffoldCommand);
+program.addCommand(botCommand);
+program.addCommand(testCommand);
 
 program.parse();

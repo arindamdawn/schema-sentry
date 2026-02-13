@@ -1,8 +1,18 @@
 import { promises as fs } from "fs";
 import path from "path";
 
+export type RuleOverride = {
+  ruleId: string;
+  severity: "error" | "warn" | "off";
+};
+
 export type SchemaSentryConfig = {
   recommended?: boolean;
+  rules?: {
+    severity?: Record<string, "error" | "warn" | "off">;
+    allowlist?: string[];
+    denylist?: string[];
+  };
 };
 
 export class ConfigError extends Error {
@@ -82,8 +92,31 @@ const isConfig = (value: unknown): value is SchemaSentryConfig => {
   }
 
   const config = value as SchemaSentryConfig;
+  
   if (config.recommended !== undefined && typeof config.recommended !== "boolean") {
     return false;
+  }
+
+  if (config.rules !== undefined) {
+    if (typeof config.rules !== "object") {
+      return false;
+    }
+    
+    if (config.rules.severity) {
+      for (const [key, val] of Object.entries(config.rules.severity)) {
+        if (!["error", "warn", "off"].includes(val)) {
+          return false;
+        }
+      }
+    }
+    
+    if (config.rules.allowlist !== undefined && !Array.isArray(config.rules.allowlist)) {
+      return false;
+    }
+    
+    if (config.rules.denylist !== undefined && !Array.isArray(config.rules.denylist)) {
+      return false;
+    }
   }
 
   return true;

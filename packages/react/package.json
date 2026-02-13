@@ -1,0 +1,42 @@
+{
+  "name": "@schemasentry/react",
+  "version": "0.7.0",
+  "description": "React components for Schema Sentry - works with Next.js Pages Router and other React frameworks.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arindamdawn/schema-sentry.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/arindamdawn/schema-sentry#readme",
+  "bugs": {
+    "url": "https://github.com/arindamdawn/schema-sentry/issues"
+  },
+  "keywords": [
+    "schema",
+    "json-ld",
+    "structured-data",
+    "seo",
+    "react",
+    "nextjs"
+  ],
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dependencies": {
+    "@schemasentry/core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm --dts --clean --tsconfig tsconfig.build.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
