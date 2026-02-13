@@ -23,7 +23,7 @@ import {
   isManifest
 } from "./utils.js";
 
-import { runMultipleRulesets, parseRulesetNames } from "../rules.js";
+import { runMultipleRulesets, parseRulesetNames } from "../rules/index.js";
 import { collectSchemaData } from "../collect.js";
 
 const DEFAULT_BUILD_OUTPUT_CANDIDATES = [

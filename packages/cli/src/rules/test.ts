@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { runRuleset, runMultipleRulesets, parseRulesetNames } from "./rules.js";
+import { runRuleset, runMultipleRulesets, parseRulesetNames } from "./index.js";
 import type { SchemaNode } from "@schemasentry/core";
 
 describe("rulesets", () => {
