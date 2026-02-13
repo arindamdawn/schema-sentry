@@ -1,5 +1,11 @@
 # @schemasentry/core
 
+## 0.6.1
+
+### Patch Changes
+
+- Version bump to maintain consistency with `@schemasentry/cli` v0.6.1 release.
+
 ## 0.3.0
 
 ### Minor Changes
