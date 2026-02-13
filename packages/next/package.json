@@ -1,6 +1,6 @@
 {
   "name": "@schemasentry/next",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Next.js App Router bindings for Schema Sentry.",
   "license": "MIT",
   "type": "module",
