@@ -4,7 +4,7 @@ Last updated: 2026-02-13
 
 ## 🎉 Current Status
 
-**v0.6.0 is live!** Published to npm and ready to use.
+**v0.7.0 is live!** Rulesets + CLI visualization
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
 
@@ -83,11 +83,10 @@ Last updated: 2026-02-13
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.7.0** - Rulesets (`google`, `ai-citation`) + CLI visualization (table default)
-2. **v0.8.0** - GitHub bot + Pages Router support
-3. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
-4. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
-5. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
+1. **v0.8.0** - GitHub bot + Pages Router support
+2. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
+3. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
+4. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -164,34 +163,34 @@ schemasentry validate --manifest ./manifest.json
 schemasentry validate --manifest ./manifest.json --build
 ```
 
-## 🧪 Phase 4.3 (v0.7.0) — Next Release
+## ✅ Phase 4.3 (v0.7.0) — COMPLETE
 
 **Focus:** Rulesets and CLI schema visualization
 
-### v0.7.0 Scope
+### Released
 
-- [ ] Rulesets
+- ✅ **Rulesets**
   - `--rules google` for Google rich-result-focused checks
   - `--rules ai-citation` for LLM/citation-focused checks
   - Shared rule engine architecture for extensibility
-- [ ] CLI schema visualization
+- ✅ **CLI schema visualization**
   - Table output by default (`--format table`)
   - Columns: Route, Schema Types, Blocks, Status
   - Tree output for hierarchical view (`--format tree`)
   - Shared data model across both outputs
-- [ ] Docs + examples
+- ✅ **Docs + examples**
   - Rulesets usage guide with examples
   - CLI visualization documentation with sample outputs
 
 ### v0.7.0 Exit Criteria
 
-- [ ] `--rules google` and `--rules ai-citation` shipped with tests
-- [ ] `--format table` (default) and `--format tree` shipped with tests
-- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass in CI
-- [ ] README + docs + changelog updated with usage
-- [ ] No undocumented breaking changes in existing CLI workflows
+- ✅ `--rules google` and `--rules ai-citation` shipped with tests
+- ✅ `--format table` (default) and `--format tree` shipped with tests
+- ✅ `pnpm build`, `pnpm test`, and `pnpm typecheck` pass in CI
+- ✅ README + docs + changelog updated with usage
+- ✅ No undocumented breaking changes in existing CLI workflows
 
-## 🧪 Phase 4.4 (v0.8.0)
+## 🧪 Phase 4.4 (v0.8.0) — Next Release
 
 **Focus:** CI automation and broader Next.js coverage
 
