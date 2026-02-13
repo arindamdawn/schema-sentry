@@ -19,10 +19,12 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - `audit` now skips legacy coverage checks when no schema data file is loaded, preventing false positives from empty-data assumptions.
 - Source scanning now detects aliased `Schema` component usage (for example `Schema as JsonLdSchema`) to reduce ghost-route false positives.
 - Updated docs and CI examples to use reality-check validation (`--root` / auto-detect) instead of deprecated `validate --data` flows.
-- Refined `v0.7.0` roadmap scope to an MVP focused on:
-  - VS Code extension: preview panel + snippets
-  - CLI visualization: `--format tree` and `--format table`
-- Deferred larger items (diagram output, VS Code inline decorations/quick actions, GitHub bot, Pages Router support, schema testing framework) to `v0.8.0`.
+- Refined `v0.7.0` roadmap scope to focus on:
+  - Rulesets: `--rules google` and `--rules ai-citation` for validation
+  - CLI visualization: `--format table` (default) and `--format tree`
+- Deferred VS Code extension to `v0.9.0`.
+- Deferred GitHub bot, Pages Router support, schema testing framework to `v0.8.0`.
+- Deferred AI suggestions (`schemasentry suggest`) to `v0.9.1`.
 
 ## [0.6.0] - 2026-02-12
 

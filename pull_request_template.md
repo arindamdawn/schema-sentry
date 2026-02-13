@@ -6,52 +6,42 @@ Expands the roadmap with high-impact developer-experience features based on comm
 
 ### Priority Queue (Updated)
 
-1. **Pattern-based auto-detection** — infer schema types from route conventions
-2. **`schemasentry scaffold`** — TOP PRIORITY for v0.5.0 (safe write/update with dry-run)
-3. **Rulesets** — Google-rich-results and AI-citation validation
-4. **VS Code extension** — schema preview, snippets, inline decorations
-5. **GitHub bot** — CI automation for PR comments
-6. **Pages Router support** — extend beyond App Router
-7. **Schema testing framework** — assertions for schema correctness
-8. **AI suggestions** — read-only recommendations (moved to v0.7.0)
-9-10. Plugin API, Framework adapters
+1. **v0.7.0** - Rulesets (`google`, `ai-citation`) + CLI visualization (table default)
+2. **v0.8.0** - GitHub bot + Pages Router support
+3. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
+4. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
 
-### v0.5.0 Scope (Core Authoring Workflow)
+### v0.7.0 Scope (Rulesets + Visualization)
 
-- **`schemasentry scaffold`** — Generate schema for pages without it
-  - Use auto-detected page types as defaults
-  - Interactive prompts for customization
-  - Dry-run mode by default for safety
-- **Pattern-based auto-detection** — infer `/blog/*` → BlogPosting, `/products/*` → Product
-
-### v0.6.0 Scope
-
-- **Rulesets** — `--rules google`, `--rules ai-citation`
-- **VS Code extension** — preview panel, snippets, inline decorations
-- **GitHub bot** — automated PR comments
-- **Pages Router support** — `@schemasentry/react` package
-
-### v0.7.0 Scope
-
-- **Schema testing framework** — write assertions like "all articles must have author"
-- **AI suggestions** — read-only recommendations (experimental)
-- **Plugin API** — custom validators for enterprise teams
+- **Rulesets**
+  - `--rules google` for Google rich-result-focused checks
+  - `--rules ai-citation` for LLM/citation-focused checks
+  - Shared rule engine architecture for extensibility
+- **CLI schema visualization**
+  - Table output by default (`--format table`)
+  - Columns: Route, Schema Types, Blocks, Status
+  - Tree output for hierarchical view (`--format tree`)
 
 ### v0.8.0 Scope
 
-- **Framework adapters** — Astro, Remix, SvelteKit, Angular
-- **CMS integrations** — Sanity, Contentful, Strapi patterns
+- **GitHub bot** — automated PR comments for schema review
+- **Pages Router support** — `@schemasentry/react` package
+- **Schema testing framework** — assertions like "all articles must have author"
+- **Team policy controls** — rule severity overrides, allowlist/denylist
 
-### Post-v1.0
+### v0.9.0 Scope
 
-- Visual schema editor
-- GraphQL schema awareness
-- i18n/multi-language support
-- Schema.org deprecation alerts
+- **VS Code extension** — preview panel, snippets
+- **Plugin API** — custom validators for enterprise teams
+- **Framework adapters** — Astro or Remix (first non-Next.js)
 
----
+### v0.9.1 Scope
 
-**Documentation fixes included:**
-- Update expected output format in examples README
-- Add collect command options to CI docs
-- Clarify CHANGELOG wording for v0.4.0 changes
+- **AI suggestions** — `schemasentry suggest` (read-only, experimental)
+- **Provider architecture** — OpenAI, Anthropic, Gemini, OpenRouter support
+
+### v1.0.0
+
+- Stable API contract
+- Comprehensive test coverage (>80%)
+- Product Hunt launch

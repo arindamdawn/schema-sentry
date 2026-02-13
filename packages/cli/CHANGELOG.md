@@ -17,7 +17,10 @@
   - `audit` now skips legacy coverage checks when no schema data file is loaded, preventing false positives from empty-data assumptions.
   - Source scanning now detects aliased `Schema` component usage (for example `Schema as JsonLdSchema`) to reduce ghost-route false positives.
   - Updated docs and CI examples to use reality-check validation (`--root` / auto-detect) instead of deprecated `validate --data` flows.
-  - Refined `v0.7.0` roadmap scope to an MVP focused on VS Code extension and CLI visualization.
+  - Refined `v0.7.0` roadmap scope to focus on:
+    - Rulesets: `--rules google` and `--rules ai-citation` for validation
+    - CLI visualization: `--format table` (default) and `--format tree`
+  - Deferred VS Code extension to `v0.9.0`.
 
   ### Fixed
 
