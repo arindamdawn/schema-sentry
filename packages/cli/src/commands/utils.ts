@@ -3,10 +3,13 @@ import path from "path";
 import { stableStringify, type Manifest } from "@schemasentry/core";
 import type { SchemaDataFile } from "../report";
 import { ConfigError, loadConfig, resolveRecommended } from "../config";
+import type { RulesetName } from "../rules";
+import { parseRulesetNames } from "../rules";
 
-export type OutputFormat = "json" | "html";
+export type OutputFormat = "json" | "html" | "table" | "tree";
 export type CollectOutputFormat = "json";
 export type AnnotationsMode = "none" | "github";
+export type RulesetsMode = RulesetName[];
 
 export function resolveCliVersion(): string {
   try {
@@ -19,17 +22,17 @@ export function resolveCliVersion(): string {
 }
 
 export function resolveOutputFormat(value?: string): OutputFormat {
-  const format = (value ?? "json").trim().toLowerCase();
-  if (format === "json" || format === "html") {
+  const format = (value ?? "table").trim().toLowerCase();
+  if (format === "json" || format === "html" || format === "table" || format === "tree") {
     return format;
   }
   printCliError(
     "output.invalid_format",
     `Unsupported report format '${value ?? ""}'`,
-    "Use --format json or --format html."
+    "Use --format json, html, table, or tree."
   );
   process.exit(1);
-  return "json";
+  return "table";
 }
 
 export function resolveCollectOutputFormat(value?: string): CollectOutputFormat {
@@ -74,6 +77,17 @@ export async function resolveRecommendedOption(configPath?: string): Promise<boo
     }
     throw error;
   }
+}
+
+export function resolveRulesets(value?: string): RulesetsMode {
+  if (!value || value.trim() === "") {
+    return [];
+  }
+  const names = parseRulesetNames(value);
+  if (names.length === 0) {
+    return [];
+  }
+  return names;
 }
 
 function getRecommendedOverride(argv: string[]): boolean | undefined {

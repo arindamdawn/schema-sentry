@@ -12,13 +12,19 @@ import {
   performRealityCheck,
   type RealityCheckReport
 } from "../reality";
+
+import { formatRealityReportTable, formatRealityReportTree } from "../visualize.js";
 import {
   resolveOutputFormat,
   resolveAnnotationsMode,
   resolveRecommendedOption,
+  resolveRulesets,
   printCliError,
   isManifest
 } from "./utils.js";
+
+import { runMultipleRulesets, parseRulesetNames } from "../rules.js";
+import { collectSchemaData } from "../collect.js";
 
 const DEFAULT_BUILD_OUTPUT_CANDIDATES = [
   ".next/server/app",
@@ -103,9 +109,10 @@ export const validateCommand = new Command("validate")
     "./app"
   )
   .option("-c, --config <path>", "Path to config JSON")
-  .option("--format <format>", "Report format (json|html)", "json")
+  .option("--format <format>", "Report format (json|html|table|tree)", "table")
   .option("--annotations <provider>", "Emit CI annotations (none|github)", "none")
   .option("-o, --output <path>", "Write report output to file")
+  .option("--rules <rulesets>", "Run rulesets (google,ai-citation). Comma-separated for multiple.")
   .option("--recommended", "Enable recommended field checks")
   .option("--no-recommended", "Disable recommended field checks")
   .action(async (options: {
@@ -118,11 +125,13 @@ export const validateCommand = new Command("validate")
     format?: string;
     annotations?: string;
     output?: string;
+    rules?: string;
   }) => {
     const start = Date.now();
     const format = resolveOutputFormat(options.format);
     const annotationsMode = resolveAnnotationsMode(options.annotations);
     const recommended = await resolveRecommendedOption(options.config);
+    const rulesets = resolveRulesets(options.rules);
     const cwd = process.cwd();
     const manifestPath = path.resolve(cwd, options.manifest);
     const appDir = path.resolve(cwd, options.appDir ?? "./app");
@@ -220,8 +229,48 @@ export const validateCommand = new Command("validate")
       return;
     }
 
+    // Run rulesets if specified
+    let rulesetResults: Map<string, { errors: number; warnings: number }> | undefined;
+    if (rulesets.length > 0) {
+      const collected = await collectSchemaData({ rootDir: builtOutputDir });
+      const routesData = collected.data.routes ?? {};
+      
+      rulesetResults = new Map();
+      let totalRulesetErrors = 0;
+      let totalRulesetWarnings = 0;
+
+      for (const route of report.routes) {
+        const nodes = routesData[route.route] ?? [];
+        const result = runMultipleRulesets(rulesets, nodes);
+        
+        rulesetResults.set(route.route, {
+          errors: result.summary.errors,
+          warnings: result.summary.warnings
+        });
+        
+        totalRulesetErrors += result.summary.errors;
+        totalRulesetWarnings += result.summary.warnings;
+        
+        report.routes[report.routes.indexOf(route)].issues.push(...result.issues);
+      }
+
+      report.summary.errors += totalRulesetErrors;
+      report.summary.warnings += totalRulesetWarnings;
+      report.ok = report.summary.errors === 0;
+      
+      if (rulesets.length > 0) {
+        console.error(chalk.gray(`\n📋 Rulesets: ${rulesets.join(", ")} (${totalRulesetErrors}E, ${totalRulesetWarnings}W)`));
+      }
+    }
+
     // Output format handling
-    if (format === "json") {
+    if (format === "table") {
+      const tableOutput = formatRealityReportTable(report, rulesetResults);
+      console.log(tableOutput);
+    } else if (format === "tree") {
+      const treeOutput = formatRealityReportTree(report, rulesetResults);
+      console.log(treeOutput);
+    } else if (format === "json") {
       if (options.output) {
         const outputPath = path.resolve(process.cwd(), options.output);
         await mkdir(path.dirname(outputPath), { recursive: true });
