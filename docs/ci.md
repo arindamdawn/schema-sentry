@@ -47,7 +47,29 @@ Use `--annotations github` to emit GitHub Actions workflow commands (`::error` /
 
 ## Output Formats
 
-Choose between JSON (machine-readable) and HTML (human-readable) reports.
+Choose between table (default, human-readable), tree (hierarchical), JSON (machine-readable), and HTML (human-readable) reports.
+
+### Table Output (Default)
+
+```yaml
+- name: Validate with table output
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
+      --format table
+```
+
+### Tree Output
+
+```yaml
+- name: Validate with tree output
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
+      --format tree
+```
 
 ### JSON Output
 
@@ -71,6 +93,49 @@ Choose between JSON (machine-readable) and HTML (human-readable) reports.
       --root ./.next/server/app \
       --format html \
       --output ./schema-sentry-validate-report.html
+```
+
+## Rulesets
+
+Validate schema against specific optimization targets using rulesets.
+
+### Google Rich Results
+
+Validate that your schema meets Google's rich result requirements:
+
+```yaml
+- name: Validate for Google rich results
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
+      --rules google
+```
+
+### AI Citation
+
+Validate that your schema is optimized for AI/LLM citation:
+
+```yaml
+- name: Validate for AI citation
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
+      --rules ai-citation
+```
+
+### Multiple Rulesets
+
+Combine rulesets for comprehensive validation:
+
+```yaml
+- name: Validate for both Google and AI
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
+      --rules google,ai-citation
 ```
 
 ## Upload Reports as Artifacts
@@ -209,7 +274,8 @@ For static exports, point `--root` to your export directory (for example `./out`
 | `--root <path>` | Built output directory for `validate` (for example `./.next/server/app` or `./out`) |
 | `--build` | Run build before validation (`pnpm build` by default) |
 | `--build-command <command>` | Custom build command used with `--build` |
-| `--format json\|html` | Output format (default: json) |
+| `--format json\|html\|table\|tree` | Output format (default: table) |
+| `--rules google\|ai-citation` | Run rulesets for Google rich results or AI citation checks |
 | `--annotations none\|github` | Emit CI annotations (default: none) |
 | `-o, --output <path>` | Write output to file |
 | `--recommended / --no-recommended` | Enable/disable recommended field checks (default: enabled) |
