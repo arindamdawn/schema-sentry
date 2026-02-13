@@ -33,7 +33,6 @@ const IGNORED_DIRS = new Set([
 
 const SCHEMA_IMPORT_PATTERN =
   /from\s+["']@schemasentry\/(?:next|core)["']/;
-const SCHEMA_COMPONENT_PATTERN = /<Schema\s/;
 const BUILDER_IMPORT_PATTERN =
   /import\s*\{([^}]+)\}\s*from\s*["']@schemasentry\/(?:next|core)["']/g;
 const BUILDER_NAME_PATTERN =
@@ -118,25 +117,35 @@ const analyzeSourceFile = (
   content: string
 ): RouteSourceInfo => {
   const hasSchemaImport = SCHEMA_IMPORT_PATTERN.test(content);
-  const hasSchemaUsage = SCHEMA_COMPONENT_PATTERN.test(content);
+  const schemaAliases = new Set<string>();
 
   // Extract imported builder names
   const importedBuilders: string[] = [];
-  const importMatch = BUILDER_IMPORT_PATTERN.exec(content);
-  if (importMatch && importMatch[1]) {
+  const importMatches = Array.from(content.matchAll(BUILDER_IMPORT_PATTERN));
+  for (const importMatch of importMatches) {
+    if (!importMatch[1]) continue;
     const imports = importMatch[1]
       .split(",")
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
 
     for (const imp of imports) {
-      // Handle "Schema as SchemaComponent" syntax
-      const name = imp.split(/\s+as\s+/)[0].trim();
-      if (BUILDER_NAME_PATTERN.test(name)) {
-        importedBuilders.push(name);
+      const normalized = imp.replace(/^type\s+/, "").trim();
+      const [baseName, aliasName] = normalized
+        .split(/\s+as\s+/)
+        .map((part) => part.trim());
+
+      if (baseName === "Schema") {
+        schemaAliases.add(aliasName || "Schema");
+      }
+
+      if (BUILDER_NAME_PATTERN.test(baseName)) {
+        importedBuilders.push(baseName);
       }
     }
   }
+
+  const hasSchemaUsage = hasSchemaComponentUsage(content, schemaAliases);
 
   return {
     route,
@@ -145,6 +154,21 @@ const analyzeSourceFile = (
     hasSchemaUsage,
     importedBuilders
   };
+};
+
+const hasSchemaComponentUsage = (
+  content: string,
+  schemaAliases: Set<string>
+): boolean => {
+  const aliases = schemaAliases.size > 0 ? Array.from(schemaAliases) : ["Schema"];
+  for (const alias of aliases) {
+    const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`<${escaped}(?:\\s|>)`);
+    if (pattern.test(content)) {
+      return true;
+    }
+  }
+  return false;
 };
 
 export const formatSourceScanSummary = (result: SourceScanResult): string => {

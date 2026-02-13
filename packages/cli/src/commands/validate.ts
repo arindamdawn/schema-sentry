@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { mkdir, readFile, writeFile, access } from "node:fs/promises";
+import { spawn } from "node:child_process";
 import path from "path";
 import chalk from "chalk";
 import { stableStringify, type Manifest } from "@schemasentry/core";
@@ -9,7 +10,6 @@ import { emitGitHubAnnotations } from "../annotations";
 import { formatDuration } from "../summary";
 import {
   performRealityCheck,
-  formatRealityReport,
   type RealityCheckReport
 } from "../reality";
 import {
@@ -20,6 +20,66 @@ import {
   isManifest
 } from "./utils.js";
 
+const DEFAULT_BUILD_OUTPUT_CANDIDATES = [
+  ".next/server/app",
+  "out",
+  ".next/server/pages"
+] as const;
+
+export const resolveBuildOutputCandidates = (
+  cwd: string,
+  explicitRoot?: string
+): string[] => {
+  if (explicitRoot && explicitRoot.trim().length > 0) {
+    return [path.resolve(cwd, explicitRoot)];
+  }
+
+  const seen = new Set<string>();
+  const resolved: string[] = [];
+  for (const candidate of DEFAULT_BUILD_OUTPUT_CANDIDATES) {
+    const absolute = path.resolve(cwd, candidate);
+    if (!seen.has(absolute)) {
+      seen.add(absolute);
+      resolved.push(absolute);
+    }
+  }
+  return resolved;
+};
+
+export const resolveExistingBuildOutputDir = async (
+  candidates: string[]
+): Promise<string | undefined> => {
+  for (const candidate of candidates) {
+    try {
+      // Check if directory exists (throws if not accessible)
+      await access(candidate);
+      return candidate;
+    } catch {
+      // Directory doesn't exist or isn't accessible - continue to next candidate
+    }
+  }
+  return undefined;
+};
+
+const runBuildCommand = async (command: string): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const child = spawn(command, {
+      stdio: "inherit",
+      shell: true
+    });
+
+    child.on("error", (error) => reject(error));
+    child.on("exit", (code) => {
+      if (code === 0) {
+        resolve();
+        return;
+      }
+      reject(
+        new Error(`Build command exited with code ${code ?? "unknown"}`)
+      );
+    });
+  });
+
 export const validateCommand = new Command("validate")
   .description("Validate schema by checking built HTML output against manifest (validates reality, not just config files)")
   .option(
@@ -29,8 +89,13 @@ export const validateCommand = new Command("validate")
   )
   .option(
     "-r, --root <path>",
-    "Root directory containing built HTML output (e.g., ./out or ./.next/server/app)",
-    "./out"
+    "Root directory containing built HTML output (auto-detected when omitted)"
+  )
+  .option("--build", "Run build before validation using --build-command")
+  .option(
+    "--build-command <command>",
+    "Build command used with --build",
+    "pnpm build"
   )
   .option(
     "--app-dir <path>",
@@ -45,7 +110,9 @@ export const validateCommand = new Command("validate")
   .option("--no-recommended", "Disable recommended field checks")
   .action(async (options: {
     manifest: string;
-    root: string;
+    root?: string;
+    build?: boolean;
+    buildCommand?: string;
     appDir?: string;
     config?: string;
     format?: string;
@@ -56,9 +123,9 @@ export const validateCommand = new Command("validate")
     const format = resolveOutputFormat(options.format);
     const annotationsMode = resolveAnnotationsMode(options.annotations);
     const recommended = await resolveRecommendedOption(options.config);
-    const manifestPath = path.resolve(process.cwd(), options.manifest);
-    const builtOutputDir = path.resolve(process.cwd(), options.root);
-    const appDir = path.resolve(process.cwd(), options.appDir ?? "./app");
+    const cwd = process.cwd();
+    const manifestPath = path.resolve(cwd, options.manifest);
+    const appDir = path.resolve(cwd, options.appDir ?? "./app");
 
     // Load manifest
     let manifest: Manifest;
@@ -89,17 +156,48 @@ export const validateCommand = new Command("validate")
     console.error(chalk.blue.bold("🔍 Schema Sentry Reality Check"));
     console.error(chalk.gray("Validating actual built HTML against manifest expectations...\n"));
 
-    // Check if built output exists
-    try {
-      await access(builtOutputDir);
-    } catch {
+    if (options.build) {
+      const buildCommand = options.buildCommand ?? "pnpm build";
+      console.error(chalk.gray(`Running build command: ${buildCommand}\n`));
+      try {
+        await runBuildCommand(buildCommand);
+        console.error(chalk.gray("\nBuild completed.\n"));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+        printCliError(
+          "validate.build_failed",
+          `Build failed before validation: ${message}`,
+          "Fix build errors or run validate without --build and pass an existing --root."
+        );
+        process.exit(1);
+        return;
+      }
+    }
+
+    const candidateRoots = resolveBuildOutputCandidates(cwd, options.root);
+    const builtOutputDir = await resolveExistingBuildOutputDir(candidateRoots);
+    if (!builtOutputDir) {
+      const checkedPaths = candidateRoots
+        .map((candidate) => path.relative(cwd, candidate) || ".")
+        .map((candidate) => `- ${candidate}`)
+        .join("\n");
+
+      const help = options.root
+        ? "Build your app first or pass a valid --root directory with built HTML output."
+        : "Build your app first (`next build`), run with --build, or pass --root explicitly.";
+
       printCliError(
         "validate.no_build_output",
-        `No built HTML output found at ${builtOutputDir}`,
-        "Build your Next.js app first with `next build`, then run validate."
+        `No built HTML output found. Checked:\n${checkedPaths}`,
+        help
       );
       process.exit(1);
       return;
+    }
+
+    if (!options.root) {
+      const displayPath = path.relative(cwd, builtOutputDir) || ".";
+      console.error(chalk.gray(`Using built output directory: ${displayPath}\n`));
     }
 
     // Perform reality check

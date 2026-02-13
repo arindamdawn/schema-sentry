@@ -17,7 +17,7 @@ Schema Sentry v0.6.0+ validates **actual built HTML output**, not just JSON conf
 1. `init` → Create starter files
 2. `scaffold` → See what code to add (shows copy-paste examples!)
 3. Add Schema components to your pages
-4. `next build` → Build your app
+4. `validate --build` (or run `next build`) → Produce built output
 5. `validate` → Check actual HTML (catches missing schema!)
 
 ## Commands
@@ -43,10 +43,19 @@ pnpm schemasentry init --scan
 Validate schema by checking built HTML output:
 
 ```bash
-# Build your app first
-next build
+# Auto-detect built output and validate
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json
 
-# Then validate (catches missing schema with zero false positives!)
+# Build automatically before validation
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --build
+```
+
+Set root explicitly (recommended in CI):
+
+```bash
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
   --root ./.next/server/app
@@ -84,6 +93,9 @@ pnpm schemasentry audit \
 ```
 
 **Ghost routes** are routes in your manifest that don't have Schema components in the source code. They cause false positives in other tools!
+
+If no schema data file is loaded, `audit` runs in source-only mode and skips legacy coverage checks.
+Provide `--data` when you want data-file coverage checks.
 
 With source scanning:
 
@@ -174,6 +186,8 @@ pnpm schemasentry collect \
 | `--annotations none\|github` | CI annotations |
 | `-o, --output <path>` | Write output to file |
 | `--root <path>` | Root directory (built output for validate/collect, app dir for scaffold/audit) |
+| `--build` | Run build before validation (`pnpm build` by default) |
+| `--build-command <command>` | Custom build command used with `--build` |
 | `--app-dir <path>` | Path to Next.js app directory (default: ./app) |
 | `--routes <routes...>` | Collect only specific routes (`collect`) |
 | `--strict-routes` | Fail when any route passed to `--routes` is missing (`collect`) |
@@ -213,11 +227,10 @@ schemasentry validate --manifest ./manifest.json --data ./data.json
 
 **NEW (v0.6.0 - Reality check - NO FALSE POSITIVES):**
 ```bash
-# 1. Build your app first
-next build
-
-# 2. Validate actual HTML
-schemasentry validate --manifest ./manifest.json --root ./.next/server/app
+# 1. Validate using auto-detected build output
+schemasentry validate --manifest ./manifest.json
+# or run build automatically first:
+schemasentry validate --manifest ./manifest.json --build
 ```
 
 ## Documentation
