@@ -4,9 +4,9 @@ Last updated: 2026-02-13
 
 ## 🎉 Current Status
 
-**v0.7.0 is live!** Rulesets + CLI visualization
+**v0.8.0 is live!** GitHub Bot + Pages Router + Testing
 
-📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli`
+📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
 ---
 
@@ -83,10 +83,9 @@ Last updated: 2026-02-13
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.8.0** - GitHub bot + Pages Router support
-2. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
-3. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
-4. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
+1. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
+2. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
+3. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 

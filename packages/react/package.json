@@ -1,6 +1,6 @@
 {
   "name": "@schemasentry/react",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "React components for Schema Sentry - works with Next.js Pages Router and other React frameworks.",
   "license": "MIT",
   "type": "module",
