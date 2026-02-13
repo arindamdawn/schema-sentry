@@ -20,6 +20,35 @@ import {
   isSchemaData
 } from "./utils.js";
 
+type AuditCoverageInputs = {
+  data: SchemaDataFile | undefined;
+  manifest: Manifest | undefined;
+  scannedRoutes: string[];
+};
+
+export const resolveAuditCoverageInputs = (
+  input: AuditCoverageInputs
+): {
+  dataLoaded: boolean;
+  manifestForCoverage: Manifest | undefined;
+  requiredRoutesForCoverage: string[] | undefined;
+} => {
+  if (!input.data) {
+    return {
+      dataLoaded: false,
+      manifestForCoverage: undefined,
+      requiredRoutesForCoverage: undefined
+    };
+  }
+
+  return {
+    dataLoaded: true,
+    manifestForCoverage: input.manifest,
+    requiredRoutesForCoverage:
+      input.scannedRoutes.length > 0 ? input.scannedRoutes : undefined
+  };
+};
+
 export const auditCommand = new Command("audit")
   .description("Analyze schema health and check for ghost routes (routes in manifest without Schema components)")
   .option(
@@ -121,11 +150,29 @@ export const auditCommand = new Command("audit")
       }
     }
 
+    const coverageInputs = resolveAuditCoverageInputs({
+      data,
+      manifest,
+      scannedRoutes
+    });
+    if (!coverageInputs.dataLoaded) {
+      console.error(
+        chalk.yellow(
+          "⚠️ No schema data file loaded; skipping legacy coverage checks and running source-only audit.\n"
+        )
+      );
+      console.error(
+        chalk.gray(
+          "   Tip: Provide --data to enable legacy coverage checks, or see: https://schemasentry.io/docs/validation.html\n"
+        )
+      );
+    }
+
     // Build audit report
     const report = buildAuditReport(data ?? { routes: {} }, {
       recommended,
-      manifest,
-      requiredRoutes: scannedRoutes.length > 0 ? scannedRoutes : undefined
+      manifest: coverageInputs.manifestForCoverage,
+      requiredRoutes: coverageInputs.requiredRoutesForCoverage
     });
 
     // Output handling

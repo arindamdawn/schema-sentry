@@ -26,32 +26,26 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Validate schema
-        run: pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json
+      - name: Build app
+        run: pnpm build
+      - name: Validate schema (reality check)
+        run: pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./.next/server/app
 ```
 
 ## PR Annotations
 
-Use `--annotations github` to emit GitHub Actions workflow commands (`::error` / `::warning`) for each issue. These appear directly in the PR interface.
+Use `--annotations github` to emit GitHub Actions workflow commands (`::error` / `::warning`) for each issue.
 
 ```yaml
 - name: Schema validate with PR annotations
   run: |
     pnpm schemasentry validate \
       --manifest ./schema-sentry.manifest.json \
-      --data ./schema-sentry.data.json \
+      --root ./.next/server/app \
       --annotations github
 ```
 
-**Example output in PR:**
-
-```
-✗ schema-sentry.manifest.json:15 - Missing schema for /pricing
-✗ schema-sentry.manifest.json:22 - Missing schema for /about
-⚠ schema-sentry.data.json:8 - Recommended field 'image' is missing for /blog/launch
-```
-
-## Multiple Output Formats
+## Output Formats
 
 Choose between JSON (machine-readable) and HTML (human-readable) reports.
 
@@ -59,37 +53,38 @@ Choose between JSON (machine-readable) and HTML (human-readable) reports.
 
 ```yaml
 - name: Validate with JSON output
-  run: pnpm schemasentry validate --format json --output ./schema-report.json
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
+      --format json \
+      --output ./schema-report.json
 ```
 
-### HTML Report
+### HTML Output
 
 ```yaml
-- name: Generate HTML schema report
+- name: Generate HTML validation report
   run: |
-    pnpm schemasentry audit \
-      --data ./schema-sentry.data.json \
+    pnpm schemasentry validate \
       --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app \
       --format html \
-      --output ./schema-sentry-audit-report.html
+      --output ./schema-sentry-validate-report.html
 ```
 
 ## Upload Reports as Artifacts
-
-Share HTML reports with your team by uploading them as workflow artifacts.
 
 ```yaml
 - name: Upload schema report
   uses: actions/upload-artifact@v4
   with:
-    name: schema-sentry-audit-report
-    path: ./schema-sentry-audit-report.html
+    name: schema-sentry-validate-report
+    path: ./schema-sentry-validate-report.html
     retention-days: 30
 ```
 
 ## Complete Example Workflow
-
-This workflow combines validation, PR annotations, and HTML report upload:
 
 ```yaml
 name: Schema Sentry
@@ -97,9 +92,9 @@ name: Schema Sentry
 on:
   pull_request:
     paths:
-      - '**.json'
-      - '**.md'
-      - '!.git/**'
+      - "**.json"
+      - "**.md"
+      - "!.git/**"
   push:
     branches: [main]
 
@@ -122,11 +117,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build app
+        run: pnpm build
+
       - name: Validate schema with PR annotations
         run: |
           pnpm schemasentry validate \
             --manifest ./schema-sentry.manifest.json \
-            --data ./schema-sentry.data.json \
+            --root ./.next/server/app \
             --annotations github \
             --format json \
             --output ./schema-report.json
@@ -139,33 +137,35 @@ jobs:
 
       - name: Generate and upload HTML report
         run: |
-          pnpm schemasentry audit \
-            --data ./schema-sentry.data.json \
+          pnpm schemasentry validate \
             --manifest ./schema-sentry.manifest.json \
+            --root ./.next/server/app \
             --format html \
-            --output ./schema-audit-report.html
+            --output ./schema-validate-report.html
 
       - name: Upload HTML report artifact
         uses: actions/upload-artifact@v4
         with:
-          name: schema-audit-report
-          path: ./schema-audit-report.html
+          name: schema-validate-report
+          path: ./schema-validate-report.html
 ```
 
 ## Audit in CI
 
-Use `audit` command to analyze site-wide schema coverage:
+Use `audit` to analyze schema health and ghost routes:
 
 ```yaml
 - name: Schema audit
   run: |
     pnpm schemasentry audit \
-      --data ./schema-sentry.data.json \
       --manifest ./schema-sentry.manifest.json \
+      --root ./app \
       --annotations github \
       --format json \
       --output ./audit-report.json
 ```
+
+Add `--data ./schema-sentry.data.json` when you explicitly want legacy data-file coverage checks in audit.
 
 ## Data Drift Check in CI
 
@@ -194,13 +194,21 @@ For static exports, point `--root` to your export directory (for example `./out`
 
 | File | Description |
 |------|-------------|
-| `schema-sentry.manifest.json` | Route-to-schema-type mappings |
-| `schema-sentry.data.json` | Actual schema data per route |
+| `schema-sentry.manifest.json` | Route-to-schema-type mappings used by `validate` and `audit` |
 
-### Command Options
+### Optional Files
+
+| File | Description |
+|------|-------------|
+| `schema-sentry.data.json` | Legacy collected schema data, mainly for `collect --check` and optional audit input |
+
+### Validation Options
 
 | Option | Description |
 |--------|-------------|
+| `--root <path>` | Built output directory for `validate` (for example `./.next/server/app` or `./out`) |
+| `--build` | Run build before validation (`pnpm build` by default) |
+| `--build-command <command>` | Custom build command used with `--build` |
 | `--format json\|html` | Output format (default: json) |
 | `--annotations none\|github` | Emit CI annotations (default: none) |
 | `-o, --output <path>` | Write output to file |
@@ -208,52 +216,31 @@ For static exports, point `--root` to your export directory (for example `./out`
 
 ### collect Command Options
 
-The `collect` command extracts JSON-LD from built HTML output:
-
 | Option | Description |
 |--------|-------------|
-| `--root <path>` | Root directory to scan for HTML files (default: current directory) |
-| `--routes <routes...>` | Only collect specific routes (comma-separated or repeat flag) |
+| `--root <path>` | Root directory to scan for built HTML files |
+| `--routes <routes...>` | Only collect specific routes (comma-separated or repeated flag) |
 | `--strict-routes` | Fail if any route passed via `--routes` is missing |
-| `--format json` | Output format (default: json, only json supported) |
+| `--format json` | Output format (default: json) |
 | `-o, --output <path>` | Write collected schema data to file |
-| `--check` | Compare collected output with existing schema data file |
-| `-d, --data <path>` | Path to existing schema data file for `--check` (default: schema-sentry.data.json) |
-
-**Example: Collect after build**
-```bash
-pnpm next build
-pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
-```
-
-**Example: Detect schema drift in CI**
-```bash
-pnpm schemasentry collect --root ./out --check --data ./schema-sentry.data.json
-```
-
-## Performance the CLI validation Guardrail
-
-Benchmark path on a 200-route synthetic fixture and fail if runtime exceeds 5 seconds.
-
-```yaml
-- name: Verify performance target
-  run: pnpm test -- packages/core/src/performance.test.ts
-```
-
-This test ensures validation remains fast even as your site grows.
+| `--check` | Compare collected output with an existing schema data file |
+| `-d, --data <path>` | Path to existing schema data file for `--check` |
 
 ## Exit Codes
 
 | Code | Meaning |
 |------|---------|
 | 0 | All checks passed |
-| 1 | Validation errors found |
+| 1 | Validation/audit errors found |
 
 Use exit codes to gate merges in CI:
 
 ```yaml
 - name: Validate schema
-  run: pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json
+  run: |
+    pnpm schemasentry validate \
+      --manifest ./schema-sentry.manifest.json \
+      --root ./.next/server/app
 
 - name: Check result
   if: failure()

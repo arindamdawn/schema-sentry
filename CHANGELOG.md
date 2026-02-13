@@ -8,6 +8,22 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Added
+
+- `validate --build` to run a build command before reality-check validation.
+- `validate --build-command <command>` to override the build command used with `--build`.
+
+### Changed
+
+- `validate` now auto-detects built output when `--root` is omitted (`.next/server/app`, `out`, `.next/server/pages`).
+- `audit` now skips legacy coverage checks when no schema data file is loaded, preventing false positives from empty-data assumptions.
+- Source scanning now detects aliased `Schema` component usage (for example `Schema as JsonLdSchema`) to reduce ghost-route false positives.
+- Updated docs and CI examples to use reality-check validation (`--root` / auto-detect) instead of deprecated `validate --data` flows.
+- Refined `v0.7.0` roadmap scope to an MVP focused on:
+  - VS Code extension: preview panel + snippets
+  - CLI visualization: `--format tree` and `--format table`
+- Deferred larger items (diagram output, VS Code inline decorations/quick actions, GitHub bot, Pages Router support, schema testing framework) to `v0.8.0`.
+
 ## [0.6.0] - 2026-02-12
 
 ### ⚠️ BREAKING CHANGES
@@ -173,7 +189,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.6.0
+[0.5.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.5.0
 [0.4.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.4.0
 [0.3.2]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.2
 [0.3.1]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.1

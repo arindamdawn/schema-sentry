@@ -1,51 +1,96 @@
 # Validation
 
-Schema Sentry validates JSON-LD for:
+Schema Sentry `validate` performs a reality check against built HTML output.
+It verifies what is actually rendered, not just config files.
 
-- Required fields
-- Recommended fields (advisory warnings)
-- Manifest coverage
+## Validate (Reality Check)
 
-The CLI emits a JSON report to stdout and a human-readable summary to stderr by default.
-Use HTML output when you need a shareable report artifact.
-Use `--annotations github` in GitHub Actions to emit per-issue PR annotations.
+```bash
+pnpm schemasentry validate --manifest ./schema-sentry.manifest.json
+```
+
+When `--root` is omitted, Schema Sentry auto-detects the first existing build output in this order:
+
+1. `./.next/server/app`
+2. `./out`
+3. `./.next/server/pages`
+
+Run build automatically before validation:
 
 ```bash
 pnpm schemasentry validate \
   --manifest ./schema-sentry.manifest.json \
-  --data ./schema-sentry.data.json \
+  --build
+```
+
+Set root explicitly (recommended for CI):
+
+```bash
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --root ./.next/server/app
+```
+
+For static exports:
+
+```bash
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --root ./out
+```
+
+Custom build command:
+
+```bash
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --build \
+  --build-command "pnpm --filter my-app build"
+```
+
+## Reports and Annotations
+
+The CLI emits JSON to stdout and a human summary to stderr by default.
+
+Write an HTML report:
+
+```bash
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --root ./.next/server/app \
   --format html \
   --output ./schema-sentry-validate-report.html
 ```
 
+Emit GitHub annotations in CI:
+
 ```bash
-pnpm schemasentry audit \
-  --data ./schema-sentry.data.json \
-  --format html \
-  --output ./schema-sentry-audit-report.html
+pnpm schemasentry validate \
+  --manifest ./schema-sentry.manifest.json \
+  --root ./.next/server/app \
+  --annotations github
 ```
 
 ## Audit
 
-Audit analyzes the schema data file and reports health without requiring a manifest.
+`audit` analyzes schema health and ghost routes (manifest routes without `<Schema>` usage in source).
 
 ```bash
-pnpm schemasentry audit --data ./schema-sentry.data.json
+pnpm schemasentry audit \
+  --manifest ./schema-sentry.manifest.json \
+  --root ./app
 ```
 
-Pass a manifest to include coverage checks:
+If no schema data file is loaded, `audit` runs in source-only mode and skips legacy coverage checks to avoid false positives.
+
+You can still provide a legacy data file for additional checks:
 
 ```bash
-pnpm schemasentry audit --data ./schema-sentry.data.json --manifest ./schema-sentry.manifest.json
+pnpm schemasentry audit \
+  --manifest ./schema-sentry.manifest.json \
+  --data ./schema-sentry.data.json \
+  --root ./app
 ```
-
-Scan the filesystem to detect routes without schema:
-
-```bash
-pnpm schemasentry audit --data ./schema-sentry.data.json --scan
-```
-
-Use `--root` to set the project root for scanning.
 
 ## Config
 
@@ -54,42 +99,15 @@ Use `--root` to set the project root for scanning.
 ## Recommended Field Checks
 
 Recommended field validation is enabled by default and emits warnings instead of errors.
-Disable it with:
 
 ```bash
 pnpm schemasentry validate --no-recommended
 ```
 
-You can also configure defaults in `schema-sentry.config.json`:
+You can also set defaults in `schema-sentry.config.json`:
 
 ```json
 {
   "recommended": false
 }
-```
-
-CLI flags override config. Use `--config` to point at a custom file.
-
-## Schema Data Input
-
-The CLI expects a schema data file with JSON-LD blocks per route.
-
-```json
-{
-  "routes": {
-    "/": [
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Acme Corp"
-      }
-    ]
-  }
-}
-```
-
-You can generate this file from built HTML output:
-
-```bash
-pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
 ```

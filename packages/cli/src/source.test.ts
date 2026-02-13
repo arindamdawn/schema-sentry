@@ -87,6 +87,32 @@ export default function Page() {
     expect(result.routes[0].hasSchemaUsage).toBe(false);
   });
 
+  it("detects aliased Schema component usage", async () => {
+    const tempDir = await makeTempDir();
+
+    await writeFile(
+      tempDir,
+      "app/faq/page.tsx",
+      `
+import { Schema as JsonLdSchema, FAQPage } from "@schemasentry/next";
+
+const faq = FAQPage({ mainEntity: [] });
+
+export default function Page() {
+  return <JsonLdSchema data={[faq]} />;
+}
+`
+    );
+
+    const result = await scanSourceFiles({ rootDir: tempDir });
+
+    expect(result.totalFiles).toBe(1);
+    expect(result.filesWithSchema).toBe(1);
+    expect(result.routes[0].hasSchemaImport).toBe(true);
+    expect(result.routes[0].hasSchemaUsage).toBe(true);
+    expect(result.routes[0].importedBuilders).toContain("FAQPage");
+  });
+
   it("handles empty app directory", async () => {
     const tempDir = await makeTempDir();
     await fs.mkdir(path.join(tempDir, "app"), { recursive: true });

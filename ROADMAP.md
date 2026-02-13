@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-02-12
+Last updated: 2026-02-13
 
 ## 🎉 Current Status
 
@@ -164,8 +164,9 @@ schemasentry validate --manifest ./manifest.json --data ./data.json
 
 **After (v0.6.0 - reality check):**
 ```bash
-next build  # Must build first!
-schemasentry validate --manifest ./manifest.json --root ./.next/server/app
+schemasentry validate --manifest ./manifest.json
+# or run build automatically:
+schemasentry validate --manifest ./manifest.json --build
 ```
 
 ## 🧪 Phase 4.3 (v0.7.0) — Next Release
@@ -174,23 +175,38 @@ schemasentry validate --manifest ./manifest.json --root ./.next/server/app
 
 ### v0.7.0 Scope
 
-- [ ] VS Code extension
-  - Schema preview panel while editing components
-  - Inline decorations showing schema types on hover
+- [ ] VS Code extension (MVP)
+  - Schema preview panel while editing components (read-only)
   - Snippets for common schema types
-  - Quick actions to generate schema stubs
-- [ ] CLI schema visualization
-  - Tree output showing schema hierarchy with nesting
-  - Table output with columns: Route, Schema Types, Blocks, Status
-  - Diagram output for entity relationships
-  - `--format tree`, `--format table`, `--format diagram` flags
+  - Command entrypoint to open schema preview from the active editor
+  - Out of scope for v0.7.0: inline decorations and quick actions
+- [ ] CLI schema visualization (MVP)
+  - Tree output showing schema hierarchy with nesting (`--format tree`)
+  - Table output with columns: Route, Schema Types, Blocks, Status (`--format table`)
+  - Shared data model across both outputs to keep results consistent
+  - Out of scope for v0.7.0: diagram/entity relationship output
+- [ ] Docs + examples
+  - Extension setup and usage guide
+  - CLI visualization documentation with sample outputs
 
-## 🧪 Phase 4.3 (v0.7.0)
+### v0.7.0 Exit Criteria
 
-**Focus:** CI automation and broader Next.js coverage
+- [ ] VS Code extension MVP works on the example Next.js app
+- [ ] `--format tree` and `--format table` shipped with tests
+- [ ] `pnpm build`, `pnpm test`, and `pnpm typecheck` pass in CI
+- [ ] README + docs + changelog updated with usage and limitations
+- [ ] No undocumented breaking changes in existing CLI workflows
 
-### v0.7.0 Scope
+## 🧪 Phase 4.4 (v0.8.0)
 
+**Focus:** CI automation, broader Next.js coverage, and policy rules
+
+### v0.8.0 Scope
+
+- [ ] Deferred from v0.7.0
+  - VS Code inline decorations showing schema types on hover
+  - VS Code quick actions to generate schema stubs
+  - CLI diagram/entity relationship visualization (`--format diagram`)
 - [ ] GitHub bot for PR comments
   - Automated schema review on pull requests
   - Inline comments for schema issues
@@ -203,13 +219,6 @@ schemasentry validate --manifest ./manifest.json --root ./.next/server/app
   - Write assertions like "all articles must have author"
   - Test schema correctness in CI pipelines
   - Custom rule definitions for team policies
-
-## 🧪 Phase 4.4 (v0.8.0)
-
-**Focus:** Rulesets and AI assistance
-
-### v0.8.0 Scope
-
 - [ ] Rulesets
   - `--rules google` for rich-result-focused checks
   - `--rules ai-citation` for LLM/citation-focused checks

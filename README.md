@@ -12,7 +12,7 @@
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
 **Current release:** `v0.6.0` (⚠️ BREAKING CHANGES: validate now checks built HTML to eliminate false positives)
-**Next release target:** `v0.7.0` (VS Code extension and CLI visualization)
+**Next release target:** `v0.7.0` (VS Code extension MVP + CLI visualization in `tree`/`table` formats)
 
 ## ✨ Features
 
@@ -199,12 +199,16 @@ pnpm schemasentry scaffold --root ./app
 pnpm schemasentry scaffold --root ./app --write
 
 # Validate ACTUAL HTML OUTPUT (catches missing schema!)
+pnpm schemasentry validate --manifest ./schema-sentry.manifest.json
+pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --build
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./.next/server/app
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./out
 
 # Audit for ghost routes (routes in manifest but no Schema component)
 pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --root ./app
 pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --root ./app --scan
+# Optional legacy coverage checks (requires schema data file)
+pnpm schemasentry audit --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json --root ./app
 
 # Collect schema from built HTML
 pnpm schemasentry collect --root ./out --output ./schema-sentry.data.json
@@ -262,10 +266,12 @@ schemasentry validate --manifest manifest.json --data data.json
 **New way (v0.6.0+ - DO THIS):**
 ```bash
 # ✅ Validates actual built HTML against manifest - NO FALSE POSITIVES!
-schemasentry validate --manifest manifest.json --root ./.next/server/app
+schemasentry validate --manifest manifest.json
+# or run build automatically first:
+schemasentry validate --manifest manifest.json --build
 ```
 
-Use `schemasentry init` to generate starter files. Use `schemasentry scaffold` to see what code to add. Use `schemasentry validate` after building to verify your schema is actually rendered.
+When `--root` is omitted, `validate` auto-detects built output (`./.next/server/app`, then `./out`, then `./.next/server/pages`). Use `schemasentry init` to generate starter files. Use `schemasentry scaffold` to see what code to add. Use `schemasentry validate` (or `--build`) to verify your schema is actually rendered.
 
 ## ✅ Supported Schema Types (V1)
 
