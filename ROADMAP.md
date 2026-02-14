@@ -6,6 +6,8 @@ Last updated: 2026-02-13
 
 **v0.8.0 is live!** GitHub Bot + Pages Router + Testing
 
+**Next release:** v0.9.0 — VS Code Extension (MVP)
+
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
 ---
@@ -83,9 +85,10 @@ Last updated: 2026-02-13
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
-2. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
-3. Framework adapters beyond Next.js (Astro/Remix/SvelteKit/Angular)
+1. **v0.9.0** - VS Code extension (MVP)
+2. **v0.9.1** - CLI diagram + Plugin API
+3. **v0.9.2** - Framework adapters (Astro/Remix) + CMS integrations
+4. **v0.9.3** - AI suggestions (`schemasentry suggest`)
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -217,9 +220,9 @@ schemasentry validate --manifest ./manifest.json --build
   - `schemasentry suggest` (AI recommendations)
   - Provider architecture for AI suggestions
 
-## 🧪 Phase 4.5 (v0.9.0)
+## 🧪 Phase 4.5 (v0.9.0) — Next Release
 
-**Focus:** Editor experience and extensibility
+**Focus:** VS Code extension for schema preview
 
 ### v0.9.0 Scope
 
@@ -228,20 +231,34 @@ schemasentry validate --manifest ./manifest.json --build
   - Snippets for common schema types
   - Command entrypoint to open schema preview from the active editor
   - Out of scope for v0.9.0: inline decorations and quick actions
+
+## 🧪 Phase 4.6 (v0.9.1)
+
+**Focus:** CLI visualization and plugin architecture
+
+### v0.9.1 Scope
+
 - [ ] CLI diagram visualization (`--format diagram`)
 - [ ] Plugin API for custom validators and internal rules
 - [ ] Framework adapter interfaces in `@schemasentry/core`
+
+## 🧪 Phase 4.7 (v0.9.2)
+
+**Focus:** Framework adapters and CMS integrations
+
+### v0.9.2 Scope
+
 - [ ] First non-Next.js adapter (Astro or Remix)
 - [ ] CMS integrations (contributor-friendly)
   - Sanity.io plugin
   - Contentful integration patterns
   - Strapi integration patterns
 
-## 🧪 Phase 4.6 (v0.9.1)
+## 🧪 Phase 4.8 (v0.9.3)
 
 **Focus:** AI-assisted recommendations
 
-### v0.9.1 Scope
+### v0.9.3 Scope
 
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
@@ -256,7 +273,9 @@ schemasentry validate --manifest ./manifest.json --build
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
 
-## 🚀 Phase 4.7 (v0.9.5)
+## 🚀 Phase 4.9 (v0.9.5)
+
+**Focus:** Adoption assets and launch readiness
 
 **Focus:** Adoption assets and launch readiness
 
