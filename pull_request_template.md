@@ -6,12 +6,12 @@ Expands the roadmap with high-impact developer-experience features based on comm
 
 ### Priority Queue (Updated)
 
-1. **v0.7.0** - Rulesets (`google`, `ai-citation`) + CLI visualization (table default)
-2. **v0.8.0** - GitHub bot + Pages Router support
+1. ~~**v0.7.0**~~ ✅ - Rulesets (`google`, `ai-citation`) + CLI visualization (table default)
+2. ~~**v0.8.0**~~ ✅ - GitHub bot + Pages Router + Testing + Team policies
 3. **v0.9.0** - VS Code extension + Plugin API + Framework adapters
 4. **v0.9.1** - AI suggestions (`schemasentry suggest`) + provider architecture
 
-### v0.7.0 Scope (Rulesets + Visualization)
+### v0.7.0 Scope (COMPLETE)
 
 - **Rulesets**
   - `--rules google` for Google rich-result-focused checks
@@ -22,7 +22,7 @@ Expands the roadmap with high-impact developer-experience features based on comm
   - Columns: Route, Schema Types, Blocks, Status
   - Tree output for hierarchical view (`--format tree`)
 
-### v0.8.0 Scope
+### v0.8.0 Scope (COMPLETE)
 
 - **GitHub bot** — automated PR comments for schema review
 - **Pages Router support** — `@schemasentry/react` package

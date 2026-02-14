@@ -6,7 +6,28 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
-## [Unreleased]
+## [0.8.0] - 2026-02-13
+
+### Added
+
+- **GitHub Bot** (`schemasentry bot`)
+  - Post validation results directly to PRs via GitHub API
+  - Works in GitHub Actions with `--event pull_request`
+  - Responds to `/schemasentry` command in PR comments
+- **Pages Router Support** (`@schemasentry/react`)
+  - New package for Next.js Pages Router and other React frameworks
+  - Use in `_document.js` or individual pages
+- **Schema Testing Framework** (`schemasentry test`)
+  - Define assertions in `schema-sentry.test.json`
+  - Supports: exists, not_exists, equals, contains, matches
+  - Filter by schema type
+- **Team Policy Controls**
+  - Rule severity overrides (error/warn/off)
+  - Rule allowlist/denylist in config
+
+### Changed
+
+- Added `@schemasentry/react` package to workspace
 
 ## [0.8.0] - 2026-02-13
 
@@ -218,8 +239,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.6.0...HEAD
-[0.6.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.6.0
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.8.0
+[0.7.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.7.0
 [0.5.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.5.0
 [0.4.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.4.0
 [0.3.2]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.3.2
