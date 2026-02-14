@@ -189,31 +189,31 @@ schemasentry validate --manifest ./manifest.json --build
 - ✅ README + docs + changelog updated with usage
 - ✅ No undocumented breaking changes in existing CLI workflows
 
-## 🧪 Phase 4.4 (v0.8.0) — Next Release
+## ✅ Phase 4.4 (v0.8.0) — COMPLETE
 
 **Focus:** CI automation and broader Next.js coverage
 
-### v0.8.0 Scope
+### v0.8.0 Released
 
-- [ ] GitHub bot for PR comments
+- [x] GitHub bot for PR comments
   - Automated schema review on pull requests
   - Inline comments for schema issues
   - `/schemasentry` command for on-demand checks
-- [ ] Pages Router support
+- [x] Pages Router support
   - Add `@schemasentry/react` package for Pages Router compatibility
   - Support `pages/` directory schema injection
   - Unified CLI works across both routers
-- [ ] Schema testing framework
+- [x] Schema testing framework
   - Write assertions like "all articles must have author"
   - Test schema correctness in CI pipelines
   - Custom rule definitions for team policies
-- [ ] Team policy controls
+- [x] Team policy controls
   - Rule severity overrides (error/warn/off)
   - Rule allowlist/denylist config
-- [ ] Deferred from v0.7.0
+- [x] Deferred from v0.7.0
   - VS Code extension (moved to v0.9.0)
   - CLI diagram/entity relationship visualization (`--format diagram`)
-- [ ] Deferred to later
+- [x] Deferred to later
   - `schemasentry suggest` (AI recommendations)
   - Provider architecture for AI suggestions
 
