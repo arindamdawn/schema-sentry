@@ -46,16 +46,13 @@
       ],
       "commandPalette": [
         {
-          "command": "schemasentry.preview",
-          "when": "editorHasSelection"
+          "command": "schemasentry.preview"
         },
         {
-          "command": "schemasentry.addSchema",
-          "when": "editorHasSelection"
+          "command": "schemasentry.addSchema"
         },
         {
-          "command": "schemasentry.validate",
-          "when": "editorTextFocus"
+          "command": "schemasentry.validate"
         }
       ]
     },
