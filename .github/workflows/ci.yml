@@ -55,8 +55,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Build CLI
-        run: pnpm --filter @schemasentry/cli build
+      - name: Build all packages
+        run: pnpm build
       - name: Run Schema Sentry Bot
         run: node packages/cli/dist/index.js bot --event pull_request
         env:
