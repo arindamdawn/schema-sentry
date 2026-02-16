@@ -8,6 +8,8 @@ Last updated: 2026-02-13
 
 **Next release:** v0.9.1 — CLI Diagram + Plugin API
 
+**Next release:** v0.9.0 — VS Code Extension (Preview Panel + Inline Decorations)
+
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
 ---
