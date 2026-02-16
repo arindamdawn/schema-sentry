@@ -111,5 +111,11 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "files": [
+    "dist",
+    "snippets",
+    "README.md",
+    "schema-sentry-snippets.gif"
+  ]
 }

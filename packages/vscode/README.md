@@ -15,6 +15,8 @@ Boost your SEO and AI discoverability with Schema Sentry's VS Code extension. Ge
 ### 🔌 Snippets
 Type `schema-` in any `.tsx` file to see autocomplete suggestions:
 
+![Snippets Demo](schema-sentry-snippets.gif)
+
 | Snippet | Schema Type |
 |---------|-------------|
 | `schema-organization` | Organization |

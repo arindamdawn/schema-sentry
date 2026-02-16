@@ -1,17 +1,17 @@
-import { Schema, WebSite, BreadcrumbList } from "@schemasentry/next";
 import Link from "next/link";
 
+import { BreadcrumbList, Schema, WebSite } from '@schemasentry/next';
+
 const website = WebSite({
-  name: "Acme Corp Blog",
-  url: "https://acme.com/blog",
-  description: "Latest articles about web development, AI, and more"
+  name: '',
+  url: '',
 });
+
 
 const breadcrumbs = BreadcrumbList({
   items: [
-    { name: "Home", url: "https://acme.com" },
-    { name: "Blog", url: "https://acme.com/blog" }
-  ]
+    { name: '', url: '' },
+  ],
 });
 
 const posts = [
