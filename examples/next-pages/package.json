@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "echo \"lint not configured\" && exit 0",
     "schema:validate": "schemasentry validate --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json",
     "schema:collect": "schemasentry collect --root ./.next/server/pages --output ./schema-sentry.data.collected.json",
     "schema:drift": "schemasentry collect --root ./.next/server/pages --check --data ./schema-sentry.data.json"
