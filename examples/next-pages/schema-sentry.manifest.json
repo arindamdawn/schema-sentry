@@ -1,0 +1,12 @@
+{
+  "routes": {
+    "/": ["Organization", "WebSite"],
+    "/blog": ["WebSite"],
+    "/blog/getting-started-with-nextjs": ["Article"],
+    "/blog/structured-data-seo-ai": ["Article"],
+    "/blog/typescript-best-practices": ["Article"],
+    "/products/premium-widget": ["Organization", "Product"],
+    "/faq": ["FAQPage", "Organization"],
+    "/howto/getting-started": ["HowTo", "Organization"]
+  }
+}
