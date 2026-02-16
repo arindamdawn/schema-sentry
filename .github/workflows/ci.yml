@@ -36,28 +36,3 @@ jobs:
         run: pnpm typecheck
       - name: Run tests
         run: pnpm test
-
-  schema-bot:
-    name: Schema Sentry Bot
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Build all packages
-        run: pnpm build
-      - name: Run Schema Sentry Bot
-        run: node packages/cli/dist/index.js bot --event pull_request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
