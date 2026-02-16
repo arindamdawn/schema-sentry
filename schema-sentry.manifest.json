@@ -1,0 +1,6 @@
+{
+  "routes": {
+    "/": ["Organization", "WebSite"],
+    "/blog/[slug]": ["Article"]
+  }
+}
