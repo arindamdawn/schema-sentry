@@ -254,11 +254,11 @@ schemasentry validate --manifest ./manifest.json --build
 - [x] Version bump to 0.9.2 across all packages
 - [x] Consistent package versioning
 
-## 🧪 Phase 4.8 (v0.9.3)
+## 🧪 Phase 4.8 (v0.9.4)
 
 **Focus:** AI-assisted recommendations
 
-### v0.9.3 Scope
+### v0.9.4 Scope
 
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
