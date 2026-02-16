@@ -61,6 +61,28 @@ importers:
         specifier: ^5.5.0
         version: 5.9.3
 
+  examples/next-pages:
+    dependencies:
+      '@schemasentry/next':
+        specifier: workspace:*
+        version: link:../../packages/next
+      next:
+        specifier: ^16.1.6
+        version: 16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      react:
+        specifier: ^19.1.1
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@schemasentry/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
   packages/cli:
     dependencies:
       '@schemasentry/core':
