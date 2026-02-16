@@ -6,28 +6,18 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
-## [0.8.0] - 2026-02-13
+## [0.9.0] - 2026-02-16
 
 ### Added
 
-- **GitHub Bot** (`schemasentry bot`)
-  - Post validation results directly to PRs via GitHub API
-  - Works in GitHub Actions with `--event pull_request`
-  - Responds to `/schemasentry` command in PR comments
-- **Pages Router Support** (`@schemasentry/react`)
-  - New package for Next.js Pages Router and other React frameworks
-  - Use in `_document.js` or individual pages
-- **Schema Testing Framework** (`schemasentry test`)
-  - Define assertions in `schema-sentry.test.json`
-  - Supports: exists, not_exists, equals, contains, matches
-  - Filter by schema type
-- **Team Policy Controls**
-  - Rule severity overrides (error/warn/off)
-  - Rule allowlist/denylist in config
-
-### Changed
-
-- Added `@schemasentry/react` package to workspace
+- **VS Code Extension** (`schema-sentry-vscode`)
+  - Schema preview panel - view detected schema types while editing
+  - Code snippets for all schema types (type `schema-` in .tsx files)
+  - Inline decorations showing schema types in gutter
+  - Commands: Preview Schema, Add Schema Type, Validate File
+  - Status bar integration for quick access
+- Fixed snippet generation to match library API (`<Schema data={...}>` with helper functions)
+- Fixed schema detection to scan entire file instead of just selection
 
 ## [0.8.0] - 2026-02-13
 

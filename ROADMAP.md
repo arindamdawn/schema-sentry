@@ -4,7 +4,9 @@ Last updated: 2026-02-13
 
 ## 🎉 Current Status
 
-**v0.8.0 is live!** GitHub Bot + Pages Router + Testing
+**v0.9.0 is live!** VS Code Extension + Preview Panel + Snippets
+
+**Next release:** v0.9.1 — CLI Diagram + Plugin API
 
 **Next release:** v0.9.0 — VS Code Extension (Preview Panel + Inline Decorations)
 
@@ -220,13 +222,13 @@ schemasentry validate --manifest ./manifest.json --build
   - `schemasentry suggest` (AI recommendations)
   - Provider architecture for AI suggestions
 
-## 🧪 Phase 4.5 (v0.9.0) — Next Release
+## ✅ Phase 4.5 (v0.9.0) — Released
 
 **Focus:** VS Code extension for schema preview
 
-### v0.9.0 Scope
+### v0.9.0 Released
 
-- [ ] VS Code extension (MVP)
+- [x] VS Code extension (MVP)
   - Schema preview panel while editing components (read-only)
   - Snippets for common schema types
   - Command entrypoint to open schema preview from the active editor
@@ -258,16 +260,6 @@ schemasentry validate --manifest ./manifest.json --build
 ## 🧪 Phase 4.8 (v0.9.3)
 
 **Focus:** AI-assisted recommendations
-- [ ] Framework adapter interfaces in `@schemasentry/core`
-- [ ] First non-Next.js adapter (Astro or Remix)
-- [ ] CMS integrations (contributor-friendly)
-  - Sanity.io plugin
-  - Contentful integration patterns
-  - Strapi integration patterns
-
-## 🧪 Phase 4.6 (v0.9.1)
-
-**Focus:** AI-assisted recommendations
 
 ### v0.9.3 Scope
 
@@ -284,7 +276,7 @@ schemasentry validate --manifest ./manifest.json --build
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
 
-## 🚀 Phase 4.7 (v0.9.5)
+## 🚀 Phase 4.9 (v0.9.5)
 
 **Focus:** Adoption assets and launch readiness
 

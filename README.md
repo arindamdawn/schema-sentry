@@ -11,8 +11,8 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.8.0` (GitHub Bot + Pages Router + Testing)
-**Next release target:** `v0.9.0` (VS Code Extension - Preview Panel + Inline Decorations)
+**Current release:** `v0.9.0` (VS Code Extension + Preview Panel + Snippets)
+**Next release target:** `v0.9.1` (CLI Diagram + Plugin API)
 
 ## ✨ Features
 
@@ -31,6 +31,7 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 - 🗣️ **PR Annotations** — GitHub Actions annotations with `--annotations github`
 - 📴 **Zero network calls** in OSS mode (privacy-first, offline-friendly)
 - 🤖 **AI-ready output** optimized for LLM consumption, citations, and AI agent recommendations
+- 📦 **VS Code extension** — Schema preview panel, snippets, inline decorations while editing
 
 ## 🧠 Why Structured Data Matters for Both Traditional and AI Search
 
@@ -77,6 +78,7 @@ By using Schema Sentry, you're not just optimizing for Google—you're making yo
 | [`@schemasentry/core`](https://www.npmjs.com/package/@schemasentry/core) | [![npm](https://img.shields.io/npm/v/@schemasentry/core.svg)](https://www.npmjs.com/package/@schemasentry/core) | Typed builders and validation primitives |
 | [`@schemasentry/next`](https://www.npmjs.com/package/@schemasentry/next) | [![npm](https://img.shields.io/npm/v/@schemasentry/next.svg)](https://www.npmjs.com/package/@schemasentry/next) | App Router `<Schema />` component |
 | [`@schemasentry/cli`](https://www.npmjs.com/package/@schemasentry/cli) | [![npm](https://img.shields.io/npm/v/@schemasentry/cli.svg)](https://www.npmjs.com/package/@schemasentry/cli) | CI validation and report output |
+| [`schema-sentry-vscode`](https://marketplace.visualstudio.com/items?itemName=schemasentry.schema-sentry-vscode) | VSIX | VS Code extension with preview, snippets, decorations |
 
 ## 🚀 Install
 
