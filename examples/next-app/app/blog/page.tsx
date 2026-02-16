@@ -46,14 +46,12 @@ export default function BlogPage() {
     <>
       <Schema data={[website, breadcrumbs]} />
       <div style={{ maxWidth: "800px", margin: "0 auto", padding: "3rem 1.5rem" }}>
-        
         <header style={{ marginBottom: "3rem" }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: 700, marginBottom: "0.5rem" }}>Blog</h1>
           <p style={{ color: "#64748b", fontSize: "1.125rem" }}>
             Latest articles about web development, AI, and more
           </p>
         </header>
-
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           {posts.map((post) => (
             <article key={post.slug} style={{

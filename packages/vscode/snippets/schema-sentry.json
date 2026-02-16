@@ -1,0 +1,240 @@
+{
+  "Schema - Organization": {
+    "prefix": "schema-organization",
+    "body": [
+      "import { Schema, Organization } from '@schemasentry/next';",
+      "",
+      "const org = Organization({",
+      "  name: '$1',",
+      "  url: '$2',",
+      "  logo: '$3',",
+      "});",
+      "",
+      "export default function OrganizationSchema() {",
+      "  return <Schema data={org} />;",
+      "}"
+    ],
+    "description": "Add Organization schema"
+  },
+  "Schema - Person": {
+    "prefix": "schema-person",
+    "body": [
+      "import { Schema, Person } from '@schemasentry/next';",
+      "",
+      "const person = Person({",
+      "  name: '$1',",
+      "  url: '$2',",
+      "});",
+      "",
+      "export default function PersonSchema() {",
+      "  return <Schema data={person} />;",
+      "}"
+    ],
+    "description": "Add Person schema"
+  },
+  "Schema - Article": {
+    "prefix": "schema-article",
+    "body": [
+      "import { Schema, Article } from '@schemasentry/next';",
+      "",
+      "const article = Article({",
+      "  headline: '$1',",
+      "  authorName: '$2',",
+      "  datePublished: '$3',",
+      "  url: '$4',",
+      "});",
+      "",
+      "export default function ArticleSchema() {",
+      "  return <Schema data={article} />;",
+      "}"
+    ],
+    "description": "Add Article schema"
+  },
+  "Schema - BlogPosting": {
+    "prefix": "schema-blogposting",
+    "body": [
+      "import { Schema, BlogPosting } from '@schemasentry/next';",
+      "",
+      "const blogPosting = BlogPosting({",
+      "  headline: '$1',",
+      "  authorName: '$2',",
+      "  datePublished: '$3',",
+      "  url: '$4',",
+      "});",
+      "",
+      "export default function BlogPostingSchema() {",
+      "  return <Schema data={blogPosting} />;",
+      "}"
+    ],
+    "description": "Add BlogPosting schema"
+  },
+  "Schema - Product": {
+    "prefix": "schema-product",
+    "body": [
+      "import { Schema, Product } from '@schemasentry/next';",
+      "",
+      "const product = Product({",
+      "  name: '$1',",
+      "  description: '$2',",
+      "  url: '$3',",
+      "});",
+      "",
+      "export default function ProductSchema() {",
+      "  return <Schema data={product} />;",
+      "}"
+    ],
+    "description": "Add Product schema"
+  },
+  "Schema - FAQPage": {
+    "prefix": "schema-faq",
+    "body": [
+      "import { Schema, FAQPage } from '@schemasentry/next';",
+      "",
+      "const faq = FAQPage({",
+      "  questions: [",
+      "    { question: '$1', answer: '$2' },",
+      "  ],",
+      "});",
+      "",
+      "export default function FAQSchema() {",
+      "  return <Schema data={faq} />;",
+      "}"
+    ],
+    "description": "Add FAQPage schema"
+  },
+  "Schema - HowTo": {
+    "prefix": "schema-howto",
+    "body": [
+      "import { Schema, HowTo } from '@schemasentry/next';",
+      "",
+      "const howTo = HowTo({",
+      "  name: '$1',",
+      "  steps: [",
+      "    { text: '$2' },",
+      "  ],",
+      "});",
+      "",
+      "export default function HowToSchema() {",
+      "  return <Schema data={howTo} />;",
+      "}"
+    ],
+    "description": "Add HowTo schema"
+  },
+  "Schema - Event": {
+    "prefix": "schema-event",
+    "body": [
+      "import { Schema, Event } from '@schemasentry/next';",
+      "",
+      "const event = Event({",
+      "  name: '$1',",
+      "  startDate: '$2',",
+      "  locationName: '$3',",
+      "});",
+      "",
+      "export default function EventSchema() {",
+      "  return <Schema data={event} />;",
+      "}"
+    ],
+    "description": "Add Event schema"
+  },
+  "Schema - LocalBusiness": {
+    "prefix": "schema-localbusiness",
+    "body": [
+      "import { Schema, LocalBusiness } from '@schemasentry/next';",
+      "",
+      "const business = LocalBusiness({",
+      "  name: '$1',",
+      "  address: '$2',",
+      "  telephone: '$3',",
+      "});",
+      "",
+      "export default function LocalBusinessSchema() {",
+      "  return <Schema data={business} />;",
+      "}"
+    ],
+    "description": "Add LocalBusiness schema"
+  },
+  "Schema - WebSite": {
+    "prefix": "schema-website",
+    "body": [
+      "import { Schema, WebSite } from '@schemasentry/next';",
+      "",
+      "const website = WebSite({",
+      "  name: '$1',",
+      "  url: '$2',",
+      "});",
+      "",
+      "export default function WebSiteSchema() {",
+      "  return <Schema data={website} />;",
+      "}"
+    ],
+    "description": "Add WebSite schema"
+  },
+  "Schema - BreadcrumbList": {
+    "prefix": "schema-breadcrumb",
+    "body": [
+      "import { Schema, BreadcrumbList } from '@schemasentry/next';",
+      "",
+      "const breadcrumbs = BreadcrumbList({",
+      "  items: [",
+      "    { name: '$1', url: '$2' },",
+      "  ],",
+      "});",
+      "",
+      "export default function BreadcrumbSchema() {",
+      "  return <Schema data={breadcrumbs} />;",
+      "}"
+    ],
+    "description": "Add BreadcrumbList schema"
+  },
+  "Schema - VideoObject": {
+    "prefix": "schema-video",
+    "body": [
+      "import { Schema, VideoObject } from '@schemasentry/next';",
+      "",
+      "const video = VideoObject({",
+      "  name: '$1',",
+      "  description: '$2',",
+      "  thumbnailUrl: '$3',",
+      "  uploadDate: '$4',",
+      "});",
+      "",
+      "export default function VideoSchema() {",
+      "  return <Schema data={video} />;",
+      "}"
+    ],
+    "description": "Add VideoObject schema"
+  },
+  "Schema - ImageObject": {
+    "prefix": "schema-image",
+    "body": [
+      "import { Schema, ImageObject } from '@schemasentry/next';",
+      "",
+      "const image = ImageObject({",
+      "  contentUrl: '$1',",
+      "});",
+      "",
+      "export default function ImageSchema() {",
+      "  return <Schema data={image} />;",
+      "}"
+    ],
+    "description": "Add ImageObject schema"
+  },
+  "Schema - Review": {
+    "prefix": "schema-review",
+    "body": [
+      "import { Schema, Review } from '@schemasentry/next';",
+      "",
+      "const review = Review({",
+      "  itemName: '$1',",
+      "  authorName: '$2',",
+      "  ratingValue: '$3',",
+      "});",
+      "",
+      "export default function ReviewSchema() {",
+      "  return <Schema data={review} />;",
+      "}"
+    ],
+    "description": "Add Review schema"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "name": "schema-sentry-vscode",
+  "version": "0.9.0",
+  "description": "VS Code extension for Schema Sentry - preview panel, snippets, and inline decorations.",
+  "license": "MIT",
+  "publisher": "schemasentry",
+  "type": "module",
+  "main": "./dist/extension.js",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "schemasentry.preview",
+        "title": "Schema Sentry: Preview Schema"
+      },
+      {
+        "command": "schemasentry.addSchema",
+        "title": "Schema Sentry: Add Schema Type"
+      },
+      {
+        "command": "schemasentry.validate",
+        "title": "Schema Sentry: Validate File"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "schemasentry.preview",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        },
+        {
+          "command": "schemasentry.addSchema",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "schemasentry.preview",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "schemasentry.addSchema",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "schemasentry.validate",
+          "when": "editorTextFocus"
+        }
+      ]
+    },
+    "snippets": [
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/schema-sentry.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/schema-sentry.json"
+      }
+    ],
+    "configuration": {
+      "title": "Schema Sentry",
+      "properties": {
+        "schemasentry.enablePreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable schema preview panel"
+        },
+        "schemasentry.enableDecorations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show schema type decorations in gutter"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.99.0",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arindamdawn/schema-sentry.git",
+    "directory": "packages/vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/arindamdawn/schema-sentry/issues"
+  },
+  "keywords": [
+    "schema",
+    "json-ld",
+    "structured-data",
+    "seo",
+    "vscode",
+    "extension"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
