@@ -49,15 +49,14 @@ function registerCommands(context: vscode.ExtensionContext) {
       return;
     }
 
-    const selection = editor.selection;
-    const text = editor.document.getText(selection);
-
-    if (!text) {
-      vscode.window.showInformationMessage('Select code to preview schema');
+    const fullText = editor.document.getText();
+    
+    if (!fullText) {
+      vscode.window.showInformationMessage('No content in file');
       return;
     }
 
-    showPreviewPanel(context, text, editor);
+    showPreviewPanel(context, fullText, editor);
   });
 
   const addSchemaCmd = vscode.commands.registerCommand('schemasentry.addSchema', async () => {
@@ -195,6 +194,16 @@ function findSchemaTypes(text: string): { type: string; start: number; end: numb
         end: match.index + match[0].length
       });
     }
+  }
+
+  const helperRegex = /\b(Organization|Person|Article|BlogPosting|Product|FAQPage|HowTo|Event|Review|LocalBusiness|VideoObject|ImageObject|WebSite|BreadcrumbList)\s*\(/g;
+  let helperMatch;
+  while ((helperMatch = helperRegex.exec(text)) !== null) {
+    results.push({
+      type: helperMatch[1],
+      start: helperMatch.index,
+      end: helperMatch.index + helperMatch[0].length
+    });
   }
 
   const builderRegex = /Schema\.(organization|person|article|blogPosting|product|faqPage|howTo|event|review|localBusiness|videoObject|imageObject|website|breadcrumbList)\s*\(/gi;
