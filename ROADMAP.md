@@ -85,10 +85,9 @@ Last updated: 2026-02-16
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.9.0** - VS Code Extension (Preview Panel + Inline Decorations)
-2. **v0.9.1** - CLI diagram + Plugin API
-3. **v0.9.2** - Framework adapters (Astro/Remix) + CMS integrations
-4. **v0.9.3** - AI suggestions (`schemasentry suggest`)
+1. **v0.9.2** - CLI diagram + Plugin API
+2. **v0.9.3** - Framework adapters (Astro/Remix) + CMS integrations
+3. **v0.9.4** - AI suggestions (`schemasentry suggest`)
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -233,21 +232,21 @@ schemasentry validate --manifest ./manifest.json --build
   - Inline decorations showing schema type in gutter
   - Quick actions for common schema operations
 
-## 🧪 Phase 4.6 (v0.9.1)
+## 🧪 Phase 4.6 (v0.9.2)
 
 **Focus:** CLI visualization and plugin architecture
 
-### v0.9.1 Scope
+### v0.9.2 Scope
 
 - [ ] CLI diagram visualization (`--format diagram`)
 - [ ] Plugin API for custom validators and internal rules
 - [ ] Framework adapter interfaces in `@schemasentry/core`
 
-## 🧪 Phase 4.7 (v0.9.2)
+## 🧪 Phase 4.7 (v0.9.3)
 
 **Focus:** Framework adapters and CMS integrations
 
-### v0.9.2 Scope
+### v0.9.3 Scope
 
 - [ ] First non-Next.js adapter (Astro or Remix)
 - [ ] CMS integrations (contributor-friendly)
@@ -255,11 +254,11 @@ schemasentry validate --manifest ./manifest.json --build
   - Contentful integration patterns
   - Strapi integration patterns
 
-## 🧪 Phase 4.8 (v0.9.3)
+## 🧪 Phase 4.8 (v0.9.4)
 
 **Focus:** AI-assisted recommendations
 
-### v0.9.3 Scope
+### v0.9.4 Scope
 
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
