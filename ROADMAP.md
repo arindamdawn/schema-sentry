@@ -1,14 +1,12 @@
 # Roadmap
 
-Last updated: 2026-02-13
+Last updated: 2026-02-16
 
 ## 🎉 Current Status
 
-**v0.9.0 is live!** VS Code Extension + Preview Panel + Snippets
+**v0.9.1 is live!** VS Code Extension + GitHub Bot + CI Integration
 
-**Next release:** v0.9.1 — CLI Diagram + Plugin API
-
-**Next release:** v0.9.0 — VS Code Extension (Preview Panel + Inline Decorations)
+**Next release:** v0.9.2 — CLI Diagram + Plugin API
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 

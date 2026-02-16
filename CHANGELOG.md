@@ -6,6 +6,19 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
+## [0.9.1] - 2026-02-16
+
+### Added
+
+- **GitHub Actions CI Integration** - Schema Sentry Bot now runs automatically on PRs
+  - New `schema-bot` job in CI workflow
+  - Validates schema and posts results as PR comments
+  - Runs on every pull request
+- **VS Code Extension** - Improvements and bug fixes
+  - Fixed snippets to match library API
+  - Fixed schema detection to scan entire file
+  - Added LICENSE file
+
 ## [0.9.0] - 2026-02-16
 
 ### Added
