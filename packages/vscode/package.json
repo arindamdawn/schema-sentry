@@ -1,6 +1,6 @@
 {
   "name": "schema-sentry-vscode",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "VS Code extension for Schema Sentry - preview panel, snippets, and inline decorations.",
   "license": "MIT",
   "publisher": "ArindamDawn",

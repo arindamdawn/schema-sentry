@@ -1,6 +1,6 @@
 {
   "name": "@schemasentry/cli",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "CLI for Schema Sentry validation and reporting.",
   "license": "MIT",
   "type": "module",
