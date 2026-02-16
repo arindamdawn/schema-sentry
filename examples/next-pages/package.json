@@ -1,0 +1,24 @@
+{
+  "name": "schema-sentry-example-next-pages",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "schema:validate": "schemasentry validate --manifest ./schema-sentry.manifest.json --data ./schema-sentry.data.json",
+    "schema:collect": "schemasentry collect --root ./.next/server/pages --output ./schema-sentry.data.collected.json",
+    "schema:drift": "schemasentry collect --root ./.next/server/pages --check --data ./schema-sentry.data.json"
+  },
+  "dependencies": {
+    "@schemasentry/next": "workspace:*",
+    "next": "^16.1.6",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@schemasentry/cli": "workspace:*",
+    "typescript": "^5.5.0"
+  }
+}
