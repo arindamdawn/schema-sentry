@@ -6,6 +6,13 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
+## [0.9.2] - 2026-02-16
+
+### Maintenance
+
+- Version bump to 0.9.2 across all packages
+- Updated package versions for consistency
+
 ## [0.9.1] - 2026-02-16
 
 ### Added
@@ -242,7 +249,10 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - **Developer Experience:** Type-safe builders prevent mistakes
 - **CI/CD:** Automated validation catches issues before deployment
 
-[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/arindamdawn/schema-sentry/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.9.2
+[0.9.1]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.9.1
+[0.9.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.9.0
 [0.8.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.8.0
 [0.7.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.7.0
 [0.5.0]: https://github.com/arindamdawn/schema-sentry/releases/tag/v0.5.0
