@@ -3,7 +3,7 @@
 
 # Schema Sentry 🛡️
 
-**Type-safe JSON-LD structured data for Next.js App Router—built for SEO, AI discovery, and CI validation.**
+**Adding JSON-LD manually is exhausting. Schema Sentry makes it effortless—ensuring your content gets discovered by search engines AND AI assistants like ChatGPT, Claude, and Perplexity.**
   
   [Getting Started](#-install) • [Documentation](docs/) • [Examples](examples/)
 </div>
@@ -11,8 +11,34 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.9.1` (VS Code Extension + GitHub Bot + CI Integration)
-**Next release target:** `v0.9.2` (CLI Diagram + Plugin API)
+**Current release:** `v0.9.2`
+
+## 🚀 5-Minute Quick Start
+
+```bash
+# 1. Install
+pnpm add @schemasentry/next @schemasentry/core
+pnpm add -D @schemasentry/cli
+
+# 2. Initialize
+pnpm schemasentry init
+
+# 3. Add to your page
+# Copy-paste the code from: pnpm schemasentry scaffold
+
+# 4. Build & Validate
+next build
+pnpm schemasentry validate
+```
+
+## 😫 Before vs After
+
+| | **Before Schema Sentry** | **After Schema Sentry** |
+|---|---|---|
+| **Writing JSON-LD** | ❌ Manual, error-prone, tedious | ✅ Type-safe builders with autocomplete |
+| **Keeping in sync** | ❌ Schema breaks when content changes | ✅ Auto-validated in CI on every PR |
+| **SEO results** | ❌ Missing rich snippets | ✅ Eligible for rich results |
+| **AI discovery** | ❌ AI can't cite your content | ✅ ChatGPT, Claude can recommend you |
 
 ## ✨ Features
 
@@ -33,6 +59,22 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 - 🤖 **AI-ready output** optimized for LLM consumption, citations, and AI agent recommendations
 - 📦 **VS Code extension** — Schema preview panel, snippets, inline decorations while editing
 - 🤖 **GitHub Bot** — Automated PR schema reviews with `schemasentry bot`
+
+## ⚙️ How It Works
+
+Schema Sentry fits into your development workflow in 3 simple steps:
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  1. DEFINE      │────▶│  2. VALIDATE    │────▶│  3. DEPLOY      │
+│                 │     │                 │     │                 │
+│  Add Schema     │     │  CI checks      │     │  Content live   │
+│  component to   │     │  actual HTML    │     │  with perfect   │
+│  your pages     │     │  output         │     │  structured data│
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+**The magic:** Unlike other tools that validate JSON config files (which can give false positives), Schema Sentry validates your **actual built HTML** to ensure schema is truly rendered.
 
 ## 🧠 Why Structured Data Matters
 
@@ -71,6 +113,17 @@ Schema Sentry enforces structured data in CI, ensuring your content is:
 | AI agent recommendations | ❌ | ✅ Direct inclusion |
 
 By using Schema Sentry, you're not just optimizing for Google—you're making your content discoverable by the next generation of AI-powered search.
+
+## 📈 Real-World Impact
+
+Structured data isn't just a "nice-to-have"—it directly impacts your visibility:
+
+- **30% higher CTR** - Product pages with Product schema see 30% higher click-through rates in Google
+- **Featured snippets** - Articles with proper Article schema are 3x more likely to get featured
+- **AI citations** - ChatGPT, Claude, and Perplexity use structured data to cite sources—without it, they can't recommend your content
+- **Voice search** - Smart assistants rely on structured data to answer voice queries
+
+> **"AI is eating the web."** ChatGPT, Claude, Perplexity, and AI agents now drive significant traffic. Structured data is how AI understands and recommends your content.
 
 ## 📦 Packages
 
