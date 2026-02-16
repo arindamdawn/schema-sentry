@@ -34,7 +34,7 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 - 📦 **VS Code extension** — Schema preview panel, snippets, inline decorations while editing
 - 🤖 **GitHub Bot** — Automated PR schema reviews with `schemasentry bot`
 
-## 🧠 Why Structured Data Matters for Both Traditional and AI Search
+## 🧠 Why Structured Data Matters
 
 ### The Problem
 
