@@ -4,9 +4,9 @@ Last updated: 2026-02-20
 
 ## 🎉 Current Status
 
-**v0.9.3 is live!** AI-powered schema suggestions
+**v0.9.4 is live!** Interactive CLI with prompts + watch mode
 
-**Next release:** v0.9.4 — Interactive CLI (in progress)
+**Next release:** v0.9.5 — Interactive TUI (future)
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
