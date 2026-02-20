@@ -6,41 +6,27 @@ Expands the roadmap with high-impact developer-experience features based on comm
 
 ### Priority Queue (Updated)
 
-1. ~~**v0.7.0**~~ ✅ - Rulesets (`google`, `ai-citation`) + CLI visualization (table default)
+1. ~~**v0.7.0**~~ ✅ - Rulesets (`google`, `ai-citation`) + CLI visualization
 2. ~~**v0.8.0**~~ ✅ - GitHub bot + Pages Router + Testing + Team policies
-3. **v0.9.0** - VS Code Extension (preview panel, inline decorations, quick actions)
-4. **v0.9.1** - CLI diagram + Plugin API
-5. **v0.9.3** - AI suggestions (`schemasentry suggest`) + BYOK provider architecture
-6. **v0.9.4** - Interactive CLI (prompts + watch)
-7. **v0.9.5** - CMS integrations (Sanity, Contentful)
+3. ~~**v0.9.0**~~ ✅ - VS Code Extension
+4. ~~**v0.9.1**~~ ✅ - GitHub Actions CI + VS Code fixes
+5. ~~**v0.9.2**~~ ✅ - Maintenance
+6. ~~**v0.9.3**~~ ✅ - AI suggestions (`schemasentry suggest`) + BYOK providers
+7. ~~**v0.9.4**~~ ✅ - Interactive CLI (`schemasentry dev` + watch)
+8. **v0.9.5** - Interactive TUI (future)
+9. **v0.9.6** - CMS integrations (future)
 
-### v0.9.0 Scope (Next Release - VS Code Extension)
+### v0.9.5 Scope (Interactive TUI)
 
-- **VS Code extension** — Full MVP
-  - Schema preview panel while editing components (read-only)
-  - Snippets for common schema types
-  - Command entrypoint to open schema preview from the active editor
-  - Inline decorations showing schema type in gutter
-  - Quick actions for common schema operations
+- Full-screen TUI with header, status, and logs
+- Command picker (validate/audit/suggest)
+- Live watch mode with toggle
+- Inline prompts
 
-### v0.9.1 Scope
+### v0.9.6 Scope (CMS Integrations)
 
-- **CLI diagram visualization** — `--format diagram`
-- **Plugin API** — custom validators for enterprise teams
-
-### v0.9.3 Scope
-
-- **AI suggestions** — `schemasentry suggest`
-- **BYOK providers** — OpenAI, Anthropic, Gemini, NVIDIA NIM, OpenRouter
-- **Write support** — `--write` to update manifest
-
-### v0.9.4 Scope
-
-- **Interactive CLI** — TUI mode, prompts, better UX
-
-### v0.9.5 Scope
-
-- **CMS integrations** — Sanity.io, Contentful patterns
+- Sanity.io integration helpers
+- Contentful integration helpers
 
 ### v1.0.0
 
