@@ -4,9 +4,9 @@ Last updated: 2026-02-20
 
 ## 🎉 Current Status
 
-**v0.9.2 is live!** Version bump and maintenance release
+**v0.9.3 is pending merge!** AI-powered schema suggestions
 
-**Next release:** v0.9.3 — AI suggestions with BYOK (Bring Your Own Key)
+**Next release:** v0.9.4 — Interactive CLI + CMS integrations (Future)
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
@@ -85,8 +85,9 @@ Last updated: 2026-02-20
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.9.3** - Pages Router support + AI suggestions (`schemasentry suggest`)
-2. **v0.9.4** - CMS integrations (Sanity, Contentful) - Future/Backlog
+1. **v0.9.3** - AI suggestions with BYOK (in PR) - ✅ READY
+2. **v0.9.4** - Interactive CLI (Claude Code-style TUI)
+3. **v0.9.5** - CMS integrations (Sanity, Contentful) - Future/Backlog
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -253,33 +254,25 @@ schemasentry validate --manifest ./manifest.json --build
 
 - [x] Version bump to 0.9.2 across all packages
 - [x] Consistent package versioning
-- [x] Next.js Pages Router example (pending merge to main)
+- [x] Next.js Pages Router example
 
-## 🧪 Phase 4.8 (v0.9.3)
+## 🧪 Phase 4.8 (v0.9.3) — Released
 
 **Focus:** AI-assisted recommendations
 
-### v0.9.3 Scope
+### v0.9.3 Released
 
-- [ ] `schemasentry suggest` (read-only, experimental)
-  - Analyze route content/manifest and suggest schema types + missing fields
-  - Emit deterministic JSON output for CI review (`--format json` default)
-  - No file writes in this phase
-- [ ] BYOK (Bring Your Own Key) provider architecture
-  - Use Vercel AI SDK for unified provider interface
-  - Support configurable providers via environment variables:
-    - OpenAI (`OPENAI_API_KEY`)
-    - Anthropic (`ANTHROPIC_API_KEY`)
-    - Google Gemini (`GOOGLE_API_KEY`)
-    - NVIDIA NIM (`NVIDIA_API_KEY`) - free credits
-    - OpenRouter (`OPENROUTER_API_KEY`) - gateway to 200+ models
-  - User selects provider via `--provider` flag
-  - Model selection: sensible defaults per provider, overridable via `--model` flag or env var (`OPENAI_MODEL`, etc.)
-  - Graceful fallback/error when provider not configured
-- [ ] Safety and observability
-  - Explicit `--experimental` gate for AI-assisted command
-  - Clear runtime docs for offline/OSS mode behavior
-  - Cost awareness (show token usage estimates)
+- [x] `schemasentry suggest` command
+  - Analyze routes and suggest schema types using AI
+  - Read-only mode with `--format json|table` output
+  - Write mode with `--write` flag to update manifest
+- [x] BYOK (Bring Your Own Key) provider architecture
+  - Support OpenAI, Anthropic, Google Gemini, NVIDIA NIM, OpenRouter
+  - API key via `--api-key` flag or environment variables
+  - Model selection via `--model` flag or `*_MODEL` env vars
+- [x] Safety
+  - [EXPERIMENTAL] warning in output
+  - Confirmation prompt for `--write` (use `--force` to skip)
 
 ## 🚀 Phase 4.9 (v0.9.4)
 
@@ -289,13 +282,21 @@ schemasentry validate --manifest ./manifest.json --build
 - [ ] Contentful integration helpers
 - [ ] General CMS adapter pattern for structured content
 
-## 🚀 Phase 4.9 (v0.9.5)
+## 🚀 Phase 4.10
 
-**Focus:** Adoption assets and launch readiness
+- [ ] Interactive TUI mode with rich colored output
+- [ ] File watching mode (`schemasentry dev` for auto-validation)
+- [ ] Interactive prompts instead of just flags
+- [ ] Better help with inline examples
+- [ ] Shell auto-completion
 
-- [ ] Video tutorials and expanded docs
-- [ ] Product messaging and launch checklist
-- [ ] **Product Hunt launch** 🚀
+## 🚀 Phase 4.10 (v0.9.5)
+
+**Focus:** CMS integrations (Future/Backlog)
+
+- [ ] Sanity.io integration helpers
+- [ ] Contentful integration helpers
+- [ ] General CMS adapter pattern for structured content
 
 ## 🏁 Phase 5 (v1.0.0)
 
