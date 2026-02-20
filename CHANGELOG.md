@@ -6,6 +6,24 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
+## [0.9.3] - 2026-02-20
+
+### Added
+
+- **AI-Powered Schema Suggestions** (`schemasentry suggest`)
+  - Analyze routes and get AI recommendations for schema types
+  - Uses BYOK (Bring Your Own Key) - users provide their own API keys
+  - Supports 5 providers: OpenAI, Anthropic, Google Gemini, NVIDIA NIM, OpenRouter
+  - Auto-detects provider from available API keys
+  - Model selection via `--model` flag or `*_MODEL` env vars
+  - `--write` flag to apply suggestions to manifest
+  - JSON and table output formats
+- **API Key via CLI** - Pass API key directly with `--api-key` flag
+
+### Changed
+
+- Next.js Pages Router example is now included
+
 ## [0.9.2] - 2026-02-16
 
 ### Maintenance
