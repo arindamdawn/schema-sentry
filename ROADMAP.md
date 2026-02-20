@@ -4,9 +4,9 @@ Last updated: 2026-02-20
 
 ## 🎉 Current Status
 
-**v0.9.3 is pending merge!** AI-powered schema suggestions
+**v0.9.3 is live!** AI-powered schema suggestions
 
-**Next release:** v0.9.4 — Interactive CLI + CMS integrations (Future)
+**Next release:** v0.9.4 — Interactive CLI
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 

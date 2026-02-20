@@ -236,3 +236,33 @@ schemasentry validate --manifest ./manifest.json --build
 ## Documentation
 
 See [Schema Sentry Docs](https://github.com/arindamdawn/schema-sentry#readme)
+### `suggest` (AI Suggestions)
+
+Analyze routes and suggest schema types using AI (BYOK providers):
+
+```bash
+# Auto-detect provider from env vars
+pnpm schemasentry suggest
+
+# Specify provider
+pnpm schemasentry suggest --provider openai
+
+# Specify model
+pnpm schemasentry suggest --provider openai --model gpt-4o
+
+# Use NVIDIA NIM with API key
+pnpm schemasentry suggest --provider nvidia --api-key $NVIDIA_API_KEY
+
+# JSON output
+pnpm schemasentry suggest --format json --output ./schema-sentry.suggestions.json
+
+# Apply suggestions to manifest
+pnpm schemasentry suggest --write --force
+```
+
+Supported providers:
+- OpenAI (`OPENAI_API_KEY`)
+- Anthropic (`ANTHROPIC_API_KEY`)
+- Google Gemini (`GOOGLE_API_KEY`)
+- NVIDIA NIM (`NVIDIA_API_KEY`)
+- OpenRouter (`OPENROUTER_API_KEY`)
