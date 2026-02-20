@@ -6,7 +6,7 @@ Last updated: 2026-02-20
 
 **v0.9.2 is live!** Version bump and maintenance release
 
-**Next release:** v0.9.3 — Pages Router support + AI suggestions
+**Next release:** v0.9.3 — AI suggestions with BYOK (Bring Your Own Key)
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
@@ -265,14 +265,18 @@ schemasentry validate --manifest ./manifest.json --build
   - Analyze route content/manifest and suggest schema types + missing fields
   - Emit deterministic JSON output for CI review (`--format json` default)
   - No file writes in this phase
-- [ ] Provider architecture for suggestions
-  - Integrate Vercel AI SDK in `@schemasentry/cli` through an adapter layer
-  - Support OpenAI, Anthropic, Gemini, and OpenRouter as configurable providers
-  - Support `--provider` selection and provider-specific API key env vars
-  - Graceful fallback/error model when provider is not configured
+- [ ] BYOK (Bring Your Own Key) provider architecture
+  - Use Vercel AI SDK for unified provider interface
+  - Support configurable providers via environment variables:
+    - OpenAI (`OPENAI_API_KEY`)
+    - Anthropic (`ANTHROPIC_API_KEY`)
+    - OpenRouter (`OPENROUTER_API_KEY`) - gateway to 200+ models
+  - User selects provider via `--provider` flag
+  - Graceful fallback/error when provider not configured
 - [ ] Safety and observability
   - Explicit `--experimental` gate for AI-assisted command
-  - Clear command/runtime docs for offline/OSS mode behavior
+  - Clear runtime docs for offline/OSS mode behavior
+  - Cost awareness (show token usage estimates)
 
 ## 🚀 Phase 4.9 (v0.9.4)
 
