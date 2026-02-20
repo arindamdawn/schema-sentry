@@ -31,7 +31,7 @@ const DEFAULT_MODELS: Record<AIProvider, string> = {
   openai: "gpt-4o",
   anthropic: "claude-3.5-sonnet-20241022",
   google: "gemini-2.0-flash-exp",
-  nvidia: "nvidia/llama-3.3-70b-instruct",
+  nvidia: "mistralai/mixtral-8x7b-instruct-v0.1",
   openrouter: "openai/gpt-4o"
 };
 
@@ -166,7 +166,7 @@ Respond in JSON format:
             : undefined
         });
         
-        const modelId = config.provider === "nvidia" ? `nvidia/${model}` : model;
+        const modelId = model;
         
         const result = await openaiClient.chat.completions.create({
           model: modelId,
