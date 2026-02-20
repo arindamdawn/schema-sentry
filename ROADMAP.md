@@ -271,9 +271,10 @@ schemasentry validate --manifest ./manifest.json --build
     - OpenAI (`OPENAI_API_KEY`)
     - Anthropic (`ANTHROPIC_API_KEY`)
     - Google Gemini (`GOOGLE_API_KEY`)
-    - NVIDIA NIM (`NVIDIA_API_KEY`) - free credits available
+    - NVIDIA NIM (`NVIDIA_API_KEY`) - free credits
     - OpenRouter (`OPENROUTER_API_KEY`) - gateway to 200+ models
   - User selects provider via `--provider` flag
+  - Model selection: sensible defaults per provider, overridable via `--model` flag or env var (`OPENAI_MODEL`, etc.)
   - Graceful fallback/error when provider not configured
 - [ ] Safety and observability
   - Explicit `--experimental` gate for AI-assisted command
