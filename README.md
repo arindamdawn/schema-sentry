@@ -308,6 +308,7 @@ Use `--annotations github` in GitHub Actions to emit PR annotations.
 Use `--rules google` or `--rules ai-citation` to validate for specific optimization targets.
 Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
 See `docs/ci.md` for complete CI workflow examples.
+See `docs/suggest.md` for AI suggestion usage and provider setup.
 
 ### Optional Config
 
