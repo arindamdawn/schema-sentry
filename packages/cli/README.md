@@ -153,6 +153,24 @@ pnpm schemasentry scaffold --root ./app --write
 - `/howto/*` → HowTo
 - and more...
 
+### `dev` (Interactive)
+
+Interactive mode with prompts and watch mode:
+
+```bash
+# Prompt-driven selection
+pnpm schemasentry dev
+
+# Run validate once
+pnpm schemasentry dev --action validate --once
+
+# Watch for changes
+pnpm schemasentry dev --action validate --watch ./app schema-sentry.manifest.json
+
+# Run suggest with prompts
+pnpm schemasentry dev --action suggest
+```
+
 ### `collect`
 
 Collect JSON-LD blocks from built HTML output:
