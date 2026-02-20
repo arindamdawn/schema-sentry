@@ -1,8 +1,8 @@
 import { Command } from "commander";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import path from "path";
 import chalk from "chalk";
-import { stableStringify, type Manifest, type JsonLdValue } from "@schemasentry/core";
+import { stableStringify, type Manifest, type JsonLdValue, type SchemaNode, type SchemaTypeName } from "@schemasentry/core";
 import {
   resolveProvider,
   resolveModel,
@@ -46,6 +46,19 @@ export const suggestCommand = new Command("suggest")
     "-o, --output <path>",
     "Write report output to file"
   )
+  .option(
+    "--write",
+    "Write suggested schema to manifest file (requires --force to confirm)"
+  )
+  .option(
+    "--force",
+    "Skip confirmation prompt when using --write"
+  )
+  .option(
+    "--app-dir <path>",
+    "Path to Next.js app directory for source code updates",
+    "./app"
+  )
   .action(async (options: {
     manifest: string;
     routes?: string[];
@@ -54,6 +67,9 @@ export const suggestCommand = new Command("suggest")
     model?: string;
     format?: string;
     output?: string;
+    write?: boolean;
+    force?: boolean;
+    appDir?: string;
   }) => {
     const start = Date.now();
     const cwd = process.cwd();
@@ -183,6 +199,42 @@ export const suggestCommand = new Command("suggest")
       }
     } else {
       printTableOutput(result.suggestions);
+    }
+
+    // Write to manifest if --write flag is provided
+    if (options.write) {
+      const manifestPath = path.resolve(cwd, options.manifest);
+      let manifest: Manifest = { routes: {} };
+      
+      // Load existing manifest
+      try {
+        const raw = await readFile(manifestPath, "utf8");
+        manifest = JSON.parse(raw) as Manifest;
+      } catch {
+        // No existing manifest, create new one
+      }
+
+      // Apply suggestions to manifest
+      const validSuggestions = result.suggestions.filter(s => s.suggestedType);
+      
+      for (const suggestion of validSuggestions) {
+        manifest.routes[suggestion.route] = [suggestion.suggestedType!];
+      }
+
+      if (validSuggestions.length > 0) {
+        const manifestContent = stableStringify(manifest);
+        
+        if (!options.force) {
+          console.error(chalk.yellow(`\nThis will update ${validSuggestions.length} routes in ${options.manifest}:`));
+          for (const s of validSuggestions) {
+            console.error(chalk.gray(`  ${s.route} -> ${s.suggestedType}`));
+          }
+          console.error(chalk.yellow("\nUse --force to confirm or run without --write to preview only."));
+        } else {
+          await writeFile(manifestPath, manifestContent, "utf8");
+          console.error(chalk.green(`\nUpdated ${manifestPath} with ${validSuggestions.length} route suggestions`));
+        }
+      }
     }
 
     // Summary
