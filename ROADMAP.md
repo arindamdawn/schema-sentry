@@ -270,6 +270,8 @@ schemasentry validate --manifest ./manifest.json --build
   - Support configurable providers via environment variables:
     - OpenAI (`OPENAI_API_KEY`)
     - Anthropic (`ANTHROPIC_API_KEY`)
+    - Google Gemini (`GOOGLE_API_KEY`)
+    - NVIDIA NIM (`NVIDIA_API_KEY`) - free credits available
     - OpenRouter (`OPENROUTER_API_KEY`) - gateway to 200+ models
   - User selects provider via `--provider` flag
   - Graceful fallback/error when provider not configured
