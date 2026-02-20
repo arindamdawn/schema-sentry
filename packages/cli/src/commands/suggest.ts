@@ -30,6 +30,10 @@ export const suggestCommand = new Command("suggest")
     "AI provider to use (openai, anthropic, google, nvidia, openrouter)"
   )
   .option(
+    "-k, --api-key <key>",
+    "API key for the AI provider (or set via env var: OPENAI_API_KEY, etc.)"
+  )
+  .option(
     "--model <model>",
     "Model to use (defaults to provider's recommended model)"
   )
@@ -46,6 +50,7 @@ export const suggestCommand = new Command("suggest")
     manifest: string;
     routes?: string[];
     provider?: string;
+    apiKey?: string;
     model?: string;
     format?: string;
     output?: string;
@@ -94,7 +99,7 @@ export const suggestCommand = new Command("suggest")
     }
 
     const model = resolveModel(resolvedProvider, options.model);
-    const apiKey = resolveApiKey(resolvedProvider);
+    const apiKey = options.apiKey || resolveApiKey(resolvedProvider);
 
     console.error(chalk.gray(`Using provider: ${chalk.cyan(resolvedProvider)}`));
     console.error(chalk.gray(`Using model: ${chalk.cyan(model)}\n`));

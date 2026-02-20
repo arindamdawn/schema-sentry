@@ -98,10 +98,10 @@ export function validateProviderConfig(config: ProviderConfig): string[] {
     return errors;
   }
 
-  const apiKey = resolveApiKey(config.provider);
+  const apiKey = config.apiKey || resolveApiKey(config.provider);
   if (!apiKey) {
     const envVar = PROVIDER_API_KEYS[config.provider];
-    errors.push(`Missing API key for ${config.provider}. Set ${envVar} environment variable.`);
+    errors.push(`Missing API key for ${config.provider}. Set ${envVar} environment variable or pass via --api-key.`);
   }
 
   return errors;
@@ -123,7 +123,7 @@ export async function generateSchemaSuggestions(
   }
 
   const model = resolveModel(config.provider, config.model);
-  const apiKey = resolveApiKey(config.provider)!;
+  const apiKey = config.apiKey || resolveApiKey(config.provider)!;
   
   const routeList = routes.map((r) => `- ${r}`).join("\n");
 

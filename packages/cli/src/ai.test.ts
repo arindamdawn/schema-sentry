@@ -149,7 +149,7 @@ describe("validateProviderConfig", () => {
     const config: ProviderConfig = { provider: "openai" };
     const errors = validateProviderConfig(config);
     
-    expect(errors).toContain("Missing API key for openai. Set OPENAI_API_KEY environment variable.");
+    expect(errors).toContain("Missing API key for openai. Set OPENAI_API_KEY environment variable or pass via --api-key.");
   });
 
   it("returns no errors when valid", () => {
