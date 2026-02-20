@@ -282,11 +282,30 @@ schemasentry validate --manifest ./manifest.json --build
 - [ ] Contentful integration helpers
 - [ ] General CMS adapter pattern for structured content
 
-## 🚀 Phase 4.10
+## 🚀 Phase 4.10 (Interactive TUI Roadmap)
 
-- [ ] Interactive TUI mode with rich colored output
-- [ ] File watching mode (`schemasentry dev` for auto-validation)
-- [ ] Interactive prompts instead of just flags
+### Phase 1: Lightweight TUI Shell
+- [ ] Full-screen layout with header, status, and logs
+- [ ] Command picker (validate/audit/suggest)
+- [ ] Live run status, exit code, and duration
+
+### Phase 2: Live Watch UX
+- [ ] File change stream with debounce
+- [ ] Toggle watch on/off
+- [ ] Quick re-run keybinding (`r`)
+
+### Phase 3: Interactive Inputs
+- [ ] Inline prompts for manifest, provider/model, flags
+- [ ] Persistent session defaults
+- [ ] Contextual help panel
+
+### Phase 4: Polish
+- [ ] Search/filter logs
+- [ ] Copy last command
+- [ ] Export report shortcuts
+- [ ] Keyboard shortcuts overlay
+
+### Baseline CLI Enhancements
 - [ ] Better help with inline examples
 - [ ] Shell auto-completion
 
