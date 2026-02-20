@@ -9,6 +9,7 @@ import { botCommand } from "./commands/bot.js";
 import { testCommand } from "./commands/test.js";
 import { suggestCommand } from "./commands/suggest.js";
 import { devCommand } from "./commands/dev.js";
+import { tuiCommand } from "./commands/tui.js";
 import { resolveCliVersion } from "./commands/utils.js";
 
 const program = new Command();
@@ -28,5 +29,6 @@ program.addCommand(botCommand);
 program.addCommand(testCommand);
 program.addCommand(suggestCommand);
 program.addCommand(devCommand);
+program.addCommand(tuiCommand);
 
 program.parse();

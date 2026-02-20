@@ -171,6 +171,35 @@ pnpm schemasentry dev --action validate --watch ./app schema-sentry.manifest.jso
 pnpm schemasentry dev --action suggest
 ```
 
+### `tui` (Full-Screen TUI)
+
+Full-screen interactive terminal UI with command picker, status panel, logs panel, and watch mode:
+
+```bash
+# Start TUI with default settings
+pnpm schemasentry tui
+
+# Run specific action
+pnpm schemasentry tui --action validate
+pnpm schemasentry tui --action audit
+pnpm schemasentry tui --action suggest
+
+# Watch for file changes
+pnpm schemasentry tui --action validate --watch ./app ./pages
+
+# Build before validation
+pnpm schemasentry tui --action validate --build
+```
+
+**Keyboard shortcuts:**
+- `1` - Switch to Validate
+- `2` - Switch to Audit
+- `3` - Switch to Suggest
+- `SPACE` - Run selected command
+- `W` - Toggle watch mode
+- `R` - Re-run last command
+- `Q` - Quit
+
 ### `collect`
 
 Collect JSON-LD blocks from built HTML output:
