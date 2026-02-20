@@ -6,6 +6,19 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
+## [0.9.4] - 2026-02-20
+
+### Added
+
+- **Interactive Dev Mode** (`schemasentry dev`)
+  - Prompt-driven command selection (validate/audit/suggest)
+  - Watch mode to auto-re-run on file changes
+  - New dependencies: `@inquirer/prompts`, `chokidar`
+
+### Changed
+
+- Documentation updates for dev mode
+
 ## [0.9.3] - 2026-02-20
 
 ### Added
