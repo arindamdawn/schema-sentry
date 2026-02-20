@@ -11,7 +11,7 @@ Expands the roadmap with high-impact developer-experience features based on comm
 3. **v0.9.0** - VS Code Extension (preview panel, inline decorations, quick actions)
 4. **v0.9.1** - CLI diagram + Plugin API
 5. **v0.9.3** - AI suggestions (`schemasentry suggest`) + BYOK provider architecture
-6. **v0.9.4** - Interactive CLI (Claude Code-style)
+6. **v0.9.4** - Interactive CLI (prompts + watch)
 7. **v0.9.5** - CMS integrations (Sanity, Contentful)
 
 ### v0.9.0 Scope (Next Release - VS Code Extension)

@@ -301,6 +301,10 @@ pnpm schemasentry audit \
   --root ./app \
   --format html \
   --output ./audit-report.html
+
+# Interactive mode (prompts + watch)
+pnpm schemasentry dev
+pnpm schemasentry dev --action validate --once
 ```
 
 The CLI emits table output by default for better readability. Use `--format json` for machine-readable output or `--format html --output <path>` for shareable reports.
@@ -309,6 +313,7 @@ Use `--rules google` or `--rules ai-citation` to validate for specific optimizat
 Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
 See `docs/ci.md` for complete CI workflow examples.
 See `docs/suggest.md` for AI suggestion usage and provider setup.
+See `docs/dev.md` for interactive mode usage.
 
 ### Optional Config
 
