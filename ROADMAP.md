@@ -1,12 +1,12 @@
 # Roadmap
 
-Last updated: 2026-02-16
+Last updated: 2026-02-20
 
 ## 🎉 Current Status
 
 **v0.9.2 is live!** Version bump and maintenance release
 
-**Next release:** v0.9.3 — Framework adapters and CMS integrations
+**Next release:** v0.9.3 — Pages Router support + AI suggestions
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
@@ -85,8 +85,8 @@ Last updated: 2026-02-16
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.9.3** - Framework adapters (Astro/Remix) + CMS integrations
-2. **v0.9.4** - AI suggestions (`schemasentry suggest`)
+1. **v0.9.3** - Pages Router support + AI suggestions (`schemasentry suggest`)
+2. **v0.9.4** - CMS integrations (Sanity, Contentful) - Future/Backlog
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -253,12 +253,13 @@ schemasentry validate --manifest ./manifest.json --build
 
 - [x] Version bump to 0.9.2 across all packages
 - [x] Consistent package versioning
+- [x] Next.js Pages Router example (pending merge to main)
 
-## 🧪 Phase 4.8 (v0.9.4)
+## 🧪 Phase 4.8 (v0.9.3)
 
 **Focus:** AI-assisted recommendations
 
-### v0.9.4 Scope
+### v0.9.3 Scope
 
 - [ ] `schemasentry suggest` (read-only, experimental)
   - Analyze route content/manifest and suggest schema types + missing fields
@@ -272,6 +273,14 @@ schemasentry validate --manifest ./manifest.json --build
 - [ ] Safety and observability
   - Explicit `--experimental` gate for AI-assisted command
   - Clear command/runtime docs for offline/OSS mode behavior
+
+## 🚀 Phase 4.9 (v0.9.4)
+
+**Focus:** CMS integrations (Future/Backlog)
+
+- [ ] Sanity.io integration helpers
+- [ ] Contentful integration helpers
+- [ ] General CMS adapter pattern for structured content
 
 ## 🚀 Phase 4.9 (v0.9.5)
 
