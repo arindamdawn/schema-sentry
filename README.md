@@ -11,7 +11,7 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.9.2`
+**Current release:** `v0.9.3`
 
 ## 🚀 5-Minute Quick Start
 
@@ -59,6 +59,7 @@ pnpm schemasentry validate
 - 🤖 **AI-ready output** optimized for LLM consumption, citations, and AI agent recommendations
 - 📦 **VS Code extension** — Schema preview panel, snippets, inline decorations while editing
 - 🤖 **GitHub Bot** — Automated PR schema reviews with `schemasentry bot`
+- ✨ **AI suggestions** — `schemasentry suggest` recommends schema types (BYOK providers)
 
 ## ⚙️ How It Works
 
@@ -246,6 +247,13 @@ pnpm schemasentry audit \
 **All commands**
 
 ```bash
+# AI suggestions (BYOK)
+pnpm schemasentry suggest --provider openai
+pnpm schemasentry suggest --provider openai --model gpt-4o
+pnpm schemasentry suggest --provider nvidia --api-key $NVIDIA_API_KEY
+pnpm schemasentry suggest --format json --output ./schema-sentry.suggestions.json
+pnpm schemasentry suggest --write --force
+
 # Initialize starter files
 pnpm schemasentry init
 pnpm schemasentry init --scan
@@ -300,6 +308,7 @@ Use `--annotations github` in GitHub Actions to emit PR annotations.
 Use `--rules google` or `--rules ai-citation` to validate for specific optimization targets.
 Recommended field checks run as warnings by default. Disable them with `--no-recommended`.
 See `docs/ci.md` for complete CI workflow examples.
+See `docs/suggest.md` for AI suggestion usage and provider setup.
 
 ### Optional Config
 
