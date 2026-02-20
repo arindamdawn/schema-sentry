@@ -32,10 +32,13 @@
     "access": "public"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@google/generative-ai": "^0.21.0",
     "@schemasentry/core": "workspace:*",
     "ai": "^4.0.0",
     "chalk": "^5.6.2",
-    "commander": "^12.0.0"
+    "commander": "^12.0.0",
+    "openai": "^4.77.0"
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
