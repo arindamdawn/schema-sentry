@@ -278,11 +278,9 @@ schemasentry validate --manifest ./manifest.json --build
 
 **Focus:** CMS integrations (Future/Backlog)
 
-- [ ] Sanity.io integration helpers
-- [ ] Contentful integration helpers
-- [ ] General CMS adapter pattern for structured content
+## 🚀 Phase 4.10 (v0.9.5)
 
-## 🚀 Phase 4.10 (Interactive TUI Roadmap)
+**Focus:** Interactive TUI
 
 ### Phase 1: Lightweight TUI Shell
 - [ ] Full-screen layout with header, status, and logs
@@ -309,7 +307,7 @@ schemasentry validate --manifest ./manifest.json --build
 - [ ] Better help with inline examples
 - [ ] Shell auto-completion
 
-## 🚀 Phase 4.10 (v0.9.5)
+## 🚀 Phase 4.11 (v0.9.6)
 
 **Focus:** CMS integrations (Future/Backlog)
 
