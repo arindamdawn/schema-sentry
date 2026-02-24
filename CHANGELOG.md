@@ -6,6 +6,22 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
+## [0.10.0] - 2026-02-24
+
+### Added
+
+- **Manifest-less Validation** - The `validate` command now works without requiring a manifest file
+  - Automatically discovers expected schema types from source code scanning
+  - Uses `<Schema>` components in source files to build virtual manifest
+  - No need to create or maintain manifest file for basic validation
+  - Falls back to source scanning when no manifest is found
+  - Maintains backward compatibility - still works with manifest if provided
+
+### Changed
+
+- Updated README to document new manifest-less validation workflow
+- Improved CLI error messages for better UX
+
 ## [0.9.4] - 2026-02-20
 
 ### Added
