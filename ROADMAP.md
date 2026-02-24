@@ -4,11 +4,11 @@ Last updated: 2026-02-24
 
 ## 🎉 Current Status
 
-**v0.10.0 is live!** Manifest-less validation - no config files required!
+**v0.11.0 is live!** MCP Server - use Schema Sentry from AI tools!
 
-**Next release:** v0.10.1 — TBD
+**Next release:** v0.12.0 — TBD
 
-📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
+📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react @schemasentry/mcp`
 
 ---
 
@@ -299,7 +299,19 @@ schemasentry validate --manifest ./manifest.json --build
   - No need to create or maintain manifest file for basic validation
   - Maintains backward compatibility - still works with manifest if provided
 
-## 🚀 Phase 4.11 (v0.10.1)
+## ✅ Phase 4.11 (v0.11.0) — Released
+
+**Focus:** MCP Server for AI tools
+
+### v0.11.0 Released
+
+- [x] **MCP Server** (`@schemasentry/mcp`)
+  - Use Schema Sentry from Claude Desktop, Cursor, and other MCP-compatible AI assistants
+  - Tools: `schemasentry_validate`, `schemasentry_audit`, `schemasentry_collect`, `schemasentry_scaffold`, `schemasentry_scan`
+  - Resources: `schema://health`, `schema://manifest`
+  - Run via `npx @schemasentry/mcp` or configure in MCP settings
+
+## 🚀 Phase 4.12 (v0.12.0)
 
 **Focus:** Interactive TUI
 

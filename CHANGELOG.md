@@ -6,6 +6,21 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 > **Schema Sentry helps your content get discovered by both traditional search engines AND AI-powered assistants (ChatGPT, Claude, Perplexity) through proper structured data.**
 
+## [0.11.0] - 2026-02-24
+
+### Added
+
+- **MCP Server** (`@schemasentry/mcp`) - Model Context Protocol server for AI tools
+  - Use Schema Sentry from Claude Desktop, Cursor, and other MCP-compatible AI assistants
+  - Tools: `schemasentry_validate`, `schemasentry_audit`, `schemasentry_collect`, `schemasentry_scaffold`, `schemasentry_scan`
+  - Resources: `schema://health`, `schema://manifest`
+  - Run via: `npx @schemasentry/mcp` or configure in your MCP settings
+
+### Changed
+
+- CLI package now exports functions for reuse by MCP package
+- Updated README with MCP setup instructions
+
 ## [0.10.0] - 2026-02-24
 
 ### Added
