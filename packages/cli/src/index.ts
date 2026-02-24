@@ -12,6 +12,14 @@ import { devCommand } from "./commands/dev.js";
 import { tuiCommand } from "./commands/tui.js";
 import { resolveCliVersion } from "./commands/utils.js";
 
+export { performRealityCheck } from "./reality.js";
+export { scanSourceFiles } from "./source.js";
+export { collectSchemaData } from "./collect.js";
+export { buildAuditReport } from "./audit.js";
+export { scaffoldSchema, generateComponentCode, formatScaffoldPreview } from "./scaffold.js";
+export { generateSchemaSuggestions, resolveProvider, resolveModel, resolveApiKey, getAvailableProviders } from "./ai.js";
+export { inferSchemaTypes, generateManifestEntries, matchRouteToPatterns } from "./patterns.js";
+
 const program = new Command();
 
 program

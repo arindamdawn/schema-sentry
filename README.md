@@ -11,7 +11,7 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.10.0`
+**Current release:** `v0.11.0`
 
 ## 🚀 5-Minute Quick Start
 
@@ -60,6 +60,7 @@ pnpm schemasentry validate
 - 📦 **VS Code extension** — Schema preview panel, snippets, inline decorations while editing
 - 🤖 **GitHub Bot** — Automated PR schema reviews with `schemasentry bot`
 - ✨ **AI suggestions** — `schemasentry suggest` recommends schema types (BYOK providers)
+- 🤖 **MCP Server** — Use Schema Sentry from Claude Desktop, Cursor, and other AI assistants
 
 ## ⚙️ How It Works
 
@@ -133,6 +134,7 @@ Structured data isn't just a "nice-to-have"—it directly impacts your visibilit
 | [`@schemasentry/core`](https://www.npmjs.com/package/@schemasentry/core) | [![npm](https://img.shields.io/npm/v/@schemasentry/core.svg)](https://www.npmjs.com/package/@schemasentry/core) | Typed builders and validation primitives |
 | [`@schemasentry/next`](https://www.npmjs.com/package/@schemasentry/next) | [![npm](https://img.shields.io/npm/v/@schemasentry/next.svg)](https://www.npmjs.com/package/@schemasentry/next) | App Router `<Schema />` component |
 | [`@schemasentry/cli`](https://www.npmjs.com/package/@schemasentry/cli) | [![npm](https://img.shields.io/npm/v/@schemasentry/cli.svg)](https://www.npmjs.com/package/@schemasentry/cli) | CI validation and report output |
+| [`@schemasentry/mcp`](https://www.npmjs.com/package/@schemasentry/mcp) | [![npm](https://img.shields.io/npm/v/@schemasentry/mcp.svg)](https://www.npmjs.com/package/@schemasentry/mcp) | MCP server for AI tools (Claude, Cursor) |
 | [`schema-sentry-vscode`](https://marketplace.visualstudio.com/items?itemName=schemasentry.schema-sentry-vscode) | VSIX | VS Code extension with preview, snippets, decorations |
 
 ## 🚀 Install
@@ -396,6 +398,220 @@ pnpm --filter schema-sentry-example-next-app schema:e2e
 - Next.js App Router (Next.js 13.4+)
 - React 18+
 - Node.js 18+
+
+## 🤖 MCP Server
+
+Use Schema Sentry directly from Claude Desktop, Cursor, or any MCP-compatible AI assistant.
+
+### Install
+
+```bash
+# Install the MCP package
+pnpm add -D @schemasentry/mcp
+
+# Or use directly via npx (no install needed)
+npx @schemasentry/mcp
+```
+
+### Setup
+
+#### Claude Desktop
+
+Add to your MCP configuration file (`~/Library/Application Support/Claude/mcp_settings.json` on Mac or `%APPDATA%\Claude\mcp_settings.json` on Windows):
+
+```json
+{
+  "mcpServers": {
+    "schema-sentry": {
+      "command": "npx",
+      "args": ["@schemasentry/mcp"]
+    }
+  }
+}
+```
+
+Or with custom options:
+
+```json
+{
+  "mcpServers": {
+    "schema-sentry": {
+      "command": "npx",
+      "args": ["-y", "@schemasentry/mcp"],
+      "env": {
+        "SCHEMA_SENTRY_ROOT": "/path/to/your/nextjs/app"
+      }
+    }
+  }
+}
+```
+
+#### Cursor
+
+1. Open Cursor Settings (Cmd+,)
+2. Go to **MCP** tab
+3. Click **Add new server**
+4. Enter: `npx @schemasentry/mcp`
+5. Click **Add Server**
+
+#### Zed Editor
+
+Add to your Zed settings (`~/.zed/settings.json`):
+
+```json
+{
+  "mcp": {
+    "schema-sentry": {
+      "command": "npx",
+      "args": ["@schemasentry/mcp"]
+    }
+  }
+}
+```
+
+#### Other MCP Clients
+
+Any MCP-compatible client can use:
+
+```bash
+npx @schemasentry/mcp
+```
+
+The server uses stdio transport by default.
+
+### Available Tools
+
+| Tool | Description | Example |
+|------|-------------|---------|
+| `schemasentry_validate` | Validate schema against built HTML output | Check if all routes have proper schema |
+| `schemasentry_audit` | Analyze schema health, detect ghost routes | Find routes in manifest without Schema components |
+| `schemasentry_collect` | Collect JSON-LD from built HTML | Extract all schema from .next/server/app |
+| `schemasentry_scaffold` | Generate schema code for pages | Add schema to pages that are missing it |
+| `schemasentry_scan` | Scan source files for Schema usage | Find which pages use @schemasentry/next |
+| `schemasentry_suggest` | **AI-powered schema suggestions** | Generate contextualized schema using OpenAI, Anthropic, etc. |
+
+### Tool Parameters
+
+**schemasentry_validate:**
+```json
+{
+  "manifest": "schema-sentry.manifest.json",
+  "root": "./.next/server/app",
+  "appDir": "./app",
+  "format": "json"
+}
+```
+
+**schemasentry_audit:**
+```json
+{
+  "manifest": "schema-sentry.manifest.json",
+  "root": ".",
+  "appDir": "./app",
+  "sourceScan": true
+}
+```
+
+**schemasentry_collect:**
+```json
+{
+  "root": "./.next/server/app",
+  "routes": ["/", "/blog"]
+}
+```
+
+**schemasentry_scaffold:**
+```json
+{
+  "root": "./app",
+  "routes": ["/blog", "/products"]
+}
+```
+
+**schemasentry_scan:**
+```json
+{
+  "root": ".",
+  "appDir": "./app"
+}
+```
+
+**schemasentry_suggest:**
+```json
+{
+  "routes": ["/", "/blog", "/products"],
+  "provider": "openai",
+  "apiKey": "sk-...",
+  "model": "gpt-4o"
+}
+```
+
+Or let it auto-scan your routes:
+```json
+{
+  "provider": "anthropic",
+  "apiKey": "sk-ant-..."
+}
+```
+
+### Available Resources
+
+| Resource | Description |
+|----------|-------------|
+| `schema://health` | Current schema validation status |
+| `schema://manifest` | Contents of schema-sentry.manifest.json |
+
+### Example Conversations
+
+```
+You: "Validate my site's schema"
+Claude: [calls schemasentry_validate]
+→ Returns: { ok: true, summary: { routes: 10, score: 95, errors: 0 } }
+
+You: "Which pages are missing schema?"
+Claude: [calls schemasentry_scan]
+→ Returns: [{ route: "/about", hasSchemaUsage: false }, ...]
+
+You: "Generate schema for my blog pages"
+Claude: [calls schemasentry_scaffold]
+→ Returns: [{ route: "/blog/[slug]", suggestedTypes: ["BlogPosting"], ... }]
+
+You: "Audit for ghost routes"
+Claude: [calls schemasentry_audit]
+→ Returns: { ghostRoutes: ["/about"], sourceScan: {...}, report: {...} }
+
+You: "Show me my manifest"
+Claude: [reads schema://manifest]
+→ Returns: { "routes": { "/": ["Organization"], "/blog": ["Article"] } }
+```
+
+### Quick IDE Prompts
+
+| Task | Prompt |
+|------|--------|
+| Find missing schema | "Which pages are missing schema?" |
+| Analyze routes | "What schema types should I add to my site?" |
+| Add to specific page | "Add BlogPosting schema to my /blog/[slug] page" |
+| Validate after changes | "Validate my site schema" |
+
+### Programmatic Usage
+
+```typescript
+import { Server } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { spawn } from "child_process";
+
+const server = spawn("npx", ["@schemasentry/mcp"], {
+  stdio: ["pipe", "pipe", "pipe"]
+});
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SCHEMA_SENTRY_ROOT` | Project root directory | Current working directory |
+| `SCHEMA_SENTRY_MANIFEST` | Path to manifest | schema-sentry.manifest.json |
 
 ## 🛣️ Roadmap
 

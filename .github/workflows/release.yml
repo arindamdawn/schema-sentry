@@ -97,6 +97,9 @@ jobs:
           npm unpublish @schemasentry/core@${VERSION} --force 2>/dev/null || true
           npm unpublish @schemasentry/next@${VERSION} --force 2>/dev/null || true
           npm unpublish @schemasentry/cli@${VERSION} --force 2>/dev/null || true
+          npm unpublish @schemasentry/react@${VERSION} --force 2>/dev/null || true
+          npm unpublish @schemasentry/mcp@${VERSION} --force 2>/dev/null || true
+          npm unpublish schema-sentry-vscode@${VERSION} --force 2>/dev/null || true
           # Publish packages
           pnpm release
       - name: Delete existing tag (if any)
