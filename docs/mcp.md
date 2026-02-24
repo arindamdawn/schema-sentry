@@ -140,6 +140,31 @@ This is the **key tool** for generating real, contextualized schema based on you
 - `apiKey` (string, optional) - API key for the AI provider. Can also set via environment variable
 - `model` (string, optional) - Model to use (provider-specific defaults if omitted)
 
+**No API key needed if you already have one for other tools!**
+
+The MCP will auto-detect API keys from environment variables. If you use OpenAI for Copilot, Claude Code, or any other AI tool, just set:
+
+```bash
+# In your shell profile (~/.zshrc, ~/.bashrc)
+export OPENAI_API_KEY="sk-..."
+# OR for Anthropic
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
+Then just call the tool without an apiKey parameter:
+
+```json
+{
+  "provider": "openai"
+}
+```
+
+Or even simpler - it auto-detects which provider you have a key for:
+
+```json
+{}
+```
+
 **Example:**
 ```json
 {

@@ -18,6 +18,7 @@ export { collectSchemaData } from "./collect.js";
 export { buildAuditReport } from "./audit.js";
 export { scaffoldSchema, generateComponentCode, formatScaffoldPreview } from "./scaffold.js";
 export { generateSchemaSuggestions, resolveProvider, resolveModel, resolveApiKey, getAvailableProviders } from "./ai.js";
+export { inferSchemaTypes, generateManifestEntries, matchRouteToPatterns } from "./patterns.js";
 
 const program = new Command();
 

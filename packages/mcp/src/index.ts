@@ -18,7 +18,8 @@ import {
   scaffoldSchema,
   formatScaffoldPreview,
   generateSchemaSuggestions,
-  getAvailableProviders
+  getAvailableProviders,
+  inferSchemaTypes
 } from "@schemasentry/cli";
 
 const server = new Server(
@@ -409,11 +410,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       const provider = String(args.provider) as "openai" | "anthropic" | "google" | "nvidia" | "openrouter" || "openai";
-      const result = await generateSchemaSuggestions(routes, {
-        provider,
-        model: args.model ? String(args.model) : undefined,
-        apiKey: args.apiKey ? String(args.apiKey) : undefined
-      });
+      
+      // Check if user has an API key available (from env or parameter)
+      const availableProviders = getAvailableProviders();
+      const hasApiKey = args.apiKey || availableProviders.find(p => p.provider === provider)?.hasKey;
+      
+      let result;
+      if (!hasApiKey) {
+        // Fallback to pattern-based suggestions (no AI needed!)
+        const inferred = inferSchemaTypes(routes);
+        const suggestions = Array.from(inferred.entries()).map(([route, types]) => ({
+          route,
+          suggestedType: types[0] || "WebPage",
+          missingFields: [] as string[],
+          recommendations: ["Use @schemasentry/next to add schema to this page"]
+        }));
+        result = {
+          ok: true,
+          provider: "pattern-based",
+          model: "inferred from URL patterns",
+          suggestions,
+          note: "No AI API key found. Used pattern-based inference. Set OPENAI_API_KEY or ANTHROPIC_API_KEY for AI-powered suggestions."
+        };
+      } else {
+        result = await generateSchemaSuggestions(routes, {
+          provider,
+          model: args.model ? String(args.model) : undefined,
+          apiKey: args.apiKey ? String(args.apiKey) : undefined
+        });
+      }
 
       return {
         content: [
