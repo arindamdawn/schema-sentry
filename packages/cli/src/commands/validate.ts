@@ -25,6 +25,7 @@ import {
 
 import { runMultipleRulesets, parseRulesetNames } from "../rules/index.js";
 import { collectSchemaData } from "../collect.js";
+import { scanSourceFiles } from "../source.js";
 
 const DEFAULT_BUILD_OUTPUT_CANDIDATES = [
   ".next/server/app",
@@ -136,34 +137,34 @@ export const validateCommand = new Command("validate")
     const manifestPath = path.resolve(cwd, options.manifest);
     const appDir = path.resolve(cwd, options.appDir ?? "./app");
 
-    // Load manifest
-    let manifest: Manifest;
+    // Load manifest (optional - will use source scanning if not found)
+    let manifest: Manifest | undefined;
+    let manifestLoaded = false;
     try {
       const raw = await readFile(manifestPath, "utf8");
       manifest = JSON.parse(raw) as Manifest;
-    } catch (error) {
-      printCliError(
-        "manifest.not_found",
-        `Manifest not found at ${manifestPath}`,
-        "Run `schemasentry init` to generate starter files."
-      );
-      process.exit(1);
-      return;
-    }
-
-    if (!isManifest(manifest)) {
-      printCliError(
-        "manifest.invalid_shape",
-        "Manifest must contain a 'routes' object with string array values",
-        "Ensure each route maps to an array of schema type names."
-      );
-      process.exit(1);
-      return;
+      if (!isManifest(manifest)) {
+        printCliError(
+          "manifest.invalid_shape",
+          "Manifest must contain a 'routes' object with string array values",
+          "Ensure each route maps to an array of schema type names."
+        );
+        process.exit(1);
+        return;
+      }
+      manifestLoaded = true;
+    } catch {
+      // Manifest not found - will use source scanning to build virtual manifest
+      console.error(chalk.gray(`No manifest found at ${manifestPath}, using source scanning...\n`));
     }
 
     // Print header
     console.error(chalk.blue.bold("🔍 Schema Sentry Reality Check"));
-    console.error(chalk.gray("Validating actual built HTML against manifest expectations...\n"));
+    if (manifestLoaded) {
+      console.error(chalk.gray("Validating actual built HTML against manifest expectations...\n"));
+    } else {
+      console.error(chalk.gray("Running in manifest-less mode - validating source against built HTML...\n"));
+    }
 
     if (options.build) {
       const buildCommand = options.buildCommand ?? "pnpm build";

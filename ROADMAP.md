@@ -1,12 +1,12 @@
 # Roadmap
 
-Last updated: 2026-02-20
+Last updated: 2026-02-24
 
 ## 🎉 Current Status
 
-**v0.9.4 is live!** Interactive CLI with prompts + watch mode
+**v0.10.0 is live!** Manifest-less validation - no config files required!
 
-**Next release:** v0.9.5 — Interactive TUI (future)
+**Next release:** v0.10.1 — TBD
 
 📦 **Install:** `pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli @schemasentry/react`
 
@@ -85,9 +85,9 @@ Last updated: 2026-02-20
 
 ## 🚦 Priority Queue (Highest Impact First)
 
-1. **v0.9.3** - AI suggestions with BYOK (in PR) - ✅ READY
-2. **v0.9.4** - Interactive CLI (Claude Code-style TUI)
-3. **v0.9.5** - CMS integrations (Sanity, Contentful) - Future/Backlog
+1. **v0.10.0** - Manifest-less validation - ✅ RELEASED
+2. **v0.10.1** - Interactive TUI (next)
+3. **v0.11.0** - CMS integrations (Sanity, Contentful) - Future/Backlog
 
 ## ✅ Phase 4.1 (v0.5.0) — COMPLETE
 
@@ -274,11 +274,32 @@ schemasentry validate --manifest ./manifest.json --build
   - [EXPERIMENTAL] warning in output
   - Confirmation prompt for `--write` (use `--force` to skip)
 
-## 🚀 Phase 4.9 (v0.9.4)
+## ✅ Phase 4.9 (v0.9.4) — Released
 
-**Focus:** CMS integrations (Future/Backlog)
+**Focus:** Interactive CLI
 
-## 🚀 Phase 4.10 (v0.9.5)
+### v0.9.4 Released
+
+- [x] `schemasentry dev` command
+  - Prompt-driven command selection (validate/audit/suggest)
+  - Watch mode to auto-re-run on file changes
+  - New dependencies: `@inquirer/prompts`, `chokidar`
+- [x] Documentation updates for dev mode
+
+## ✅ Phase 4.10 (v0.10.0) — Released
+
+**Focus:** Manifest-less validation
+
+### v0.10.0 Released
+
+- [x] **Manifest-less validation**
+  - `validate` command now works without manifest file
+  - Auto-discovers expected schema types from source code scanning
+  - Uses `<Schema>` components in source files to build virtual manifest
+  - No need to create or maintain manifest file for basic validation
+  - Maintains backward compatibility - still works with manifest if provided
+
+## 🚀 Phase 4.11 (v0.10.1)
 
 **Focus:** Interactive TUI
 
@@ -307,7 +328,7 @@ schemasentry validate --manifest ./manifest.json --build
 - [ ] Better help with inline examples
 - [ ] Shell auto-completion
 
-## 🚀 Phase 4.11 (v0.9.6)
+## 🚀 Phase 4.12 (v0.11.0)
 
 **Focus:** CMS integrations (Future/Backlog)
 

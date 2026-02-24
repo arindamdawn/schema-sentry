@@ -11,7 +11,7 @@ import { collectSchemaData, type CollectResult } from "./collect";
 import { scanSourceFiles, type SourceScanResult } from "./source";
 
 export type RealityCheckOptions = ValidationOptions & {
-  manifest: Manifest;
+  manifest?: Manifest;
   builtOutputDir: string;
   sourceDir: string;
 };
@@ -61,7 +61,7 @@ export const performRealityCheck = async (
 
   // 3. Build comprehensive report
   return buildRealityReport({
-    manifest: options.manifest,
+    manifest: options.manifest ?? { routes: {} },
     sourceScan,
     collected,
     validationOptions: { recommended: options.recommended }
@@ -99,7 +99,11 @@ const buildRealityReport = (input: ReportInput): RealityCheckReport => {
   for (const route of allRoutes) {
     const sourceInfo = sourceScan.routes.find((r) => r.route === route);
     const htmlNodes = collectedRoutes[route] ?? [];
-    const expectedTypes = manifestRoutes[route] ?? [];
+    const manifestExpectedTypes = manifestRoutes[route] ?? [];
+    const sourceExpectedTypes = (sourceInfo?.importedBuilders ?? []) as SchemaTypeName[];
+    const expectedTypes = manifestExpectedTypes.length > 0 
+      ? manifestExpectedTypes 
+      : sourceExpectedTypes;
 
     const sourceHasComponent =
       sourceInfo?.hasSchemaImport && sourceInfo?.hasSchemaUsage;

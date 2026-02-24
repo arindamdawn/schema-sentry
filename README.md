@@ -11,7 +11,7 @@
 
 Schema Sentry provides a type-safe SDK and CLI for generating, validating, and auditing JSON-LD structured data with deterministic output. Designed for predictable diffs, CI-grade enforcement, and maximum discoverability across both traditional search engines (Google, Bing) and AI-powered systems (ChatGPT, Claude, Perplexity).
 
-**Current release:** `v0.9.4`
+**Current release:** `v0.10.0`
 
 ## 🚀 5-Minute Quick Start
 
@@ -263,7 +263,13 @@ pnpm schemasentry scaffold --root ./app
 pnpm schemasentry scaffold --root ./app --write
 
 # Validate ACTUAL HTML OUTPUT (catches missing schema!)
+# Option 1: Without manifest - auto-discovers schema from source code
+pnpm schemasentry validate
+
+# Option 2: With manifest - validates against manifest expectations
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json
+
+# Build and validate in one step
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --build
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./.next/server/app
 pnpm schemasentry validate --manifest ./schema-sentry.manifest.json --root ./out
@@ -338,13 +344,15 @@ CLI flags override config. Use `--config ./path/to/config.json` to point at a cu
 
 Other tools validate JSON config files, which gives you **false positives**. You can have perfect JSON files but your pages still lack schema markup! Schema Sentry v0.6.0+ validates your **actual built HTML output**, ensuring your schema is truly rendered.
 
-**Old way (v0.5.0 and earlier - DON'T DO THIS):**
+**v0.10.0+ - Manifest-less Validation (Easiest):**
 ```bash
-# ❌ Validates JSON files against each other - FALSE POSITIVES!
-schemasentry validate --manifest manifest.json --data data.json
+# ✅ No manifest required! Auto-discovers schema from source code
+schemasentry validate
+# or with automatic build:
+schemasentry validate --build
 ```
 
-**New way (v0.6.0+ - DO THIS):**
+**With Manifest (v0.6.0+):**
 ```bash
 # ✅ Validates actual built HTML against manifest - NO FALSE POSITIVES!
 schemasentry validate --manifest manifest.json
@@ -352,7 +360,7 @@ schemasentry validate --manifest manifest.json
 schemasentry validate --manifest manifest.json --build
 ```
 
-When `--root` is omitted, `validate` auto-detects built output (`./.next/server/app`, then `./out`, then `./.next/server/pages`). Use `schemasentry init` to generate starter files. Use `schemasentry scaffold` to see what code to add. Use `schemasentry validate` (or `--build`) to verify your schema is actually rendered.
+When `--root` is omitted, `validate` auto-detects built output (`./.next/server/app`, then `./out`, then `./.next/server/pages`). Without a manifest, Schema Sentry automatically scans your source files to discover expected schema types from `<Schema>` components. Use `schemasentry init` to generate starter files. Use `schemasentry scaffold` to see what code to add. Use `schemasentry validate` (or `--build`) to verify your schema is actually rendered.
 
 ## ✅ Supported Schema Types (V1)
 
