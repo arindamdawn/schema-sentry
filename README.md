@@ -403,11 +403,22 @@ pnpm --filter schema-sentry-example-next-app schema:e2e
 
 Use Schema Sentry directly from Claude Desktop, Cursor, or any MCP-compatible AI assistant.
 
-### Quick Setup
+### Install
 
-Add to your MCP configuration file:
+```bash
+# Install the MCP package
+pnpm add -D @schemasentry/mcp
 
-**For Claude Desktop:**
+# Or use directly via npx (no install needed)
+npx @schemasentry/mcp
+```
+
+### Setup
+
+#### Claude Desktop
+
+Add to your MCP configuration file (`~/Library/Application Support/Claude/mcp_settings.json` on Mac or `%APPDATA%\Claude\mcp_settings.json` on Windows):
+
 ```json
 {
   "mcpServers": {
@@ -419,37 +430,160 @@ Add to your MCP configuration file:
 }
 ```
 
-**For Cursor:**
-Go to Settings > MCP > Add new server and use:
+Or with custom options:
+
+```json
+{
+  "mcpServers": {
+    "schema-sentry": {
+      "command": "npx",
+      "args": ["-y", "@schemasentry/mcp"],
+      "env": {
+        "SCHEMA_SENTRY_ROOT": "/path/to/your/nextjs/app"
+      }
+    }
+  }
+}
 ```
+
+#### Cursor
+
+1. Open Cursor Settings (Cmd+,)
+2. Go to **MCP** tab
+3. Click **Add new server**
+4. Enter: `npx @schemasentry/mcp`
+5. Click **Add Server**
+
+#### Zed Editor
+
+Add to your Zed settings (`~/.zed/settings.json`):
+
+```json
+{
+  "mcp": {
+    "schema-sentry": {
+      "command": "npx",
+      "args": ["@schemasentry/mcp"]
+    }
+  }
+}
+```
+
+#### Other MCP Clients
+
+Any MCP-compatible client can use:
+
+```bash
 npx @schemasentry/mcp
 ```
 
+The server uses stdio transport by default.
+
 ### Available Tools
 
-| Tool | Description |
-|------|-------------|
-| `schemasentry_validate` | Validate schema against built HTML output |
-| `schemasentry_audit` | Analyze schema health and detect ghost routes |
-| `schemasentry_collect` | Collect JSON-LD from built HTML |
-| `schemasentry_scaffold` | Generate schema code for pages without schema |
-| `schemasentry_scan` | Scan source files for Schema component usage |
+| Tool | Description | Example |
+|------|-------------|---------|
+| `schemasentry_validate` | Validate schema against built HTML output | Check if all routes have proper schema |
+| `schemasentry_audit` | Analyze schema health, detect ghost routes | Find routes in manifest without Schema components |
+| `schemasentry_collect` | Collect JSON-LD from built HTML | Extract all schema from .next/server/app |
+| `schemasentry_scaffold` | Generate schema code for pages | Add schema to pages that are missing it |
+| `schemasentry_scan` | Scan source files for Schema usage | Find which pages use @schemasentry/next |
 
-### Example Usage
+### Tool Parameters
+
+**schemasentry_validate:**
+```json
+{
+  "manifest": "schema-sentry.manifest.json",
+  "root": "./.next/server/app",
+  "appDir": "./app",
+  "format": "json"
+}
+```
+
+**schemasentry_audit:**
+```json
+{
+  "manifest": "schema-sentry.manifest.json",
+  "root": ".",
+  "appDir": "./app",
+  "sourceScan": true
+}
+```
+
+**schemasentry_collect:**
+```json
+{
+  "root": "./.next/server/app",
+  "routes": ["/", "/blog"]
+}
+```
+
+**schemasentry_scaffold:**
+```json
+{
+  "root": "./app",
+  "routes": ["/blog", "/products"]
+}
+```
+
+**schemasentry_scan:**
+```json
+{
+  "root": ".",
+  "appDir": "./app"
+}
+```
+
+### Available Resources
+
+| Resource | Description |
+|----------|-------------|
+| `schema://health` | Current schema validation status |
+| `schema://manifest` | Contents of schema-sentry.manifest.json |
+
+### Example Conversations
 
 ```
 You: "Validate my site's schema"
-Claude: [calls schemasentry_validate tool]
-→ Returns validation report with routes, issues, and score
+Claude: [calls schemasentry_validate]
+→ Returns: { ok: true, summary: { routes: 10, score: 95, errors: 0 } }
 
 You: "Which pages are missing schema?"
-Claude: [calls schemasentry_scan tool]  
-→ Returns list of routes without Schema components
+Claude: [calls schemasentry_scan]
+→ Returns: [{ route: "/about", hasSchemaUsage: false }, ...]
 
 You: "Generate schema for my blog pages"
-Claude: [calls schemasentry_scaffold tool]
-→ Returns suggested schema code for each route
+Claude: [calls schemasentry_scaffold]
+→ Returns: [{ route: "/blog/[slug]", suggestedTypes: ["BlogPosting"], ... }]
+
+You: "Audit for ghost routes"
+Claude: [calls schemasentry_audit]
+→ Returns: { ghostRoutes: ["/about"], sourceScan: {...}, report: {...} }
+
+You: "Show me my manifest"
+Claude: [reads schema://manifest]
+→ Returns: { "routes": { "/": ["Organization"], "/blog": ["Article"] } }
 ```
+
+### Programmatic Usage
+
+```typescript
+import { Server } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { spawn } from "child_process";
+
+const server = spawn("npx", ["@schemasentry/mcp"], {
+  stdio: ["pipe", "pipe", "pipe"]
+});
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SCHEMA_SENTRY_ROOT` | Project root directory | Current working directory |
+| `SCHEMA_SENTRY_MANIFEST` | Path to manifest | schema-sentry.manifest.json |
 
 ## 🛣️ Roadmap
 
