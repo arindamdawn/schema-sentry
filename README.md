@@ -585,6 +585,15 @@ Claude: [reads schema://manifest]
 → Returns: { "routes": { "/": ["Organization"], "/blog": ["Article"] } }
 ```
 
+### Quick IDE Prompts
+
+| Task | Prompt |
+|------|--------|
+| Find missing schema | "Which pages are missing schema?" |
+| Analyze routes | "What schema types should I add to my site?" |
+| Add to specific page | "Add BlogPosting schema to my /blog/[slug] page" |
+| Validate after changes | "Validate my site schema" |
+
 ### Programmatic Usage
 
 ```typescript

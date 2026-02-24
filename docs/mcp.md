@@ -288,24 +288,69 @@ Claude: [calls schemasentry_suggest without routes - it scans automatically]
     {
       "route": "/",
       "suggestedType": "Organization",
-      "missingFields": ["name", "url"],
-      "recommendations": ["Add logo for image search", "Add contact info for local SEO"]
+      "requiredFields": ["name", "url"],
+      "codeExample": "import { Schema, Organization } from '@schemasentry/next';\n\n<Schema data={Organization({\n  name: 'Your Value Here',\n  url: 'https://yoursite.com'\n})} />",
+      "filePath": "app/page.tsx"
     },
-    {
-      "route": "/blog",
-      "suggestedType": "Blog",
-      "missingFields": ["description"],
-      "recommendations": ["Add blog posting schema to articles", "Include datePublished"]
-    },
-    {
-      "route": "/products",
-      "suggestedType": "Product",
-      "missingFields": ["name", "offers", "price"],
-      "recommendations": ["Add aggregateRating for social proof", "Include review schema"]
-    }
-  ]
+    ...
+  ],
+  "forIDE": "Pass these suggestions to your LLM to fill in actual values from your page content"
 }
 ```
+
+### 🎯 Full IDE Workflow: Add Schema to Your Pages
+
+This is the recommended workflow for adding schema to your site:
+
+**Step 1: Ask AI to analyze your routes**
+```
+You: "Analyze my routes and suggest what schema types I should add"
+```
+→ Returns suggestions with code examples
+
+**Step 2: Ask AI to generate the code** (pass the suggestions back)
+```
+You: "Now generate the schema code for my /blog page. The page has:
+- Title: My Blog Post
+- Author: John Doe
+- Date: 2026-02-24
+- URL: https://yoursite.com/blog/my-post"
+
+Claude: [uses the suggestion + reads your page file + fills in values]
+→ Writes the completed code to app/blog/[slug]/page.tsx
+```
+
+**Example Result:**
+```tsx
+// app/blog/[slug]/page.tsx
+import { Schema, BlogPosting } from "@schemasentry/next";
+
+export default function BlogPage({ params }) {
+  const title = "My Blog Post"; // The LLM sees this from your page
+  
+  return (
+    <>
+      <Schema data={BlogPosting({
+        headline: title,
+        author: { "@type": "Person", "name": "John Doe" },
+        datePublished: "2026-02-24",
+        url: `https://yoursite.com/blog/${params.slug}`
+      })} />
+      {/* Your existing page content */}
+    </>
+  );
+}
+```
+
+### Quick Prompts for Common Tasks
+
+| Task | Prompt |
+|------|--------|
+| Find missing schema | "Which pages are missing schema?" |
+| Analyze routes | "What schema types should I add to my site?" |
+| Add to specific page | "Add BlogPosting schema to my /blog/[slug] page" |
+| Validate after changes | "Validate my site schema after the recent updates" |
+| Check for errors | "Show me any schema validation errors" |
 
 ```
 You: "Generate schema suggestions for my /about page using Anthropic"

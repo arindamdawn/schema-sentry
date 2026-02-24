@@ -419,18 +419,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       if (!hasApiKey) {
         // Fallback to pattern-based suggestions (no AI needed!)
         const inferred = inferSchemaTypes(routes);
-        const suggestions = Array.from(inferred.entries()).map(([route, types]) => ({
-          route,
-          suggestedType: types[0] || "WebPage",
-          missingFields: [] as string[],
-          recommendations: ["Use @schemasentry/next to add schema to this page"]
-        }));
+        const suggestions = Array.from(inferred.entries()).map(([route, types]) => {
+          const schemaType = types[0] || "WebPage";
+          return {
+            route,
+            suggestedType: schemaType,
+            requiredFields: getRequiredFields(schemaType),
+            recommendations: ["Use @schemasentry/next to add schema to this page"],
+            codeExample: generateCodeExample(route, schemaType),
+            filePath: routeToFilePath(route)
+          };
+        });
         result = {
           ok: true,
           provider: "pattern-based",
           model: "inferred from URL patterns",
           suggestions,
-          note: "No AI API key found. Used pattern-based inference. Set OPENAI_API_KEY or ANTHROPIC_API_KEY for AI-powered suggestions."
+          note: "No AI API key found. Used pattern-based inference. Set OPENAI_API_KEY or ANTHROPIC_API_KEY for AI-powered suggestions.",
+          forIDE: "Pass these suggestions to your LLM to fill in actual values from your page content"
         };
       } else {
         result = await generateSchemaSuggestions(routes, {
@@ -438,6 +444,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           model: args.model ? String(args.model) : undefined,
           apiKey: args.apiKey ? String(args.apiKey) : undefined
         });
+        
+        // Add code examples to AI suggestions too
+        if (result.suggestions) {
+          (result as any).suggestions = result.suggestions.map((s: any) => ({
+            ...s,
+            requiredFields: s.missingFields || getRequiredFields(s.suggestedType),
+            codeExample: generateCodeExample(s.route, s.suggestedType),
+            filePath: routeToFilePath(s.route)
+          }));
+          (result as any).forIDE = "Pass these suggestions to your LLM to fill in actual values from your page content";
+        }
       }
 
       return {
@@ -471,3 +488,57 @@ async function main() {
 }
 
 main().catch(console.error);
+
+// Helper functions for IDE-friendly output
+
+function getRequiredFields(schemaType: string): string[] {
+  const fields: Record<string, string[]> = {
+    Organization: ["name", "url"],
+    WebSite: ["name", "url"],
+    WebPage: ["name"],
+    Article: ["headline", "url", "datePublished"],
+    BlogPosting: ["headline", "url", "datePublished", "author"],
+    Product: ["name", "offers", "price"],
+    VideoObject: ["name", "description", "uploadDate"],
+    ImageObject: ["name", "url"],
+    Event: ["name", "startDate", "location"],
+    Review: ["itemReviewed", "reviewRating", "author"],
+    FAQPage: ["mainEntity"],
+    HowTo: ["name", "step"],
+    Person: ["name"],
+    Place: ["name"],
+    LocalBusiness: ["name", "address", "telephone"],
+    BreadcrumbList: ["itemListElement"]
+  };
+  return fields[schemaType] || ["name", "url"];
+}
+
+function routeToFilePath(route: string): string {
+  if (route === "/") return "app/page.tsx";
+  if (route === "/404") return "app/not-found.tsx";
+  
+  // Convert route to file path
+  const segments = route.split("/").filter(Boolean);
+  if (segments.length === 0) return "app/page.tsx";
+  
+  const lastSegment = segments[segments.length - 1];
+  if (lastSegment.includes("[")) {
+    // Dynamic route: /blog/[slug] -> app/blog/[slug]/page.tsx
+    return `app/${segments.join("/")}/page.tsx`;
+  }
+  
+  return `app/${segments.join("/")}/page.tsx`;
+}
+
+function generateCodeExample(route: string, schemaType: string): string {
+  const filePath = routeToFilePath(route);
+  
+  return `// Add to ${filePath}
+import { Schema, ${schemaType} } from "@schemasentry/next";
+
+<Schema data={${schemaType}({
+  // TODO: Fill in actual values from your page content
+  name: "Your Value Here",
+  // Required: ${getRequiredFields(schemaType).join(", ")}
+})} />`;
+}
