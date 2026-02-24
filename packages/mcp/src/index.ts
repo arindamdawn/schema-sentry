@@ -181,6 +181,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: "schemasentry_install",
+        description: "Install Schema Sentry packages (@schemasentry/next, @schemasentry/core, @schemasentry/cli) to your project",
+        inputSchema: {
+          type: "object",
+          properties: {
+            root: {
+              type: "string",
+              description: "Project root directory",
+              default: "."
+            },
+            packageManager: {
+              type: "string",
+              description: "Package manager to use",
+              enum: ["pnpm", "npm", "yarn"],
+              default: "pnpm"
+            },
+            installCore: {
+              type: "boolean",
+              description: "Install @schemasentry/core (required for type-safe builders)",
+              default: true
+            },
+            installNext: {
+              type: "boolean",
+              description: "Install @schemasentry/next (required for <Schema> component)",
+              default: true
+            },
+            installCli: {
+              type: "boolean",
+              description: "Install @schemasentry/cli (required for validation)",
+              default: true
+            }
+          },
+        },
+      },
     ],
   };
 });
@@ -400,10 +435,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     if (name === "schemasentry_suggest") {
+      const root = resolve(cwd, String(args.root) || ".");
+      
+      // Check if packages are installed
+      const packageCheck = await checkAndInstallPackages(root);
+      if (!packageCheck.installed) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                ok: false,
+                error: "Schema Sentry not installed",
+                message: packageCheck.message,
+                installCommand: "pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli",
+                suggestion: "First, install Schema Sentry packages using schemasentry_install tool, or run: pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli"
+              }, null, 2),
+            },
+          ],
+        };
+      }
+      
       let routes = args.routes as string[] | undefined;
       
       if (!routes || routes.length === 0) {
-        const root = resolve(cwd, String(args.root) || ".");
         const appDir = resolve(cwd, String(args.appDir) || "./app");
         const sourceScan = await scanSourceFiles({ rootDir: root, appDir });
         routes = sourceScan.routes.map(r => r.route);
@@ -462,6 +517,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           {
             type: "text",
             text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
+    if (name === "schemasentry_install") {
+      const root = resolve(cwd, String(args.root) || ".");
+      const packageManager = String(args.packageManager) || "pnpm";
+      
+      const installCore = args.installCore !== false;
+      const installNext = args.installNext !== false;
+      const installCli = args.installCli !== false;
+      
+      const packages: string[] = [];
+      if (installCore) packages.push("@schemasentry/core");
+      if (installNext) packages.push("@schemasentry/next");
+      if (installCli) packages.push("@schemasentry/cli");
+      
+      const installCmd = packageManager === "yarn" 
+        ? `yarn add ${packages.join(" ")}`
+        : packageManager === "npm"
+          ? `npm install ${packages.join(" ")}`
+          : `pnpm add ${packages.join(" ")}`;
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              ok: true,
+              message: `Run the following command in your project directory:\n\n${installCmd}`,
+              command: installCmd,
+              packages: packages,
+              root: root,
+              note: "This will install the Schema Sentry packages to your project. After installation, you can use other MCP tools to add and validate schema."
+            }, null, 2),
           },
         ],
       };
@@ -541,4 +632,41 @@ import { Schema, ${schemaType} } from "@schemasentry/next";
   name: "Your Value Here",
   // Required: ${getRequiredFields(schemaType).join(", ")}
 })} />`;
+}
+
+async function checkAndInstallPackages(rootDir: string): Promise<{ installed: boolean; message: string }> {
+  const { existsSync } = await import("node:fs");
+  const { readFile } = await import("node:fs/promises");
+  
+  const packageJsonPath = resolve(rootDir, "package.json");
+  
+  if (!existsSync(packageJsonPath)) {
+    return { 
+      installed: false, 
+      message: "No package.json found. Please initialize a Node.js project first." 
+    };
+  }
+  
+  try {
+    const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8"));
+    const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
+    
+    const hasNext = deps["@schemasentry/next"];
+    const hasCore = deps["@schemasentry/core"];
+    const hasCli = deps["@schemasentry/cli"];
+    
+    if (!hasNext || !hasCore) {
+      return {
+        installed: false,
+        message: "Schema Sentry packages not found. Run: pnpm add @schemasentry/next @schemasentry/core @schemasentry/cli"
+      };
+    }
+    
+    return { installed: true, message: "" };
+  } catch {
+    return { 
+      installed: false, 
+      message: "Could not read package.json" 
+    };
+  }
 }
