@@ -13,6 +13,28 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 
 **Current release:** `v0.11.0`
 
+## 📋 Table of Contents
+
+- [🚀 Quick Start](#-5-minute-quick-start)
+- [😫 Before vs After](#-before-vs-after)
+- [✨ Features](#-features)
+- [⚙️ How It Works](#-how-it-works)
+- [🧠 Why Structured Data Matters](#-why-structured-data-matters)
+- [📈 Real-World Impact](#-real-world-impact)
+- [📦 Packages](#-packages)
+- [🚀 Install](#-install)
+- [🧩 App Router Usage](#-app-router-usage)
+- [🗺️ Manifest and Coverage](#-manifest-and-coverage)
+- [🧪 CLI](#-cli)
+- [✅ Supported Schema Types](#-supported-schema-types-v1)
+- [🧪 Example App](#-example-app)
+- [✅ Compatibility](#-compatibility)
+- [🤖 MCP Server](#-mcp-server)
+- [🛣️ Roadmap](#-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [💬 Support](#-support)
+
 ## 🚀 5-Minute Quick Start
 
 ```bash
