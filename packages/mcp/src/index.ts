@@ -16,7 +16,9 @@ import {
   collectSchemaData,
   buildAuditReport,
   scaffoldSchema,
-  formatScaffoldPreview
+  formatScaffoldPreview,
+  generateSchemaSuggestions,
+  getAvailableProviders
 } from "@schemasentry/cli";
 
 const server = new Server(
@@ -146,6 +148,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "string",
               description: "Path to Next.js app directory",
               default: "./app"
+            }
+          },
+        },
+      },
+      {
+        name: "schemasentry_suggest",
+        description: "AI-powered schema suggestions - analyzes routes and generates contextualized schema recommendations using your own AI provider (OpenAI, Anthropic, Google, etc.)",
+        inputSchema: {
+          type: "object",
+          properties: {
+            routes: {
+              type: "array",
+              items: { type: "string" },
+              description: "Routes to analyze (optional - will scan app directory if not provided)"
+            },
+            provider: {
+              type: "string",
+              description: "AI provider: openai, anthropic, google, nvidia, or openrouter",
+              enum: ["openai", "anthropic", "google", "nvidia", "openrouter"],
+              default: "openai"
+            },
+            apiKey: {
+              type: "string",
+              description: "API key for the AI provider (or set via environment variable: OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.)"
+            },
+            model: {
+              type: "string",
+              description: "Model to use (optional, provider-specific defaults)"
             }
           },
         },
@@ -363,6 +393,33 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           {
             type: "text",
             text: JSON.stringify(sourceScan, null, 2),
+          },
+        ],
+      };
+    }
+
+    if (name === "schemasentry_suggest") {
+      let routes = args.routes as string[] | undefined;
+      
+      if (!routes || routes.length === 0) {
+        const root = resolve(cwd, String(args.root) || ".");
+        const appDir = resolve(cwd, String(args.appDir) || "./app");
+        const sourceScan = await scanSourceFiles({ rootDir: root, appDir });
+        routes = sourceScan.routes.map(r => r.route);
+      }
+
+      const provider = String(args.provider) as "openai" | "anthropic" | "google" | "nvidia" | "openrouter" || "openai";
+      const result = await generateSchemaSuggestions(routes, {
+        provider,
+        model: args.model ? String(args.model) : undefined,
+        apiKey: args.apiKey ? String(args.apiKey) : undefined
+      });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
           },
         ],
       };

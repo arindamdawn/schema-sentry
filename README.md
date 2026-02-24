@@ -488,6 +488,7 @@ The server uses stdio transport by default.
 | `schemasentry_collect` | Collect JSON-LD from built HTML | Extract all schema from .next/server/app |
 | `schemasentry_scaffold` | Generate schema code for pages | Add schema to pages that are missing it |
 | `schemasentry_scan` | Scan source files for Schema usage | Find which pages use @schemasentry/next |
+| `schemasentry_suggest` | **AI-powered schema suggestions** | Generate contextualized schema using OpenAI, Anthropic, etc. |
 
 ### Tool Parameters
 
@@ -532,6 +533,24 @@ The server uses stdio transport by default.
 {
   "root": ".",
   "appDir": "./app"
+}
+```
+
+**schemasentry_suggest:**
+```json
+{
+  "routes": ["/", "/blog", "/products"],
+  "provider": "openai",
+  "apiKey": "sk-...",
+  "model": "gpt-4o"
+}
+```
+
+Or let it auto-scan your routes:
+```json
+{
+  "provider": "anthropic",
+  "apiKey": "sk-ant-..."
 }
 ```
 

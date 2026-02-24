@@ -125,6 +125,37 @@ Scan source files to detect Schema component usage - returns routes with/without
 - `root` (string, optional) - Project root directory
 - `appDir` (string, optional) - Path to Next.js app directory
 
+### schemasentry_suggest
+
+AI-powered schema suggestions - analyzes routes and generates contextualized schema recommendations using your own AI provider (OpenAI, Anthropic, Google, etc.).
+
+This is the **key tool** for generating real, contextualized schema based on your actual page content. The AI analyzes your routes and provides:
+- Suggested schema types based on URL patterns
+- Required fields for each schema type
+- Recommendations for SEO and AI discoverability
+
+**Parameters:**
+- `routes` (string[], optional) - Routes to analyze. If not provided, will scan your app directory automatically
+- `provider` (string, optional) - AI provider: `openai`, `anthropic`, `google`, `nvidia`, or `openrouter`. Default: `openai`
+- `apiKey` (string, optional) - API key for the AI provider. Can also set via environment variable
+- `model` (string, optional) - Model to use (provider-specific defaults if omitted)
+
+**Example:**
+```json
+{
+  "routes": ["/", "/blog", "/products", "/about"],
+  "provider": "openai"
+}
+```
+
+Or let AI scan your app automatically:
+```json
+{
+  "provider": "anthropic",
+  "apiKey": "sk-ant-..."
+}
+```
+
 ## Resources
 
 ### schema://health
@@ -215,6 +246,62 @@ Claude: [reads schema://manifest]
     "/": ["Organization", "WebSite"],
     "/blog": ["Article", "BreadcrumbList"]
   }
+}
+```
+
+### AI-Powered Schema Generation (Key Feature!)
+
+```
+You: "Analyze my routes and suggest what schema types I should add"
+
+Claude: [calls schemasentry_suggest without routes - it scans automatically]
+→ Returns:
+{
+  "ok": true,
+  "provider": "openai",
+  "suggestions": [
+    {
+      "route": "/",
+      "suggestedType": "Organization",
+      "missingFields": ["name", "url"],
+      "recommendations": ["Add logo for image search", "Add contact info for local SEO"]
+    },
+    {
+      "route": "/blog",
+      "suggestedType": "Blog",
+      "missingFields": ["description"],
+      "recommendations": ["Add blog posting schema to articles", "Include datePublished"]
+    },
+    {
+      "route": "/products",
+      "suggestedType": "Product",
+      "missingFields": ["name", "offers", "price"],
+      "recommendations": ["Add aggregateRating for social proof", "Include review schema"]
+    }
+  ]
+}
+```
+
+```
+You: "Generate schema suggestions for my /about page using Anthropic"
+
+Claude: [calls schemasentry_suggest with provider: "anthropic"]
+→ Returns:
+{
+  "ok": true,
+  "provider": "anthropic",
+  "suggestions": [
+    {
+      "route": "/about",
+      "suggestedType": "AboutPage",
+      "missingFields": ["description"],
+      "recommendations": [
+        "Use Organization schema for company info",
+        "Add founder Person schema",
+        "Include historical data if applicable"
+      ]
+    }
+  ]
 }
 ```
 

@@ -17,6 +17,7 @@ export { scanSourceFiles } from "./source.js";
 export { collectSchemaData } from "./collect.js";
 export { buildAuditReport } from "./audit.js";
 export { scaffoldSchema, generateComponentCode, formatScaffoldPreview } from "./scaffold.js";
+export { generateSchemaSuggestions, resolveProvider, resolveModel, resolveApiKey, getAvailableProviders } from "./ai.js";
 
 const program = new Command();
 
