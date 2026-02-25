@@ -112,7 +112,8 @@ jobs:
         env:
           VERSION: ${{ needs.prepare.outputs.version }}
         run: |
+          CHANGELOG_CONTENT=$(awk -v VERSION="$VERSION" '/^## \[/ {section=1; if ($2 ~ "^\\[" VERSION "\\]") {found=1; next}} found && /^## / {exit} found' CHANGELOG.md | sed 's/^## \[.*\] - .*//')
           gh release create v${VERSION} \
             --title "v${VERSION}" \
-            --notes-file <(echo "Release v${VERSION}") \
+            --notes "$CHANGELOG_CONTENT" \
             --draft=false
