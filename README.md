@@ -13,6 +13,8 @@ Schema Sentry provides a type-safe SDK and CLI for generating, validating, and a
 
 **Current release:** `v0.11.0`
 
+## 📋 Table of Contents
+
 ## 🚀 5-Minute Quick Start
 
 ```bash
