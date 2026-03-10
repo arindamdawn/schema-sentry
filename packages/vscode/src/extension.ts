@@ -34,8 +34,6 @@ function activate(context: vscode.ExtensionContext) {
   statusBar.show();
   context.subscriptions.push(statusBar);
 
-  vscode.window.showInformationMessage('Schema Sentry extension activated!');
-
   registerCommands(context);
   registerEventHandlers(context);
   loadConfiguration(context);
